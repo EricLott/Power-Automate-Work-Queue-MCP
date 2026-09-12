@@ -73,3 +73,23 @@ The committed parameterized proof was subsequently executed against the freshly 
 ## Harness malformed-input checkpoint
 
 Luna review found null test cases and fields could trigger an unhandled exception. The corrected API returns `INPUT_INVALID` for null case arrays, case entries, input, expected values and IDs. All five cases were tested through the public Dataverse API after the fresh package push; test runs remained zero and the five synthetic queue items were unchanged. [Redacted evidence](evidence/harness-input-2026-09-12.json) records the API outcomes and the **141-test** local regression result. All eight archives passed the final build round trip. This validates malformed-input rejection, not production isolation or autonomous coordinator execution.
+
+
+## Installed autonomous runtime checkpoint
+
+An actual flow save exposed a connector serialization defect that solution import had not caught. Dataverse `clientdata` must use `host.connectionName`; sending the previously generated `connectionReferenceName` caused `WorkflowRunActionInputsInvalidProperty`. Switching to the documented [cloud-flow clientdata format](https://learn.microsoft.com/en-us/power-automate/manage-flows-with-code) allowed both Watchdog and TestCoordinator to save and activate. The generator and offline validator now enforce that format for actions and triggers.
+
+Both Dataverse-only flows were temporarily bound to the isolated synthetic fixture. A test was started and one item acquired, then left idle. The installed Watchdog recovered the expired attempt at 23:14:58 UTC; the installed coordinator evaluated the persisted state at 23:15:28 UTC and marked the expected Exception test Passed. Evidence included one attempt, review required and `OUTCOME_UNKNOWN`. The CLI did not call recovery or advancement during this interval, and no MCP connection was required. [Redacted evidence](evidence/autonomous-runtime-2026-09-12.json) includes the durable scheduled command receipts.
+
+Both flows were returned to Draft and their temporary fixture parameters removed after the proof. No email or prompt flow was activated. The build passed eight archive round trips and **147 local tests** (73 runtime, 35 plug-in, 25 Python, 14 MCP). The new read-only installation planner checks local package hashes and binding prerequisites; tenant compatibility and approved install/apply remain outstanding work.
+
+This is a bounded installed-runtime proof, not completion of G20 or the full reference scenario. Real mailbox/prompt execution, separate-user security, clean/managed deployment, and capacity gates remain open.
+
+
+## Positive output evidence and scoped cleanup
+
+The adapter had treated a business record's source alternate key as its primary ID. The reference flow writes a stable hashed source key, while `Complete` records the actual Dataverse record GUID. Business lookup and pagination now consistently use the primary GUID; cleanup retains optimistic row-version checks. Adapter regressions cover different primary/source keys, deletion, pagination and invalid cursors.
+
+After the corrected package was deployed, a synthetic Dataverse business record was created with distinct primary and source keys, then completed through the lifecycle API. The installed TestCoordinator read the real record and marked the test Passed after matching contact, category, summary and attempt count. No CLI advancement call was made. `CleanupTestRun` then deleted only that test-owned output, preserving five pre-existing synthetic outputs. A subsequent read confirmed the test evidence persisted with Cleanup Completed. [Redacted proof](evidence/positive-coordinator-2026-09-12.json) includes the final **152-test** regression and package hashes.
+
+The coordinator was returned to Draft and its temporary fixture binding removed. All seven generated flow definitions also passed Dataverse save validation after a second correction: `SubscribeWebhookTrigger` requires `OpenApiConnectionWebhook`. Both serialization defects are covered by local regressions. Draft saves were applied through the documented workflow API; this checkpoint does not claim a new clean or managed solution import.

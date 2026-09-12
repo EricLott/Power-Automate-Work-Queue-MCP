@@ -68,7 +68,7 @@
           "inputs": {
             "host": {
               "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-              "connectionReferenceName": "qmcp_Dataverse",
+              "connectionName": "qmcp_Dataverse",
               "operationId": "PerformUnboundAction"
             },
             "parameters": {
@@ -110,7 +110,7 @@
               "inputs": {
                 "host": {
                   "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                  "connectionReferenceName": "qmcp_Dataverse",
+                  "connectionName": "qmcp_Dataverse",
                   "operationId": "PerformBoundAction"
                 },
                 "parameters": {
@@ -139,7 +139,7 @@
           "inputs": {
             "host": {
               "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-              "connectionReferenceName": "qmcp_Dataverse",
+              "connectionName": "qmcp_Dataverse",
               "operationId": "PerformUnboundAction"
             },
             "parameters": {
@@ -195,7 +195,7 @@
                   "inputs": {
                     "host": {
                       "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                      "connectionReferenceName": "qmcp_Dataverse",
+                      "connectionName": "qmcp_Dataverse",
                       "operationId": "ListRecords"
                     },
                     "parameters": {
@@ -290,7 +290,7 @@
                       "inputs": {
                         "host": {
                           "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                          "connectionReferenceName": "qmcp_Dataverse",
+                          "connectionName": "qmcp_Dataverse",
                           "operationId": "CreateRecord"
                         },
                         "parameters": {
@@ -325,7 +325,7 @@
                   "inputs": {
                     "host": {
                       "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                      "connectionReferenceName": "qmcp_Dataverse",
+                      "connectionName": "qmcp_Dataverse",
                       "operationId": "ListRecords"
                     },
                     "parameters": {
@@ -367,7 +367,7 @@
                       "inputs": {
                         "host": {
                           "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                          "connectionReferenceName": "qmcp_Dataverse",
+                          "connectionName": "qmcp_Dataverse",
                           "operationId": "PerformUnboundAction"
                         },
                         "parameters": {
@@ -415,7 +415,7 @@
               "inputs": {
                 "host": {
                   "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                  "connectionReferenceName": "qmcp_Dataverse",
+                  "connectionName": "qmcp_Dataverse",
                   "operationId": "PerformUnboundAction"
                 },
                 "parameters": {

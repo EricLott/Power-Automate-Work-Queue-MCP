@@ -77,7 +77,7 @@
           "inputs": {
             "host": {
               "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-              "connectionReferenceName": "qmcp_Dataverse",
+              "connectionName": "qmcp_Dataverse",
               "operationId": "PerformUnboundAction"
             },
             "parameters": {
@@ -110,7 +110,7 @@
               "inputs": {
                 "host": {
                   "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
-                  "connectionReferenceName": "qmcp_Outlook",
+                  "connectionName": "qmcp_Outlook",
                   "operationId": "SendEmailV2"
                 },
                 "parameters": {
@@ -129,7 +129,7 @@
               "inputs": {
                 "host": {
                   "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                  "connectionReferenceName": "qmcp_Dataverse",
+                  "connectionName": "qmcp_Dataverse",
                   "operationId": "PerformUnboundAction"
                 },
                 "parameters": {
@@ -153,7 +153,7 @@
               "inputs": {
                 "host": {
                   "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
-                  "connectionReferenceName": "qmcp_Dataverse",
+                  "connectionName": "qmcp_Dataverse",
                   "operationId": "PerformUnboundAction"
                 },
                 "parameters": {

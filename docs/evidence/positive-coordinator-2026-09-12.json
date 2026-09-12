@@ -1,0 +1,84 @@
+{
+  "date": "2026-09-12",
+  "classification": "synthetic-installed-positive-evidence-and-cleanup",
+  "organizationVerified": true,
+  "businessOutputProducer": "CLI-created synthetic Dataverse output, not an AI extraction or reference-flow execution",
+  "coordinator": "Installed scheduled TestCoordinator; no CLI AdvanceTestRun call",
+  "businessPrimaryIdDiffersFromAlternateSourceKey": true,
+  "testState": "Passed",
+  "assertionEvidence": {
+    "nativeOutcome": "Processed",
+    "attemptCount": 1,
+    "reviewRequired": false,
+    "recordId": "redacted-test-owned-record",
+    "fields": {
+      "contact": "synthetic@example.invalid",
+      "category": "question",
+      "summary": "Synthetic coordinator evidence"
+    },
+    "errorCode": ""
+  },
+  "cleanup": {
+    "testPassedWithActualFieldEvidence": true,
+    "primaryIdDifferentFromBusinessKey": true,
+    "testOwnedRecordDeleted": true,
+    "priorBusinessRecordsPreserved": 5,
+    "evidenceRetained": true
+  },
+  "persistedEvidenceReadAfterCleanup": true,
+  "temporaryFlowParametersRestored": true,
+  "finalFrameworkFlowState": "Draft",
+  "localTests": {
+    "runtime": 73,
+    "plugins": 39,
+    "python": 26,
+    "mcp": 14,
+    "total": 152
+  },
+  "packageRoundTrips": 8,
+  "packageManifest": {
+    "files": [
+      {
+        "file": "WQCore_managed.zip",
+        "sha256": "0decf5e10faf09967846aea782aa0b49ba2eca2ab916199cabc27dcd43c06d01"
+      },
+      {
+        "file": "WQCore.zip",
+        "sha256": "5aedf4ffb7f6439178c2088bbb591884603e31e9e190bdccc042d72135acc826"
+      },
+      {
+        "file": "WQNotificationsEmail_managed.zip",
+        "sha256": "e7a6d17040c0966cdc60394690ddd9d0cfd6259760515c6505465ceee26d6843"
+      },
+      {
+        "file": "WQNotificationsEmail.zip",
+        "sha256": "7e8cae7fb1a1a7f97b00e27f8feda662f9f7df745473dfb83f4154bbaaa7477c"
+      },
+      {
+        "file": "WQReferenceSharedMailbox_managed.zip",
+        "sha256": "79fdd2d85694533e1c19f6fbd0373172d4c1c8223d6173a978beb6dd82d0f1c4"
+      },
+      {
+        "file": "WQReferenceSharedMailbox.zip",
+        "sha256": "1cd7c7a39aced443e01ce890052f896183cef64563349aa2bbe54f5c5841387b"
+      },
+      {
+        "file": "WQTesting_managed.zip",
+        "sha256": "9fea9156f220a4bd097fbd1016e76b093fb6e1bd8b550426c5e7daea471e6769"
+      },
+      {
+        "file": "WQTesting.zip",
+        "sha256": "29af4a9c3c12c1a077bc2400112aebf9abba41185fa83139c558f4ca381674d2"
+      }
+    ],
+    "tenantImport": "not-run",
+    "version": "0.1.0.0",
+    "classification": "local-candidate"
+  },
+  "acceptanceGatesClosed": 0,
+  "limitations": [
+    "Synthetic expected output, not real mailbox or AI Builder quality.",
+    "One development identity; separate-user authorization and production isolation remain unproven.",
+    "Managed upgrade, clean installation, capacity and full MCP-host deployment workflow remain open."
+  ]
+}

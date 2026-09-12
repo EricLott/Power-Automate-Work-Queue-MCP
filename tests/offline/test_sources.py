@@ -18,8 +18,23 @@ class FlowInvariantTests(unittest.TestCase):
         flow=self.flow('ProcessOne');a=flow['properties']['definition']['actions']['HasWork']['actions']['ReportFailure'];a['inputs']['parameters']['item/Generation']='@triggerBody()'
         with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
     def test_native_raw_write_rejected(self):
-        flow=self.flow('ProcessOne');flow['properties']['definition']['actions']['Bad']={'type':'OpenApiConnection','inputs':{'host':{'connectionReferenceName':'qmcp_Dataverse','operationId':'UpdateRecord'},'parameters':{'entityName':'workqueueitems'}}}
+        flow=self.flow('ProcessOne');flow['properties']['definition']['actions']['Bad']={'type':'OpenApiConnection','inputs':{'host':{'connectionName':'qmcp_Dataverse','operationId':'UpdateRecord'},'parameters':{'entityName':'workqueueitems'}}}
         with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
+    def test_legacy_connection_host_key_rejected(self):
+        flow=self.flow('ProcessOne')
+        host=flow['properties']['definition']['actions']['RequestIds']
+        host['type']='OpenApiConnection'
+        host['inputs']={'host':{'connectionReferenceName':'qmcp_Dataverse','operationId':'ListRecords'},'parameters':{}}
+        with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
+    def test_legacy_trigger_connection_host_key_rejected(self):
+        flow=self.flow('OnQueueChanged')
+        host=flow['properties']['definition']['triggers']['trigger']['inputs']['host']
+        host['connectionReferenceName']=host.pop('connectionName')
+        with self.assertRaises(AssertionError):validate_flow(flow,'OnQueueChanged')
+    def test_webhook_trigger_requires_webhook_type(self):
+        flow=self.flow('OnQueueChanged')
+        flow['properties']['definition']['triggers']['trigger']['type']='OpenApiConnection'
+        with self.assertRaises(AssertionError):validate_flow(flow,'OnQueueChanged')
     def test_unbounded_loop_rejected(self):
         flow=self.flow('Watchdog');flow['properties']['definition']['actions']['Sweep']['limit']['count']=100000
         with self.assertRaises(AssertionError):validate_flow(flow,'Watchdog')

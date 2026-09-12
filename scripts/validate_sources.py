@@ -59,15 +59,23 @@ def validate_flow(flow,name):
     for ref_name, ref in refs.items():
         logical = ref.get('connection', {}).get('connectionReferenceLogicalName')
         assert logical in package_refs, (name, ref_name, 'missing package connection reference', logical)
+    for trigger_name, trigger in d.get('triggers', {}).items():
+        if trigger.get('type') in ('OpenApiConnection','OpenApiConnectionNotification','OpenApiConnectionWebhook'):
+            host = trigger['inputs']['host']
+            assert 'connectionReferenceName' not in host, (name, trigger_name, 'legacy connection host key')
+            assert host.get('connectionName') in refs, (name, trigger_name, 'unbound connection')
+            if host.get('operationId') == 'SubscribeWebhookTrigger':
+                assert trigger.get('type') == 'OpenApiConnectionWebhook', (name, trigger_name, 'webhook trigger requires OpenApiConnectionWebhook')
     def scope(items):
         for key,a in items.items():
             assert set(a.get('runAfter',{}))<=set(items), (name,key,'missing runAfter sibling')
             scope(a.get('actions',{}));scope(a.get('else',{}).get('actions',{}))
     scope(actions)
     for key,a in flat:
-        if a['type']=='OpenApiConnection':
+        if a['type'] in ('OpenApiConnection','OpenApiConnectionNotification'):
             host=a['inputs']['host'];params=a['inputs']['parameters']
-            assert host['connectionReferenceName'] in refs,(name,key,'unbound connection')
+            assert 'connectionReferenceName' not in host,(name,key,'legacy connection host key')
+            assert host.get('connectionName') in refs,(name,key,'unbound connection')
             if host['operationId']=='PerformBoundAction' and params.get('actionName')=='Microsoft.Dynamics.CRM.Dequeue':
                 assert params.get('entityName')=='workqueues',(name,key,'Dequeue must target native workqueues entity set')
                 assert "@outputs('Prepared')?['NativeQueueId']"==params.get('recordId'),(name,key,'Dequeue queue must come from PrepareAcquire')

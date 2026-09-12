@@ -8,7 +8,7 @@ from generate_sources import ROOT, VERSION, uid, write_json, write_xml, element,
 
 API='/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps'
 def connector(operation,parameters,after=None,connection='qmcp_Dataverse',api=API):
-    return {'type':'OpenApiConnection','inputs':{'host':{'apiId':api,'connectionReferenceName':connection,'operationId':operation},'parameters':parameters,'retryPolicy':{'type':'none'}},'runAfter':{} if after is None else {after:['Succeeded']}}
+    return {'type':'OpenApiConnection','inputs':{'host':{'apiId':api,'connectionName':connection,'operationId':operation},'parameters':parameters,'retryPolicy':{'type':'none'}},'runAfter':{} if after is None else {after:['Succeeded']}}
 def action(op,data='{}',after=None,owned=False):
     p={'actionName':'qmcp_WQ_'+op,'item/QueueKey':"@parameters('qmcp_QueueKey')",'item/RequestId':"@outputs('RequestIds')?['"+op+"']",'item/DataJson':data}
     if owned:
@@ -79,12 +79,12 @@ def generate():
     a['ResolveAcquire']['runAfter']={'HasPrepared':['Succeeded','Failed','TimedOut']}
     a['Respond']={'type':'Response','kind':'PowerApp','inputs':{'statusCode':200,'body':{'outcome':"@outputs('Acquired')?['Outcome']"}},'runAfter':{'HasWork':['Succeeded']}}
     save('ProcessOne','WQReferenceSharedMailbox',workflow('ProcessOne',child(),a))
-    trigger={'type':'OpenApiConnectionNotification','inputs':{'host':{'apiId':API,'connectionReferenceName':'qmcp_Dataverse','operationId':'SubscribeWebhookTrigger'},'parameters':{'subscriptionRequest/message':4,'subscriptionRequest/entityname':'workqueueitem','subscriptionRequest/scope':4,'subscriptionRequest/filterexpression':"@concat('_workqueueid_value eq ', parameters('qmcp_NativeQueueId'), ' and statecode eq 0')"}},'runtimeConfiguration':{'concurrency':{'runs':1}}}
+    trigger={'type':'OpenApiConnectionWebhook','inputs':{'host':{'apiId':API,'connectionName':'qmcp_Dataverse','operationId':'SubscribeWebhookTrigger'},'parameters':{'subscriptionRequest/message':4,'subscriptionRequest/entityname':'workqueueitem','subscriptionRequest/scope':4,'subscriptionRequest/filterexpression':"@concat('_workqueueid_value eq ', parameters('qmcp_NativeQueueId'), ' and statecode eq 0')"}},'runtimeConfiguration':{'concurrency':{'runs':1}}}
     save('OnQueueChanged','WQReferenceSharedMailbox',workflow('OnQueueChanged',trigger,{'ProcessOne':call_child()}))
     sweep={'BoundedSweep':{'type':'Foreach','foreach':'@range(0,10)','runtimeConfiguration':{'concurrency':{'repetitions':1}},'actions':{'ProcessOne':call_child()},'runAfter':{}}}
     save('SweepQueue','WQReferenceSharedMailbox',workflow('SweepQueue',recurrence(),sweep))
     outlook='/providers/Microsoft.PowerApps/apis/shared_office365'
-    trigger={'type':'OpenApiConnection','inputs':{'host':{'apiId':outlook,'connectionReferenceName':'qmcp_Outlook','operationId':'SharedMailboxOnNewEmailV2'},'parameters':{'mailboxAddress':"@parameters('qmcp_Mailbox')",'folderId':'Inbox','includeAttachments':False,'importance':'Any','hasAttachments':False}},'recurrence':{'frequency':'Minute','interval':1},'splitOn':"@triggerOutputs()?['body/value']"}
+    trigger={'type':'OpenApiConnection','inputs':{'host':{'apiId':outlook,'connectionName':'qmcp_Outlook','operationId':'SharedMailboxOnNewEmailV2'},'parameters':{'mailboxAddress':"@parameters('qmcp_Mailbox')",'folderId':'Inbox','includeAttachments':False,'importance':'Any','hasAttachments':False}},'recurrence':{'frequency':'Minute','interval':1},'splitOn':"@triggerOutputs()?['body/value']"}
     envelope={'envelopeVersion':'1.0','contract':'mail.v1','correlationId':"@workflow()?['run']?['name']",'deduplicationKey':"@triggerOutputs()?['body/id']",'source':{'type':'shared-mailbox','mailbox':"@parameters('qmcp_Mailbox')"},'payload':{'subject':"@coalesce(triggerOutputs()?['body/subject'],'')",'senderAddress':"@triggerOutputs()?['body/from']",'bodyText':"@body('HtmlToText')"}}
     normalize=connector('HtmlToText',{'Content':"@triggerOutputs()?['body/body']"},connection='qmcp_ContentConversion',api='/providers/Microsoft.PowerApps/apis/shared_conversionservice')
     a={'RequestIds':request_ids(['Enqueue','ReportIntakeFailure']),'Intake':{'type':'Scope','actions':{'HtmlToText':normalize,'Envelope':compose(envelope,'HtmlToText'),'Enqueue':action('Enqueue',"@string(outputs('Envelope'))",'Envelope')},'runAfter':{'RequestIds':['Succeeded']}},'ReportIntakeFailure':action('ReportIntakeFailure',"@string(setProperty(setProperty(setProperty(json('{}'),'source',coalesce(triggerOutputs()?['body/id'],'unknown')),'correlationId',workflow()?['run']?['name']),'code','INTAKE_FAILED'))")}

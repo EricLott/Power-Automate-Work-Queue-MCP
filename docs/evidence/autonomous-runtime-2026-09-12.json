@@ -1,0 +1,107 @@
+{
+  "date": "2026-09-12",
+  "classification": "synthetic-installed-autonomous-runtime",
+  "organizationVerified": true,
+  "identityScope": "Single authorized development operator and its Dataverse connection",
+  "scenario": "Start test, acquire synthetic work, leave the attempt idle; installed recurrence flows recover and evaluate it.",
+  "leaseExpires": "2026-09-12T23:14:46.9875174Z",
+  "nativeFinalState": "Exception",
+  "testFinalState": "Passed",
+  "assertionEvidence": {
+    "nativeOutcome": "Exception",
+    "attemptCount": 1,
+    "reviewRequired": true,
+    "errorCode": "OUTCOME_UNKNOWN"
+  },
+  "agentCalledRecoveryOrAdvance": false,
+  "mcpConnectionRequiredDuringExecution": false,
+  "scheduledCommandReceipts": [
+    {
+      "operation": "AdvanceTestRun",
+      "created": "2026-09-12T23:15:28.6583611Z",
+      "outcome": "Passed"
+    },
+    {
+      "operation": "RunMaintenance",
+      "created": "2026-09-12T23:14:58.937741Z",
+      "outcome": "Swept",
+      "changed": 1
+    },
+    {
+      "operation": "ApplyRetention",
+      "created": "2026-09-12T23:14:59.8916384Z",
+      "outcome": "RetentionApplied"
+    },
+    {
+      "operation": "AdvanceTestRun",
+      "created": "2026-09-12T23:14:28.0844276Z",
+      "outcome": "Running"
+    },
+    {
+      "operation": "ApplyRetention",
+      "created": "2026-09-12T23:13:58.6729352Z",
+      "outcome": "RetentionApplied"
+    },
+    {
+      "operation": "RunMaintenance",
+      "created": "2026-09-12T23:13:57.8136399Z",
+      "outcome": "Swept",
+      "changed": 0
+    },
+    {
+      "operation": "AdvanceTestRun",
+      "created": "2026-09-12T23:13:28.1767996Z",
+      "outcome": "Running"
+    },
+    {
+      "operation": "ApplyRetention",
+      "created": "2026-09-12T23:12:58.5660234Z",
+      "outcome": "RetentionApplied"
+    },
+    {
+      "operation": "RunMaintenance",
+      "created": "2026-09-12T23:12:57.6755415Z",
+      "outcome": "Swept",
+      "changed": 0
+    },
+    {
+      "operation": "ApplyRetention",
+      "created": "2026-09-12T23:11:58.1962166Z",
+      "outcome": "RetentionApplied"
+    },
+    {
+      "operation": "RunMaintenance",
+      "created": "2026-09-12T23:11:57.5087061Z",
+      "outcome": "Swept",
+      "changed": 0
+    },
+    {
+      "operation": "ApplyRetention",
+      "created": "2026-09-12T23:10:59.8950895Z",
+      "outcome": "RetentionApplied"
+    },
+    {
+      "operation": "RunMaintenance",
+      "created": "2026-09-12T23:10:58.5350247Z",
+      "outcome": "Swept",
+      "changed": 0
+    }
+  ],
+  "temporaryFlowConfigurationRestored": true,
+  "finalFlowsState": "Draft",
+  "localTests": {
+    "runtime": 73,
+    "plugins": 35,
+    "python": 25,
+    "mcp": 14,
+    "total": 147
+  },
+  "allEightArchivesRoundTripPassed": true,
+  "limitations": [
+    "One synthetic lease-expiry case, not the real mailbox or AI extraction scenario.",
+    "No separate-user authorization, clean installation, managed upgrade or load claim.",
+    "Started through the public API via CLI, not an MCP host acceptance run.",
+    "FlowRun metadata query returned no rows; durable command receipts and resulting native/test state supplied execution evidence."
+  ],
+  "acceptanceGatesClosed": 0
+}

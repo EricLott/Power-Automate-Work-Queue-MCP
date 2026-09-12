@@ -33,19 +33,34 @@ public sealed class DataverseStore : IStore
     Entity? Find(string kind, string key)
     {
         var query = new QueryExpression(Tables[kind]) { ColumnSet = new ColumnSet(true), TopCount = 2 };
-        query.Criteria.AddCondition("qmcp_key", ConditionOperator.Equal, key);
+        if (kind == "business")
+        {
+            if (!Guid.TryParse(key, out var id)) throw new Fault("INPUT_INVALID");
+            query.Criteria.AddCondition("qmcp_emailrequestid", ConditionOperator.Equal, id);
+        }
+        else query.Criteria.AddCondition("qmcp_key", ConditionOperator.Equal, key);
         var records = service.RetrieveMultiple(query).Entities;
         if (records.Count > 1) throw new Fault("DUPLICATE_KEY");
         return records.FirstOrDefault();
     }
-    static Row Row(string kind, Entity e) => new Row { Kind = kind, Key = e.GetAttributeValue<string>("qmcp_key"), Queue = e.GetAttributeValue<string>("qmcp_queuekey"), Body = e.GetAttributeValue<string>("qmcp_document"), Version = long.Parse(e.RowVersion ?? throw new Fault("ROW_VERSION_REQUIRED")), Updated = e.GetAttributeValue<DateTime>("modifiedon") };
+    static Row Row(string kind, Entity e) => new Row { Kind = kind, Key = kind == "business" ? e.Id.ToString() : e.GetAttributeValue<string>("qmcp_key"), Queue = e.GetAttributeValue<string>("qmcp_queuekey"), Body = e.GetAttributeValue<string>("qmcp_document"), Version = long.Parse(e.RowVersion ?? throw new Fault("ROW_VERSION_REQUIRED")), Updated = e.GetAttributeValue<DateTime>("modifiedon") };
     public Row? Get(string kind, string key) { var e = Find(kind, key); return e == null ? null : Row(kind, e); }
     public IReadOnlyList<Row> Page(string kind, string queue, string after, int limit)
     {
         var query = new QueryExpression(Tables[kind]) { ColumnSet = new ColumnSet(true), TopCount = Math.Min(100, limit) };
         query.Criteria.AddCondition("qmcp_queuekey", ConditionOperator.Equal, queue);
-        if (after != "") query.Criteria.AddCondition("qmcp_key", ConditionOperator.GreaterThan, after);
-        query.AddOrder("qmcp_key", OrderType.Ascending);
+        if (kind == "business")
+        {
+            Guid cursor = default;
+            if (after != "" && !Guid.TryParse(after, out cursor)) throw new Fault("INPUT_INVALID");
+            if (after != "") query.Criteria.AddCondition("qmcp_emailrequestid", ConditionOperator.GreaterThan, cursor);
+            query.AddOrder("qmcp_emailrequestid", OrderType.Ascending);
+        }
+        else
+        {
+            if (after != "") query.Criteria.AddCondition("qmcp_key", ConditionOperator.GreaterThan, after);
+            query.AddOrder("qmcp_key", OrderType.Ascending);
+        }
         return service.RetrieveMultiple(query).Entities.Select(e => Row(kind, e)).ToList();
     }
     public Row Add(Row row)

@@ -37,3 +37,7 @@ The older Microsoft XSD advisory reports unsupported `JsonFileName` and `connect
 After native transition corrections, **140 local tests** passed: 72 runtime, 35 plug-in adapter, 23 Python and 10 MCP/operator. The fresh build passed all eight archive round trips. [Live synthetic evidence](evidence/acquisition-handoff-2026-09-12.json) supplements these checks; all acceptance gates remain open. Earlier counts above describe historical runs.
 
 The subsequent test-harness null-input correction passed **141 tests** (73 runtime, 35 plug-in adapter, 23 Python and 10 MCP/operator) and all eight package round trips. Explicit null cases, inputs, expected objects and IDs return `INPUT_INVALID` before any test-run or queue writes.
+
+The connector-host serialization correction and read-only MCP installation planner passed **147 local tests** (73 runtime, 35 plug-in, 25 Python, 14 MCP) and eight archive round trips. The [installed autonomous runtime proof](evidence/autonomous-runtime-2026-09-12.json) separately demonstrates one synthetic scheduled recovery and assertion sequence.
+
+The final output-evidence adapter and webhook correction passed **152 local tests** (73 runtime, 39 plug-in adapter, 26 Python, 14 MCP) and eight archive round trips. The new installation tool is also called through the actual stdio MCP integration test. Live positive field assertions and scoped cleanup are [recorded separately](evidence/positive-coordinator-2026-09-12.json).

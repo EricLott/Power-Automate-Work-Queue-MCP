@@ -2,11 +2,11 @@
 
 Local implementation is tracked in [LOCAL-01 / issue 106](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/106). The local suites test the implemented model, adapters, protocol, and package structure. They do not close tenant gates. Reproduction commands are in [local development](local-development.md); raw results are generated under `artifacts/test-results/` and `artifacts/validation/`.
 
-The [2026-09-12 local evidence record](local-evidence.md) reports 91 passing tests and eight successful package round trips, with versions, hashes, and explicit limitations.
+The [2026-09-12 local evidence record](local-evidence.md) includes historical test counts; the latest checkpoint has 152 passing tests and eight successful package round trips, with versions, hashes, and explicit limitations.
 
 ## Gate mapping
 
-Every row below remains **pending tenant evidence**. “Local coverage” describes an executable check or an artifact, not a gate pass.
+Every gate below remains **open**. Selected synthetic tenant evidence is recorded in the [import ledger](live-import.md), including native handoff/recovery and installed autonomous Watchdog/coordinator execution; it does not satisfy every gate criterion. “Local coverage” describes an executable check or an artifact, not a gate pass.
 
 | Gate | Local coverage | Remaining live evidence |
 |---|---|---|
