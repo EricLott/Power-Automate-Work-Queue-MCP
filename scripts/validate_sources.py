@@ -50,6 +50,7 @@ def walk_actions(actions):
         yield from walk_actions(action.get('else',{}).get('actions',{}))
 
 def validate_flow(flow,name):
+    assert isinstance(flow['properties'].get('templateName'),str), (name,'templateName must be a string')
     d=flow['properties']['definition'];actions=d['actions'];flat=list(walk_actions(actions))
     assert d['contentVersion']=='0.1.0.0'
     refs=flow['properties']['connectionReferences']
@@ -90,6 +91,8 @@ def validate():
     for package,tables in TABLES.items():
         base=ROOT/'solutions'/package/'src'
         for xml in base.rglob('*.xml'):ET.parse(xml)
+        for sitemap in (base/'AppModuleSiteMaps').glob('*/AppModuleSiteMap.xml'):
+            assert ET.parse(sitemap).findtext('SiteMapName'), (str(sitemap),'missing SiteMapName')
         manifest=ET.parse(base/'Other/Solution.xml')
         assert manifest.findtext('./SolutionManifest/Publisher/CustomizationPrefix')=='qmcp'
         assert manifest.findtext('./SolutionManifest/Version')=='0.1.0.0'
@@ -99,17 +102,25 @@ def validate():
             names={a.findtext('LogicalName') for a in attrs}
             assert {'qmcp_key','qmcp_queuekey','qmcp_document'}<=names
             assert entity.findtext('./EntityInfo/entity/EntityKeys/EntityKey/EntityKeyAttributes/AttributeName')=='qmcp_key'
+            for view in (base/'Entities'/('qmcp_'+logical)/'SavedQueries').glob('*.xml'):
+                query=ET.parse(view).find('savedquery')
+                for field in ('IsCustomizable','CanBeDeleted','isquickfindquery','isprivate'):
+                    assert query.findtext(field) in ('0','1'), (str(view),field,'missing import metadata')
         for api in (base/'customapis').glob('*/customapi.xml') if (base/'customapis').exists() else []:
             doc=ET.parse(api);assert doc.findtext('isfunction')=='0'
             actual={p.parent.name for p in api.parent.glob('customapirequestparameters/*/*.xml')};assert actual==set(PARAMS)
             for prop in api.parent.glob('customapiresponseproperties/*/*.xml'):assert ET.parse(prop).find('isoptional') is None
         for metadata in (base/'Workflows').glob('*.data.xml'):
-            assert ET.parse(metadata).findtext('StateCode')=='0','Unvalidated flow must stay draft'
+            workflow=ET.parse(metadata)
+            assert workflow.findtext('StateCode')=='0','Unvalidated flow must stay draft'
+            assert workflow.findtext('PrimaryEntity')=='none', (str(metadata),'missing PrimaryEntity')
+            assert workflow.findtext('AsyncAutodelete')=='0', (str(metadata),'invalid AsyncAutodelete')
+            assert workflow.find('./LocalizedNames/LocalizedName') is not None
         report['checks'].append({'package':package,'tables':len(tables),'xml':'parsed','publisher':'qmcp'})
     for file in (ROOT/'templates/flows').glob('*.json'):
         count=validate_flow(json.loads(file.read_text()),file.stem);report['checks'].append({'flow':file.stem,'actions':count,'invariants':'passed'})
     catalog=json.loads((ROOT/'config/api-catalog.json').read_text());assert set(catalog['operations'])==set(OPS)
-    plugin=ROOT/'solutions/WQCore/src/pluginpackages/qmcp_QueueFramework/qmcp_QueueFramework.nupkg'
+    plugin=ROOT/'solutions/WQCore/src/pluginpackages/qmcp_QueueFramework/package/qmcp_QueueFramework.nupkg'
     for file in (ROOT/'artifacts/packages').glob('WQ*.zip'):
         with zipfile.ZipFile(file) as z:
             assert {'customizations.xml','solution.xml','[Content_Types].xml'}<=set(z.namelist())
@@ -120,8 +131,8 @@ def validate():
             doc=ET.fromstring(z.read('customizations.xml'))
             assert len(doc.find('Entities'))==len(TABLES[file.stem.removesuffix('_managed')])
             if file.stem.startswith('WQCore'):
-                assert 'pluginpackages/qmcp_QueueFramework/qmcp_QueueFramework.nupkg' in z.namelist()
-                assert z.read('pluginpackages/qmcp_QueueFramework/qmcp_QueueFramework.nupkg') == plugin.read_bytes(), (file.name, 'embedded plugin package changed')
+                assert 'pluginpackages/qmcp_QueueFramework/package/qmcp_QueueFramework.nupkg' in z.namelist()
+                assert z.read('pluginpackages/qmcp_QueueFramework/package/qmcp_QueueFramework.nupkg') == plugin.read_bytes(), (file.name, 'embedded plugin package changed')
             roundtrip=json.loads((ROOT/'artifacts/validation/roundtrip.json').read_text(encoding='utf-8-sig'))['runId']
             assert re.fullmatch(r'[a-f0-9-]{36}',roundtrip), 'invalid roundtrip run ID'
             repacked=ROOT/'artifacts/repacked'/roundtrip/file.name

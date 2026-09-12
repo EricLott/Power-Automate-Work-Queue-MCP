@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <customapi uniquename="qmcp_WQ_AdvanceTestRun">
   <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
   <bindingtype>0</bindingtype>

@@ -20,7 +20,8 @@ try {
   New-Item -ItemType Directory -Force $pluginPackageOutput | Out-Null
   dotnet pack src/plugins/QueueFramework.Plugins.csproj -c Release --no-build -p:PackageOutputPath=$pluginPackageOutput
   if($LASTEXITCODE){throw 'Plug-in package failed'}
-  Copy-Item -LiteralPath (Join-Path $pluginPackageOutput 'QueueFramework.Plugins.0.1.0.nupkg') -Destination solutions/WQCore/src/pluginpackages/qmcp_QueueFramework/qmcp_QueueFramework.nupkg
+  New-Item -ItemType Directory -Force solutions/WQCore/src/pluginpackages/qmcp_QueueFramework/package | Out-Null
+  Copy-Item -LiteralPath (Join-Path $pluginPackageOutput 'QueueFramework.Plugins.0.1.0.nupkg') -Destination solutions/WQCore/src/pluginpackages/qmcp_QueueFramework/package/qmcp_QueueFramework.nupkg
   dotnet build src/simulator/QueueFramework.Simulator.csproj -c Release
   if($LASTEXITCODE){throw 'Simulator build failed'}
   if(!$SkipRestore){Push-Location src/mcp; try {npm ci --ignore-scripts; if($LASTEXITCODE){throw 'MCP restore failed'}} finally {Pop-Location}}

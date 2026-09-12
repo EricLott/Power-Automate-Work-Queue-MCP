@@ -31,6 +31,15 @@ class FlowInvariantTests(unittest.TestCase):
         with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
 
 class XmlRoundTripTests(unittest.TestCase):
+    def test_sharded_records_start_with_element_not_declaration(self):
+        # Dataverse SourceControlHandler appends these records to an aggregate
+        # document. An XML declaration cannot be appended as an element child.
+        files=list((ROOT/'solutions').glob('*/src/customapis/**/*.xml'))
+        files+=list((ROOT/'solutions').glob('*/src/pluginpackages/**/*.xml'))
+        self.assertTrue(files)
+        for file in files:
+            self.assertFalse(file.read_bytes().lstrip().startswith(b'<?xml'),str(file))
+
     def test_pac_set_order_is_accepted(self):
         before=b'<ImportExportXml><SolutionManifest><RootComponents><RootComponent schemaName="b"/><RootComponent schemaName="a"/></RootComponents></SolutionManifest></ImportExportXml>'
         after=b'<ImportExportXml><SolutionManifest><RootComponents><RootComponent schemaName="a"/><RootComponent schemaName="b"/></RootComponents></SolutionManifest></ImportExportXml>'

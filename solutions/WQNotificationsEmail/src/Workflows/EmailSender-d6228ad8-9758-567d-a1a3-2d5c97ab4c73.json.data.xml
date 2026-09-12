@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <Workflow WorkflowId="{d6228ad8-9758-567d-a1a3-2d5c97ab4c73}" Name="EmailSender">
   <JsonFileName>/Workflows/EmailSender-d6228ad8-9758-567d-a1a3-2d5c97ab4c73.json</JsonFileName>
   <Type>1</Type>
@@ -9,7 +8,9 @@
   <OnDemand>0</OnDemand>
   <TriggerOnCreate>0</TriggerOnCreate>
   <TriggerOnDelete>0</TriggerOnDelete>
-  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <AsyncAutodelete>0</AsyncAutodelete>
+  <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+  <PrimaryEntity>none</PrimaryEntity>
   <StateCode>0</StateCode>
   <StatusCode>1</StatusCode>
   <RunAs>1</RunAs>
@@ -19,4 +20,7 @@
   <BusinessProcessType>0</BusinessProcessType>
   <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
   <ModernFlowType>0</ModernFlowType>
+  <LocalizedNames>
+    <LocalizedName languagecode="1033" description="EmailSender" />
+  </LocalizedNames>
 </Workflow>

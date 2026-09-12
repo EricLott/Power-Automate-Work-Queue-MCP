@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <Role id="{416e5cd3-7c08-5238-b939-9f32db7e35d1}" name="WQTesting Worker">
   <IsCustomizable>1</IsCustomizable>
   <RolePrivileges>

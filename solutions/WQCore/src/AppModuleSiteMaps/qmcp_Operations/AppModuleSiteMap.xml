@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='utf-8'?>
 <AppModuleSiteMap>
   <SiteMapUniqueName>qmcp_Operations</SiteMapUniqueName>
+  <SiteMapName>Queue Operations</SiteMapName>
   <SiteMap>
     <Area Id="qmcp_work" ShowGroups="true">
       <Titles>

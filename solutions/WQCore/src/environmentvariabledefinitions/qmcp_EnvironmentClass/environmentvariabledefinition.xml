@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <environmentvariabledefinition schemaname="qmcp_EnvironmentClass">
   <defaultvalue>production</defaultvalue>
   <type>100000000</type>

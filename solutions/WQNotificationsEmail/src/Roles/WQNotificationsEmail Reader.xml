@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <Role id="{d52ef633-5189-5274-8a1d-460e0375bd3e}" name="WQNotificationsEmail Reader">
   <IsCustomizable>1</IsCustomizable>
   <RolePrivileges />

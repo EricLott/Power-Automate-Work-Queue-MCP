@@ -2,13 +2,14 @@
 
 An independent framework for reliable queue-based automation and an MCP development interface. Publisher prefix: `qmcp`.
 
-**Current state:** a credential-free local development candidate. Runtime, simulator, Dataverse adapter, MCP server, solution sources, flow scaffolds, and local tests are implemented. Tenant import and all 22 live acceptance gates remain pending. This is not a production release.
+**Current state:** a credential-free local development candidate. Runtime, simulator, Dataverse adapter, MCP server, solution sources, flow scaffolds, and local tests are implemented. All four unmanaged solutions have imported successfully into the authorized development environment. All 22 live acceptance gates remain pending. This is not a production release.
 
 The installed Dataverse runtime owns processing, attempts, retries, recovery, notifications and initiated tests. Customer solutions own their intake and business worker flows. The local MCP server helps developers build and inspect supported automation; it is outside the production execution path.
 
 - [Build board](https://github.com/users/EricLott/projects/2)
 - [Local build and demonstration](docs/local-development.md)
 - [Verified local candidate: 91 tests and eight archives](docs/local-evidence.md)
+- [Development import results](docs/live-import.md)
 - [First import runbook](docs/first-import.md)
 - [Implementation decisions and limits](docs/implementation-decisions.md)
 - [Local evidence and live gates](docs/validation.md)

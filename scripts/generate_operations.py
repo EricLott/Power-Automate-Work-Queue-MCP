@@ -70,7 +70,7 @@ def generate():
     for role in ['Worker','Reader']:element(roles,'Role',id='{'+uid('role:WQCore '+role)+'}')
     labels(app,'LocalizedNames','Queue Operations')
     write_xml(core/'AppModules/qmcp_Operations/AppModule.xml',app)
-    sitemap=ET.Element('AppModuleSiteMap');element(sitemap,'SiteMapUniqueName','qmcp_Operations');sm=element(sitemap,'SiteMap');area=element(sm,'Area',Id='qmcp_work',ShowGroups='true');titles=element(area,'Titles');element(titles,'Title',LCID='1033',Title='Queue Operations')
+    sitemap=ET.Element('AppModuleSiteMap');element(sitemap,'SiteMapUniqueName','qmcp_Operations');element(sitemap,'SiteMapName','Queue Operations');sm=element(sitemap,'SiteMap');area=element(sm,'Area',Id='qmcp_work',ShowGroups='true');titles=element(area,'Titles');element(titles,'Title',LCID='1033',Title='Queue Operations')
     group=element(area,'Group',Id='qmcp_operations');titles=element(group,'Titles');element(titles,'Title',LCID='1033',Title='Runtime')
     for table in ['workqueueitem','qmcp_wqitemcontext','qmcp_wqattempt','qmcp_wqevent','qmcp_wqintakefailure','qmcp_wqdefinition']:
         element(group,'SubArea',Id=table,Entity=table)

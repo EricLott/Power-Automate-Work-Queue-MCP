@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <customapirequestparameter uniquename="RequestId">
   <iscustomizable>0</iscustomizable>
   <isoptional>0</isoptional>

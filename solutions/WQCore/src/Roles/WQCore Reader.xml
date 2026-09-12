@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <Role id="{430ed126-bf57-5459-bdf4-a24ba4c1fe1a}" name="WQCore Reader">
   <IsCustomizable>1</IsCustomizable>
   <RolePrivileges>

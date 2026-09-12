@@ -1,6 +1,6 @@
 # First development import
 
-This runbook is prepared for the later online phase. **No step here has been executed against a tenant.** Local development does not establish a successful import, platform transaction behavior, or a production-ready release.
+This runbook describes the development import and validation sequence. The [live import ledger](live-import.md) records which steps have actually been executed. Successful import alone does not establish platform transaction behavior or a production-ready release.
 
 ## Preparation and import order
 
@@ -20,6 +20,8 @@ This runbook is prepared for the later online phase. **No step here has been exe
 
 5. Generate a bootstrap plan with `python scripts/bootstrap_tenant.py`. Review its package hashes, API bindings, and guard registrations. When approved during the online phase, supply a short-lived token through `QMCP_DATAVERSE_TOKEN` and run `bootstrap_tenant.py --execute --binding <file> --approved-plan-hash <hash>`. The executor verifies `WhoAmI`, binds actual plug-in type IDs, and registers synchronous PreOperation guards. It does **not** enable flows, grant roles, or create principal profiles. API/step metadata might require adjustment based on the first import; retain those changes in the exported source.
 6. Export the resulting unmanaged registration metadata back into source control. Validate a managed export from that development environment separately. The offline managed ZIPs cannot substitute for this bootstrap/upgrade verification.
+
+The bootstrap also supports `--dataverse-cli` with a separately authenticated Microsoft Dataverse CLI profile (`@microsoft/dataverse` 1.0.77). This route uses the CLI's authenticated request command and temporary JSON body files; it does not export access tokens. PAC's `auth token` targets the Power Platform API and is not a Dataverse Web API token. Both bootstrap routes verify the organization ID before writes.
 
 ## Configure identities and the queue
 

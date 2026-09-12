@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <Workflow WorkflowId="{6a491be2-4f32-549d-8afb-92d556e5c89b}" Name="ProcessOne">
   <JsonFileName>/Workflows/ProcessOne-6a491be2-4f32-549d-8afb-92d556e5c89b.json</JsonFileName>
   <Type>1</Type>
@@ -9,7 +8,9 @@
   <OnDemand>0</OnDemand>
   <TriggerOnCreate>0</TriggerOnCreate>
   <TriggerOnDelete>0</TriggerOnDelete>
-  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <AsyncAutodelete>0</AsyncAutodelete>
+  <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+  <PrimaryEntity>none</PrimaryEntity>
   <StateCode>0</StateCode>
   <StatusCode>1</StatusCode>
   <RunAs>1</RunAs>
@@ -19,4 +20,7 @@
   <BusinessProcessType>0</BusinessProcessType>
   <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
   <ModernFlowType>0</ModernFlowType>
+  <LocalizedNames>
+    <LocalizedName languagecode="1033" description="ProcessOne" />
+  </LocalizedNames>
 </Workflow>

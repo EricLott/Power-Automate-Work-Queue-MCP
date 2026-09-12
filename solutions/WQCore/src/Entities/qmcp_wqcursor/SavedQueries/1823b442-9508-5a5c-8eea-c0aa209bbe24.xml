@@ -1,6 +1,10 @@
-<?xml version='1.0' encoding='utf-8'?>
 <savedqueries>
   <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <IntroducedVersion>0.1.0.0</IntroducedVersion>
     <savedqueryid>{1823b442-9508-5a5c-8eea-c0aa209bbe24}</savedqueryid>
     <querytype>0</querytype>
     <isdefault>1</isdefault>

@@ -24,7 +24,9 @@ def element(parent, tag, text=None, **attrs):
 def write_xml(file, root):
     file.parent.mkdir(parents=True,exist_ok=True)
     ET.indent(root,space='  ')
-    ET.ElementTree(root).write(file,encoding='utf-8',xml_declaration=True)
+    # Dataverse merges sharded source files as element nodes; an XML declaration
+    # is not a valid child of the aggregate import document.
+    ET.ElementTree(root).write(file,encoding='utf-8',xml_declaration=False)
 def labels(parent, name, label):
     container=element(parent,name)
     element(container, {'LocalizedNames':'LocalizedName','LocalizedCollectionNames':'LocalizedCollectionName','Descriptions':'Description','displaynames':'displayname'}[name],description=label,languagecode='1033')
@@ -67,6 +69,7 @@ def table_source(base, logical):
     write_xml(base/'Entities'/name/'Entity.xml',root)
     # Views use scalar projections; the authoritative document remains versioned for engine serialization.
     view=ET.Element('savedqueries');sq=element(view,'savedquery')
+    for field,value in {'IsCustomizable':1,'CanBeDeleted':1,'isquickfindquery':0,'isprivate':0,'IntroducedVersion':VERSION}.items():element(sq,field,value)
     element(sq,'savedqueryid','{'+uid(name+':view')+'}');element(sq,'querytype',0);element(sq,'isdefault',1)
     fx=element(sq,'fetchxml');fetch=element(fx,'fetch',version='1.0',mapping='logical');en=element(fetch,'entity',name=name)
     for field in [name+'id','qmcp_name','qmcp_queuekey','qmcp_outcome','qmcp_reviewrequired']:element(en,'attribute',name=field)
