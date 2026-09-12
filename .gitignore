@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+bin/
+obj/
+*.user
+*.pfx
+*.snk
+artifacts/private/
+evidence/private/

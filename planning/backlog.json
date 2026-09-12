@@ -1,0 +1,2407 @@
+{
+  "designVersion": "0.1",
+  "publisherPrefix": "qmcp",
+  "projectUrl": "https://github.com/users/EricLott/projects/2",
+  "phases": [
+    [
+      "P0",
+      "Prove acquisition and recovery",
+      "Critical platform assumptions have tenant evidence or a tested safe alternative; post-write recovery reuses the result.",
+      "core"
+    ],
+    [
+      "P1",
+      "Build the runtime foundation",
+      "One controlled item completes through public APIs; repeated commands do not duplicate work or events.",
+      "core"
+    ],
+    [
+      "P2",
+      "Build the reference business process",
+      "Real synthetic email and injected snapshot create the expected record; replay preserves one result.",
+      "reference"
+    ],
+    [
+      "P3",
+      "Add recovery and operations",
+      "Stuck work is visible; stale workers are rejected; uncertain outcomes cannot trigger unsafe replay.",
+      "core"
+    ],
+    [
+      "P4",
+      "Add durable notifications",
+      "One delivery intent per event/destination; sender failures preserve business outcomes; Core remains independent.",
+      "notifications"
+    ],
+    [
+      "P5",
+      "Build the evidence-based test harness",
+      "Initiated tests survive agent disconnection; missing evidence cannot pass; cleanup stays test-scoped.",
+      "testing"
+    ],
+    [
+      "P6",
+      "Build the local MCP development workflow",
+      "An agent can inspect, plan, provision, scaffold, validate and test the reference pattern with documented interfaces.",
+      "mcp"
+    ],
+    [
+      "P7",
+      "Harden and release the MVP",
+      "Independent clean install succeeds; all 22 gates have evidence; upgrades preserve customer flows and history.",
+      "release"
+    ]
+  ],
+  "items": [
+    {
+      "key": "E0",
+      "type": "epic",
+      "component": "core",
+      "sections": "15",
+      "phase": "P0",
+      "title": "P0 — Prove acquisition and recovery",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "Critical platform assumptions have tenant evidence or a tested safe alternative; post-write recovery reuses the result.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "E1",
+      "type": "epic",
+      "component": "core",
+      "sections": "15",
+      "phase": "P1",
+      "title": "P1 — Build the runtime foundation",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "One controlled item completes through public APIs; repeated commands do not duplicate work or events.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "E2",
+      "type": "epic",
+      "component": "reference",
+      "sections": "15",
+      "phase": "P2",
+      "title": "P2 — Build the reference business process",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "Real synthetic email and injected snapshot create the expected record; replay preserves one result.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "E3",
+      "type": "epic",
+      "component": "core",
+      "sections": "15",
+      "phase": "P3",
+      "title": "P3 — Add recovery and operations",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "Stuck work is visible; stale workers are rejected; uncertain outcomes cannot trigger unsafe replay.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "E4",
+      "type": "epic",
+      "component": "notifications",
+      "sections": "15",
+      "phase": "P4",
+      "title": "P4 — Add durable notifications",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "One delivery intent per event/destination; sender failures preserve business outcomes; Core remains independent.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "E5",
+      "type": "epic",
+      "component": "testing",
+      "sections": "15",
+      "phase": "P5",
+      "title": "P5 — Build the evidence-based test harness",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "Initiated tests survive agent disconnection; missing evidence cannot pass; cleanup stays test-scoped.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "E6",
+      "type": "epic",
+      "component": "mcp",
+      "sections": "15",
+      "phase": "P6",
+      "title": "P6 — Build the local MCP development workflow",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "An agent can inspect, plan, provision, scaffold, validate and test the reference pattern with documented interfaces.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "E7",
+      "type": "epic",
+      "component": "release",
+      "sections": "15",
+      "phase": "P7",
+      "title": "P7 — Harden and release the MVP",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "deps": [],
+      "steps": [
+        "Deliver linked child work in dependency order",
+        "Review evidence and update architecture decisions as proofs resolve"
+      ],
+      "ac": [
+        "Independent clean install succeeds; all 22 gates have evidence; upgrades preserve customer flows and history.",
+        "All child acceptance gates and required tasks are complete with evidence"
+      ]
+    },
+    {
+      "key": "EF",
+      "type": "epic",
+      "component": "architecture",
+      "sections": "4.2",
+      "phase": "Future",
+      "title": "Deferred roadmap — outside MVP",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [],
+      "steps": [
+        "Retain deferred opportunities without adding them to the MVP commitment"
+      ],
+      "ac": [
+        "Each opportunity has a scope decision before implementation"
+      ]
+    },
+    {
+      "key": "H01",
+      "type": "task",
+      "component": "planning",
+      "sections": "User instruction",
+      "phase": "Planning",
+      "title": "Connect workspace to the GitHub repository",
+      "priority": "P2-normal",
+      "scope": "history",
+      "deps": [],
+      "steps": [
+        "Record the repository connection completed before project planning"
+      ],
+      "ac": [
+        "origin fetch/push points to EricLott/Power-Automate-Work-Queue-MCP",
+        "Repository access was verified; no runtime implementation was claimed"
+      ],
+      "evidence": "Completed in the preceding task turn on 2026-09-12: origin remote configured and git fetch/ls-remote succeeded against the initially empty repository.",
+      "completed": true
+    },
+    {
+      "key": "H02",
+      "type": "task",
+      "component": "planning",
+      "sections": "User instruction; design 0.1",
+      "phase": "Planning",
+      "title": "Establish the design baseline and linked project backlog",
+      "priority": "P1-high",
+      "scope": "history",
+      "deps": [
+        "H01"
+      ],
+      "steps": [
+        "Publish the independently named design baseline and planning guide",
+        "Create phase epics, tasks, all 22 gates, deferred scope, dependencies and board choices"
+      ],
+      "ac": [
+        "Every design phase and acceptance gate maps to a tracked issue",
+        "Board population and generic naming are verified; runtime tasks remain uncompleted"
+      ],
+      "completed": false
+    },
+    {
+      "key": "P0-00",
+      "type": "task",
+      "component": "core",
+      "sections": "15",
+      "title": "Prepare the isolated proof environment and evidence ledger",
+      "steps": [
+        "Inventory tenant, Dataverse, queue features, identities and approved test resources",
+        "Create synthetic fixtures and an evidence template recording environment, versions, commands, observations and cleanup"
+      ],
+      "ac": [
+        "Access gaps are recorded before dependent experiments start",
+        "No production resources or real mailbox content enter proof fixtures"
+      ],
+      "deps": [],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-01",
+      "type": "spike",
+      "component": "core",
+      "sections": "8.3,15",
+      "title": "Prove native dequeue through a flow and a Custom API",
+      "steps": [
+        "Call native Dequeue through the Dataverse connector and IOrganizationService",
+        "Record request/response shapes for available, empty and paused queues"
+      ],
+      "ac": [
+        "Both supported calling paths have reproducible tenant evidence",
+        "NoWork is normal and no list-then-patch claim is introduced"
+      ],
+      "deps": [
+        "P0-00"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-02",
+      "type": "spike",
+      "component": "core",
+      "sections": "8.3,15",
+      "title": "Prove dequeue, attempt and command receipt transactionality",
+      "steps": [
+        "Combine dequeue, context update, attempt creation and receipt persistence in a short synchronous API",
+        "Inject failure at each boundary and simulate a lost API response"
+      ],
+      "ac": [
+        "IsInTransaction and rollback observations establish the real atomic boundary",
+        "If atomic composition fails, test registration-before-business-work and orphan quarantine as a safe alternative"
+      ],
+      "deps": [
+        "P0-01"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-03",
+      "type": "spike",
+      "component": "core",
+      "sections": "8.2,8.4,15",
+      "title": "Prove concurrent and repeated acquisition safety",
+      "steps": [
+        "Run distinct and identical request IDs concurrently",
+        "Repeat acquisition after a lost response and test changed arguments with the same identity"
+      ],
+      "ac": [
+        "One current owner exists per item",
+        "Repeated request returns its recorded result and never claims a second item"
+      ],
+      "deps": [
+        "P0-02"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-04",
+      "type": "spike",
+      "component": "core",
+      "sections": "9.1,9.2,15",
+      "title": "Validate native transitions, delays, expiry and pause",
+      "steps": [
+        "Exercise every intended native transition and minimal dequeue eligibility",
+        "Measure delayed, expired and paused items"
+      ],
+      "ac": [
+        "Publish the supported transition matrix with evidence",
+        "No item is acquired before availability and no invented native status is required"
+      ],
+      "deps": [
+        "P0-01"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-05",
+      "type": "spike",
+      "component": "security",
+      "sections": "8.4,13.1,15",
+      "title": "Prove lifecycle guards and least-privilege boundaries",
+      "steps": [
+        "Test supported native-table registrations and direct create/update/delete with separate identities",
+        "Compare managed and unrelated queues and native dequeue paths"
+      ],
+      "ac": [
+        "Unauthorized lifecycle writes are denied without breaking legitimate dequeue",
+        "Unsupported guards trigger a documented permissions redesign before release"
+      ],
+      "deps": [
+        "P0-01"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-06",
+      "type": "spike",
+      "component": "release",
+      "sections": "4.4,12.3,15",
+      "title": "Prove minimal Core import into a clean environment",
+      "steps": [
+        "Package minimal tables and API actions under qmcp",
+        "Import and call actions through the standard Dataverse connector"
+      ],
+      "ac": [
+        "Actions are discoverable and callable with activated keys",
+        "Core requires neither Outlook/Teams nor a custom connector or cross-solution child flow"
+      ],
+      "deps": [
+        "P0-00"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-07",
+      "type": "spike",
+      "component": "reference",
+      "sections": "5.2,15",
+      "title": "Prove same-solution parent and child flow deployment",
+      "steps": [
+        "Deploy ProcessOne with event and scheduled parents through documented flow/solution interfaces",
+        "Measure aggregate concurrent execution and connection requirements"
+      ],
+      "ac": [
+        "Both parents invoke the same local child",
+        "Event acts as a wake-up hint and acquired item identity controls processing"
+      ],
+      "deps": [
+        "P0-01",
+        "P0-06"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-08",
+      "type": "spike",
+      "component": "core",
+      "sections": "6,7.1,15",
+      "title": "Validate schema dialect, key activation and metadata limits",
+      "steps": [
+        "Test fixed native envelope, candidate pinned payload validator and supported lookup metadata",
+        "Measure proposed 128 KiB UTF-8 limit, JSON depth and unique-reference digest length"
+      ],
+      "ac": [
+        "Record supported dialect/subset and actual boundary behavior",
+        "Provisioning waits for alternate-key activation and no input is silently truncated"
+      ],
+      "deps": [
+        "P0-00"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-09",
+      "type": "spike",
+      "component": "reference",
+      "sections": "9.3,15",
+      "title": "Prove recovery after the business write but before Complete",
+      "steps": [
+        "Create a synthetic target with an alternate source key then deliberately lose completion",
+        "Recover through source-key lookup and validate the existing output"
+      ],
+      "ac": [
+        "Exactly one controlled target remains across replay",
+        "Recovery preserves the first valid result and documents ambiguous-result handling"
+      ],
+      "deps": [
+        "P0-02",
+        "P0-03",
+        "P0-08"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P0-10",
+      "type": "task",
+      "component": "architecture",
+      "sections": "3,15.1,17",
+      "title": "Record foundational decisions and approve Phase 0 exit",
+      "steps": [
+        "Write ADRs for claim strategy, schema dialect, guards, state authority, retries, outbox, test isolation, child boundaries, identity and upgrades",
+        "Record remaining decisions and link experiments"
+      ],
+      "ac": [
+        "Every blocking assumption is proven or replaced with a tested alternative",
+        "Canonical API implementation can start without claiming untested platform guarantees"
+      ],
+      "deps": [
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07",
+        "P0-08",
+        "P0-09"
+      ],
+      "phase": "P0",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "parent": "E0"
+    },
+    {
+      "key": "P1-01",
+      "type": "task",
+      "component": "release",
+      "sections": "4.4,14.3",
+      "title": "Establish solution and source build structure",
+      "steps": [
+        "Create C# plug-in, contract, solution, template and test directories with stable component identities",
+        "Define package dependencies and qmcp publisher metadata"
+      ],
+      "ac": [
+        "Core builds independently of customer and optional sender solutions",
+        "Synthetic-only fixtures and secret exclusions are enforced"
+      ],
+      "deps": [
+        "P0-10"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-02",
+      "type": "task",
+      "component": "core",
+      "sections": "7",
+      "title": "Implement Core metadata, alternate keys and relationships",
+      "steps": [
+        "Define qmcp_wqdefinition, qmcp_wqcontract, qmcp_wqitemcontext, qmcp_wqattempt, qmcp_wqcommand and outbox metadata",
+        "Specify lookups, scalar snapshots, ownership and retention/cascade behavior"
+      ],
+      "ac": [
+        "Key activation checks prevent premature provisioning",
+        "Native item owns status and completed attempt history is append-only except audited retention"
+      ],
+      "deps": [
+        "P1-01"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-03",
+      "type": "task",
+      "component": "security",
+      "sections": "8.4,13.1",
+      "title": "Implement roles, queue authorization and lifecycle guards",
+      "steps": [
+        "Create administrator, deployment, producer, worker, reader, retry and test role boundaries",
+        "Enforce API checks and the proven direct-write guard strategy"
+      ],
+      "ac": [
+        "Cross-queue and unauthorized direct mutations are rejected",
+        "Unrelated queues and legitimate native operations remain usable"
+      ],
+      "deps": [
+        "P1-02"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-04",
+      "type": "task",
+      "component": "core",
+      "sections": "6,8.1,8.2",
+      "title": "Publish canonical API and envelope contracts",
+      "steps": [
+        "Define typed scalar fields, bounded JSON, request identity, errors and outcome schemas for all ten qmcp_WQ actions",
+        "Pin immutable schema dialect/subset and generate shared API documentation"
+      ],
+      "ac": [
+        "No unrestricted SetStatus action exists",
+        "Schemas distinguish NoWork, QueuePaused, stale ownership and argument conflicts"
+      ],
+      "deps": [
+        "P1-01"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-05",
+      "type": "story",
+      "component": "core",
+      "sections": "6.2,7,11.2",
+      "title": "Register queues, immutable contracts and policy revisions",
+      "steps": [
+        "Implement stable queue-key registration, contract activation/hash validation and policy validation",
+        "Separate installation defaults from per-queue policy and wait for keys"
+      ],
+      "ac": [
+        "Activated contracts cannot mutate in place",
+        "Attempts retain effective contract and policy snapshots despite later configuration edits"
+      ],
+      "deps": [
+        "P1-02",
+        "P1-04"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-06",
+      "type": "task",
+      "component": "core",
+      "sections": "8.2,8.5",
+      "title": "Implement shared command receipt and plug-in services",
+      "steps": [
+        "Separate entrypoints, authorization, validation, native access, policy and persistence",
+        "Persist caller/request/operation identity, input fingerprint and bounded durable result"
+      ],
+      "ac": [
+        "Same command returns the same result and changed arguments are rejected",
+        "Unbound actions use input/output parameters without requiring an entity Target or external HTTP waits"
+      ],
+      "deps": [
+        "P1-03",
+        "P1-04"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-07",
+      "type": "story",
+      "component": "core",
+      "sections": "5.1,6,8.1",
+      "title": "Implement qmcp_WQ_Enqueue with source deduplication",
+      "steps": [
+        "Validate queue/contract, bounded normalized snapshot and stable source/content identity",
+        "Create native item and context or return the existing matching item"
+      ],
+      "ac": [
+        "Repeated identical source creates one item",
+        "Changed content with the same key fails observably before business work"
+      ],
+      "deps": [
+        "P1-05",
+        "P1-06"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-08",
+      "type": "story",
+      "component": "core",
+      "sections": "8.3,8.4",
+      "title": "Implement qmcp_WQ_AcquireNext with proven ownership strategy",
+      "steps": [
+        "Use the Phase 0 native claim strategy and persist attempt, lease generation and receipt",
+        "Enforce queue/worker authorization, eligibility and normal no-work outcomes"
+      ],
+      "ac": [
+        "Registration succeeds before any business action can start",
+        "Concurrent and replayed acquisitions satisfy the recorded ownership contract"
+      ],
+      "deps": [
+        "P1-06",
+        "P1-07"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-09",
+      "type": "story",
+      "component": "core",
+      "sections": "8.1,9.1",
+      "title": "Implement qmcp_WQ_Complete and qmcp_WQ_Fail",
+      "steps": [
+        "Validate expected active ownership, persist bounded result/error and native transition",
+        "Close attempt and persist notification intent with lifecycle changes where proven"
+      ],
+      "ac": [
+        "Repeated completion produces one result and event intent",
+        "Stale generations cannot change state and default failure handling never replays uncertain work"
+      ],
+      "deps": [
+        "P1-08"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-10",
+      "type": "story",
+      "component": "core",
+      "sections": "8.1,11.3",
+      "title": "Implement bounded item-status and queue-health reads",
+      "steps": [
+        "Expose qmcp_WQ_GetItemStatus and qmcp_WQ_GetQueueHealth with pagination and redaction",
+        "Include native status, attempt/evidence references, backlog and configuration health"
+      ],
+      "ac": [
+        "Reader access is queue-scoped and payloads are redacted by default",
+        "Missing native run records do not invalidate framework evidence"
+      ],
+      "deps": [
+        "P1-09"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P1-11",
+      "type": "task",
+      "component": "testing",
+      "sections": "15",
+      "title": "Verify the first runtime vertical slice",
+      "steps": [
+        "Run unit checks for validation, policy, receipt identity and authorization",
+        "Run tenant integration for enqueue/acquire/complete/fail and duplicate commands"
+      ],
+      "ac": [
+        "One controlled item completes through public APIs",
+        "Duplicate requests cannot duplicate business work or event intent and evidence is linked"
+      ],
+      "deps": [
+        "P1-09",
+        "P1-10"
+      ],
+      "phase": "P1",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E1"
+    },
+    {
+      "key": "P2-01",
+      "type": "story",
+      "component": "reference",
+      "sections": "5.1,6.1,6.3",
+      "title": "Build normalized shared-mailbox intake",
+      "steps": [
+        "Map required source fields, stable source hash and correlation ID to versioned queue input",
+        "Enqueue normalized replayable snapshots and report pre-enqueue failures"
+      ],
+      "ac": [
+        "Intake performs no extraction or final record write",
+        "Oversized/unsupported content is rejected and pointer-only mode states its external-state dependency"
+      ],
+      "deps": [
+        "P1-11"
+      ],
+      "phase": "P2",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E2"
+    },
+    {
+      "key": "P2-02",
+      "type": "story",
+      "component": "reference",
+      "sections": "9.3",
+      "title": "Build the reference target table and idempotent write",
+      "steps": [
+        "Define qmcp_emailrequest with activated alternate source key",
+        "Implement create-or-obtain and validate existing source/content before reuse"
+      ],
+      "ac": [
+        "Concurrent/replayed writes preserve exactly one controlled source result",
+        "Existing output is not overwritten by a newly generated AI response"
+      ],
+      "deps": [
+        "P1-11"
+      ],
+      "phase": "P2",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E2"
+    },
+    {
+      "key": "P2-03",
+      "type": "story",
+      "component": "reference",
+      "sections": "5.3,10.5",
+      "title": "Build versioned extraction and deterministic output validation",
+      "steps": [
+        "Create synthetic email fixtures, prompt version and approved expected field values",
+        "Validate structured output, required facts and missing-information behavior"
+      ],
+      "ac": [
+        "Invalid or ungrounded output cannot create a target record",
+        "Provider/model details are recorded only when actually exposed"
+      ],
+      "deps": [
+        "P2-02"
+      ],
+      "phase": "P2",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E2"
+    },
+    {
+      "key": "P2-04",
+      "type": "story",
+      "component": "reference",
+      "sections": "5.3,5.4",
+      "title": "Build the ProcessOne worker with explicit failure scopes",
+      "steps": [
+        "Capture environment/flow/run/template metadata and acquire once",
+        "Check existing output, extract if needed, write idempotently and complete with ownership/evidence"
+      ],
+      "ac": [
+        "Completion is never unconditional",
+        "Lost Complete response retries the same command before considering any business replay"
+      ],
+      "deps": [
+        "P2-02",
+        "P2-03"
+      ],
+      "phase": "P2",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E2"
+    },
+    {
+      "key": "P2-05",
+      "type": "story",
+      "component": "reference",
+      "sections": "5.2",
+      "title": "Build event wake-up and bounded scheduled sweep",
+      "steps": [
+        "Filter availability events and invoke local ProcessOne",
+        "Add a scheduled loop with batch/time bounds and conservative aggregate concurrency"
+      ],
+      "ac": [
+        "Worker processes the acquired item rather than the triggering row",
+        "Sweep drains eligible backlog after missed wake-ups and deployment interruptions"
+      ],
+      "deps": [
+        "P2-04"
+      ],
+      "phase": "P2",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E2"
+    },
+    {
+      "key": "P2-06",
+      "type": "task",
+      "component": "reference",
+      "sections": "4.1,5.4,6",
+      "title": "Package customer-owned templates and Dataverse intake adapter",
+      "steps": [
+        "Ship all four local flows, connections and environment settings in an independent customer solution",
+        "Add Dataverse-trigger normalization template and safe nested-scope error extraction"
+      ],
+      "ac": [
+        "Framework updates cannot overwrite customer flows",
+        "Errors contain stable codes/run references without raw payloads, credentials or headers"
+      ],
+      "deps": [
+        "P2-01",
+        "P2-05"
+      ],
+      "phase": "P2",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E2"
+    },
+    {
+      "key": "P2-07",
+      "type": "task",
+      "component": "testing",
+      "sections": "10.6,15",
+      "title": "Verify real intake, queue injection and all write failure windows",
+      "steps": [
+        "Compare a real synthetic email with equivalent injected snapshot",
+        "Inject malformed input, source loss, prompt failure, pre-write failure, post-write failure and lost completion"
+      ],
+      "ac": [
+        "Controlled source yields the expected single record across replay",
+        "Report which trigger, prompt and connector boundaries ran live versus fixtures"
+      ],
+      "deps": [
+        "P2-06"
+      ],
+      "phase": "P2",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E2"
+    },
+    {
+      "key": "P3-01",
+      "type": "story",
+      "component": "core",
+      "sections": "8.4,9.4",
+      "title": "Implement bounded checkpoints and stale-generation enforcement",
+      "steps": [
+        "Implement qmcp_WQ_Checkpoint with real-progress evidence and maximum deadline",
+        "Test Complete, Fail and Checkpoint against superseded attempts"
+      ],
+      "ac": [
+        "Old generation cannot finish or extend new work",
+        "Unconditional heartbeat cannot keep a hung action alive forever"
+      ],
+      "deps": [
+        "P1-11"
+      ],
+      "phase": "P3",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E3"
+    },
+    {
+      "key": "P3-02",
+      "type": "story",
+      "component": "core",
+      "sections": "9.2,11.2",
+      "title": "Implement bounded safe work retry policy",
+      "steps": [
+        "Separate action retry, work retry and operator replay",
+        "Calculate attempt bounds, increasing delay/jitter, maximum delay and deadline from snapshot policy"
+      ],
+      "ac": [
+        "Technical retry requires declared safe business effects and matching evidence",
+        "Business rejection and unknown outcome default to review with no automatic retry"
+      ],
+      "deps": [
+        "P3-01",
+        "P2-07"
+      ],
+      "phase": "P3",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E3"
+    },
+    {
+      "key": "P3-03",
+      "type": "story",
+      "component": "core",
+      "sections": "8.1,11.3",
+      "title": "Implement authorized retry requests with expected version",
+      "steps": [
+        "Implement qmcp_WQ_RequestRetry with operator identity, reason and expected state/version",
+        "Persist idempotent retry decision and validated native transition"
+      ],
+      "ac": [
+        "Unauthorized, stale, active-processing and unsafe retries fail",
+        "Repeated request cannot schedule a second attempt"
+      ],
+      "deps": [
+        "P3-02"
+      ],
+      "phase": "P3",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E3"
+    },
+    {
+      "key": "P3-04",
+      "type": "story",
+      "component": "core",
+      "sections": "9.4",
+      "title": "Implement watchdog recovery and orphan reconciliation",
+      "steps": [
+        "Scan bounded pages of expired leases and processing items without attempts",
+        "Implement watchdog-only qmcp_WQ_RecoverExpiredAttempt with immediate ownership recheck"
+      ],
+      "ac": [
+        "Late workers cannot overwrite recovered state",
+        "Unknown results are quarantined for review and safe known outputs can be reconciled"
+      ],
+      "deps": [
+        "P3-01",
+        "P3-02"
+      ],
+      "phase": "P3",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E3"
+    },
+    {
+      "key": "P3-05",
+      "type": "story",
+      "component": "core",
+      "sections": "5.1,8.1",
+      "title": "Implement pre-enqueue intake failure reporting",
+      "steps": [
+        "Implement qmcp_WQ_ReportIntakeFailure using source reference and correlation without item ID",
+        "Redact diagnostics and deduplicate repeated reports"
+      ],
+      "ac": [
+        "Missing queue item never prevents an authorized intake report",
+        "Document native alert fallback when Dataverse itself is unavailable"
+      ],
+      "deps": [
+        "P1-10"
+      ],
+      "phase": "P3",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E3"
+    },
+    {
+      "key": "P3-06",
+      "type": "story",
+      "component": "operations",
+      "sections": "11.3,13.3",
+      "title": "Build the model-driven operations app and liveness views",
+      "steps": [
+        "Add available/old backlog, attempts, review, retry, pending notification and test-run views",
+        "Expose maintenance health and controlled retry actions"
+      ],
+      "ac": [
+        "Reader and operator privileges remain distinct",
+        "Stuck work, connection failures and absent maintenance are visible without raw customer content"
+      ],
+      "deps": [
+        "P3-03",
+        "P3-04",
+        "P3-05"
+      ],
+      "phase": "P3",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E3"
+    },
+    {
+      "key": "P3-07",
+      "type": "task",
+      "component": "testing",
+      "sections": "9,15",
+      "title": "Verify recovery under cancellation, disablement and policy changes",
+      "steps": [
+        "Test cancelled worker, disabled wake-up, delayed backlog, orphan claim and configuration revision changes",
+        "Race watchdog with late Complete/Fail/Checkpoint"
+      ],
+      "ac": [
+        "No unsafe automatic replay follows ambiguous effects",
+        "Attempts preserve snapshot policy and all recovered states carry evidence"
+      ],
+      "deps": [
+        "P3-06"
+      ],
+      "phase": "P3",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E3"
+    },
+    {
+      "key": "P4-01",
+      "type": "story",
+      "component": "notifications",
+      "sections": "7,11.1",
+      "title": "Implement outbox delivery coordination",
+      "steps": [
+        "Finalize event/destination uniqueness, pending claim, delivery lease and result receipt",
+        "Keep delivery retries independent of queue lifecycle"
+      ],
+      "ac": [
+        "Repeated lifecycle command yields one delivery intent",
+        "Concurrent senders cannot hold the same active delivery lease"
+      ],
+      "deps": [
+        "P3-07"
+      ],
+      "phase": "P4",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E4"
+    },
+    {
+      "key": "P4-02",
+      "type": "story",
+      "component": "notifications",
+      "sections": "11.1,11.2",
+      "title": "Implement queue notification rules and safe destinations",
+      "steps": [
+        "Validate allowlisted destination keys, event selections, cooldown and redaction",
+        "Render safe queue/item/attempt IDs and operations links"
+      ],
+      "ac": [
+        "Raw message bodies and extracted personal data are excluded by default",
+        "Failure notification cannot recursively create an alert storm"
+      ],
+      "deps": [
+        "P4-01"
+      ],
+      "phase": "P4",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E4"
+    },
+    {
+      "key": "P4-03",
+      "type": "story",
+      "component": "notifications",
+      "sections": "4.4,11.1",
+      "title": "Package optional email sender and delivery recovery",
+      "steps": [
+        "Build WQ.Notifications.Email with connection references, bounded retries and visible event ID",
+        "Record connector acceptance and ambiguous lost responses"
+      ],
+      "ac": [
+        "Sender failure never changes the business result",
+        "Documentation distinguishes intent, connector acceptance and actual recipient delivery"
+      ],
+      "deps": [
+        "P4-02"
+      ],
+      "phase": "P4",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E4"
+    },
+    {
+      "key": "P4-04",
+      "type": "task",
+      "component": "testing",
+      "sections": "11,15",
+      "title": "Verify notification failure and optional-package independence",
+      "steps": [
+        "Inject throttling, expired sender lease, connection loss and lost provider response",
+        "Test Core without optional sender and package removal dependencies"
+      ],
+      "ac": [
+        "Backlog/failure remains visible without recursive alerts",
+        "Core clean install and lifecycle APIs work without mail credentials"
+      ],
+      "deps": [
+        "P4-03"
+      ],
+      "phase": "P4",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E4"
+    },
+    {
+      "key": "P5-01",
+      "type": "story",
+      "component": "testing",
+      "sections": "7,10.2,10.3",
+      "title": "Implement test metadata, immutable snapshots and trusted profiles",
+      "steps": [
+        "Build qmcp_wqtestcase, qmcp_wqtestrun and qmcp_wqtestresult with run/case/repetition keys",
+        "Snapshot manifests, fixtures, assertions and server-approved execution destinations"
+      ],
+      "ac": [
+        "Production runs are denied by default",
+        "Payload flags cannot select privileged destinations or authorize cleanup"
+      ],
+      "deps": [
+        "P3-07"
+      ],
+      "phase": "P5",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E5"
+    },
+    {
+      "key": "P5-02",
+      "type": "story",
+      "component": "testing",
+      "sections": "10.2",
+      "title": "Build durable test-run coordinator and recovery",
+      "steps": [
+        "StartTestRun returns a run ID then advances prepare/enqueue/observe/assert/cleanup asynchronously",
+        "Add request deduplication, case identity, coordinator recovery and deadlines"
+      ],
+      "ac": [
+        "Closing MCP does not stop initiated tests",
+        "Passed, Failed, Inconclusive and Cancelled remain distinct and business completion alone is not test completion"
+      ],
+      "deps": [
+        "P5-01"
+      ],
+      "phase": "P5",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E5"
+    },
+    {
+      "key": "P5-03",
+      "type": "story",
+      "component": "testing",
+      "sections": "10.4",
+      "title": "Implement bounded declarative assertions and evidence retrieval",
+      "steps": [
+        "Support outcome, attempt count, output existence, count, fields, error, notification and unwanted-effect checks",
+        "Read allowlisted test-scoped evidence with caller authorization"
+      ],
+      "ac": [
+        "Missing permission or unavailable evidence cannot pass",
+        "No arbitrary code, FetchXML, URL or unrestricted query is accepted"
+      ],
+      "deps": [
+        "P5-02"
+      ],
+      "phase": "P5",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E5"
+    },
+    {
+      "key": "P5-04",
+      "type": "story",
+      "component": "testing",
+      "sections": "10.3,10.6",
+      "title": "Implement test-owned cleanup and failed-evidence retention",
+      "steps": [
+        "Record exact fixture/resource IDs outside business payload and namespace keys",
+        "Wait for/reconcile active attempts before cleanup and preserve failed evidence"
+      ],
+      "ac": [
+        "Cleanup cannot delete unrecorded or production resources",
+        "Cleanup failures are visible separately from assertion outcome"
+      ],
+      "deps": [
+        "P5-03"
+      ],
+      "phase": "P5",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E5"
+    },
+    {
+      "key": "P5-05",
+      "type": "task",
+      "component": "testing",
+      "sections": "10.5",
+      "title": "Build approved AI fixtures and repeated quality evaluation",
+      "steps": [
+        "Version expected answers independently of observed outcomes",
+        "Repeat selected fixtures with structured and grounded-field assertions"
+      ],
+      "ac": [
+        "All repetitions and failures remain visible",
+        "Changing expected results after failure requires review and live prompt versus stub is labeled"
+      ],
+      "deps": [
+        "P5-03",
+        "P2-03"
+      ],
+      "phase": "P5",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E5"
+    },
+    {
+      "key": "P5-06",
+      "type": "task",
+      "component": "testing",
+      "sections": "10.6",
+      "title": "Implement the full reference regression suite",
+      "steps": [
+        "Cover all 18 minimum reference cases plus a real synthetic mailbox integration",
+        "Include delay, pause, stale worker, notification failure, cleanup failure and authorization denial"
+      ],
+      "ac": [
+        "Suite identifies worker, platform, live integration and AI quality coverage separately",
+        "Assertions inspect authorized real effects rather than only worker-reported status"
+      ],
+      "deps": [
+        "P5-04",
+        "P5-05",
+        "P4-04"
+      ],
+      "phase": "P5",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E5"
+    },
+    {
+      "key": "P6-01",
+      "type": "task",
+      "component": "mcp",
+      "sections": "12.1,13.2",
+      "title": "Build environment-bound local stdio MCP foundation",
+      "steps": [
+        "Pin official SDK and define explicit tenant/environment profiles",
+        "Separate delegated development from approved deployment identity and protect authentication profiles"
+      ],
+      "ac": [
+        "Credentials never enter arguments or logs",
+        "No arbitrary shell, unrestricted Dataverse or cross-tenant tool surface exists"
+      ],
+      "deps": [
+        "P5-06"
+      ],
+      "phase": "P6",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E6"
+    },
+    {
+      "key": "P6-02",
+      "type": "story",
+      "component": "mcp",
+      "sections": "8.2,12.2,12.4",
+      "title": "Publish inspect tools and versioned contract resources",
+      "steps": [
+        "Generate tool schemas from canonical contracts and expose bounded environment/framework/queue/item/health reads",
+        "Ship versioned architecture, flow, schema, test and diagnostic resources"
+      ],
+      "ac": [
+        "Returned results include selected environment and redact by default",
+        "Agent resources are useful without assuming every host automatically injects them"
+      ],
+      "deps": [
+        "P6-01"
+      ],
+      "phase": "P6",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E6"
+    },
+    {
+      "key": "P6-03",
+      "type": "story",
+      "component": "mcp",
+      "sections": "12.3",
+      "title": "Build pinned-release install planning and preflight",
+      "steps": [
+        "Inspect installed versions, permissions, metadata, keys, licenses/capacity and connection readiness",
+        "Verify allowlisted release checksum/provenance and produce dependency-ordered plan"
+      ],
+      "ac": [
+        "No implicit latest-version selection or purchase/consent occurs",
+        "Plan lists affected resources, activation steps and manual prerequisites"
+      ],
+      "deps": [
+        "P6-02"
+      ],
+      "phase": "P6",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E6"
+    },
+    {
+      "key": "P6-04",
+      "type": "story",
+      "component": "mcp",
+      "sections": "12.3,14.1",
+      "title": "Build approved install and queue plan/apply operations",
+      "steps": [
+        "Bind plan hash/version/environment to trusted approval outside agent-set booleans",
+        "Import, map connections, provision friendly keys, health-check and smoke-test before activation"
+      ],
+      "ac": [
+        "Stale or unapproved plans cannot apply",
+        "Mutations return affected IDs, request ID, environment and deployment record"
+      ],
+      "deps": [
+        "P6-03"
+      ],
+      "phase": "P6",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E6"
+    },
+    {
+      "key": "P6-05",
+      "type": "story",
+      "component": "mcp",
+      "sections": "12.4",
+      "title": "Build supported process scaffolding and static validation",
+      "steps": [
+        "Generate customer templates through documented solution-flow APIs",
+        "Check lifecycle/failure paths, bindings, schemas, request IDs, effect strategy and cleanup boundaries"
+      ],
+      "ac": [
+        "Detect raw queue writes, unconditional completion and production test destinations where statically identifiable",
+        "Validation limitations are explicit and authentication profile changes are isolated/serialized"
+      ],
+      "deps": [
+        "P6-04",
+        "P2-06"
+      ],
+      "phase": "P6",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E6"
+    },
+    {
+      "key": "P6-06",
+      "type": "story",
+      "component": "mcp",
+      "sections": "12.2,13.1",
+      "title": "Expose test evidence and restricted operator tools",
+      "steps": [
+        "Add payload validation, start/query test run and evidence retrieval",
+        "Expose controlled retry only for approved roles/environments"
+      ],
+      "ac": [
+        "Normal agents cannot AcquireNext/Complete production items arbitrarily",
+        "Long tests return run IDs and queries remain paginated and authorized"
+      ],
+      "deps": [
+        "P6-05"
+      ],
+      "phase": "P6",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E6"
+    },
+    {
+      "key": "P6-07",
+      "type": "task",
+      "component": "testing",
+      "sections": "12,15",
+      "title": "Verify supported agent hosts and full development workflow",
+      "steps": [
+        "Choose and record the first release host compatibility list",
+        "Run inspect/plan/install/scaffold/validate/test/evidence/promotion from a clean development environment"
+      ],
+      "ac": [
+        "No undocumented maker endpoints are required",
+        "Disconnect tests demonstrate autonomous runtime and initiated test continuation"
+      ],
+      "deps": [
+        "P6-06"
+      ],
+      "phase": "P6",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E6"
+    },
+    {
+      "key": "P7-01",
+      "type": "task",
+      "component": "release",
+      "sections": "14.1,14.2",
+      "title": "Build reproducible managed release pipeline and compatibility manifest",
+      "steps": [
+        "Build managed packages with stable identities, checksums and release provenance",
+        "Publish compatible runtime/API/MCP/template/contract versions and deployment settings"
+      ],
+      "ac": [
+        "Artifacts trace to source and tests",
+        "No customer payload, secret or connection token enters source or logs"
+      ],
+      "deps": [
+        "P6-07"
+      ],
+      "phase": "P7",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E7"
+    },
+    {
+      "key": "P7-02",
+      "type": "task",
+      "component": "release",
+      "sections": "14.2",
+      "title": "Validate additive upgrade, queue migration and recovery procedures",
+      "steps": [
+        "Test active-attempt drain/pause, worker cutover and controlled physical queue migration for breaking envelopes",
+        "Exercise failed upgrade and approved forward-fix/environment recovery"
+      ],
+      "ac": [
+        "Customer flows, friendly keys and retained evidence remain usable",
+        "Uninstall/reinstall is never represented as rollback"
+      ],
+      "deps": [
+        "P7-01"
+      ],
+      "phase": "P7",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E7"
+    },
+    {
+      "key": "P7-03",
+      "type": "task",
+      "component": "security",
+      "sections": "13.1,13.2",
+      "title": "Run separate-identity security and untrusted-content tests",
+      "steps": [
+        "Verify all seven role boundaries, cross-queue denials and direct-write protection",
+        "Inject malicious email/fixture content into agent-facing diagnostics and supply-chain cases"
+      ],
+      "ac": [
+        "Untrusted content cannot authorize installs, destination changes or credential disclosure",
+        "Test coordinator cannot act as an unrestricted privileged reader"
+      ],
+      "deps": [
+        "P7-01"
+      ],
+      "phase": "P7",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E7"
+    },
+    {
+      "key": "P7-04",
+      "type": "task",
+      "component": "operations",
+      "sections": "7.2,13.3",
+      "title": "Implement bounded retention and storage maintenance",
+      "steps": [
+        "Configure distinct retention for payloads, errors, attempts, evidence and receipts",
+        "Preserve active/review-held work and duplicate identities through supported retry/replay window"
+      ],
+      "ac": [
+        "Verified cascade behavior cannot erase required evidence silently",
+        "Purges are bounded, auditable and safe under concurrent work"
+      ],
+      "deps": [
+        "P7-01"
+      ],
+      "phase": "P7",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E7"
+    },
+    {
+      "key": "P7-05",
+      "type": "task",
+      "component": "testing",
+      "sections": "13.3,16",
+      "title": "Measure capacity, throttling and per-item cost",
+      "steps": [
+        "Run representative baseline/burst loads with conservative concurrency and bounded sweep",
+        "Measure throughput, latency, API requests, retries, prompt use, storage and sender backlog"
+      ],
+      "ac": [
+        "Publish measured limits and cost assumptions without high-throughput or cost-neutral claims",
+        "Throttling respects service guidance rather than busy polling"
+      ],
+      "deps": [
+        "P7-01"
+      ],
+      "phase": "P7",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E7"
+    },
+    {
+      "key": "P7-06",
+      "type": "task",
+      "component": "operations",
+      "sections": "12.3,13.3,14",
+      "title": "Validate operational failure scenarios and write runbooks",
+      "steps": [
+        "Exercise missing connection/license/capacity, owner departure, environment copy and uninstall dependencies",
+        "Document incident triage, backlog recovery, uncertain outcomes and environment outage boundary"
+      ],
+      "ac": [
+        "Each scenario has detection and a safe recovery path",
+        "Prerequisites requiring a human are explicit and Core outage cannot falsely claim self-notification"
+      ],
+      "deps": [
+        "P7-02",
+        "P7-04",
+        "P7-05"
+      ],
+      "phase": "P7",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E7"
+    },
+    {
+      "key": "P7-07",
+      "type": "task",
+      "component": "release",
+      "sections": "14,15,16",
+      "title": "Run independent clean install and MVP release review",
+      "steps": [
+        "Have another developer follow published install/upgrade/operations documentation against pinned artifacts",
+        "Review every acceptance gate and observed limitation before publishing release"
+      ],
+      "ac": [
+        "All 22 gates carry inspectable passing evidence or release remains blocked",
+        "Release notes accurately separate observed guarantees, supported limits and deferred scope"
+      ],
+      "deps": [
+        "P7-02",
+        "P7-03",
+        "P7-04",
+        "P7-05",
+        "P7-06",
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G14",
+        "G15",
+        "G16",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G21",
+        "G22"
+      ],
+      "phase": "P7",
+      "priority": "P1-high",
+      "scope": "mvp",
+      "parent": "E7"
+    },
+    {
+      "key": "G01",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Clean install",
+      "phase": "P7",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P7-01",
+        "P0-06"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Supported packages import, keys activate, API actions resolve, and health checks explain all missing prerequisites.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E7"
+    },
+    {
+      "key": "G02",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Intake duplicate",
+      "phase": "P1",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P1-07",
+        "P1-11"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Same source/key/content produces one item.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E1"
+    },
+    {
+      "key": "G03",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Intake conflict",
+      "phase": "P1",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P1-07",
+        "P1-11"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Same key with changed content is rejected and observable.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E1"
+    },
+    {
+      "key": "G04",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Acquisition concurrency",
+      "phase": "P1",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P0-03",
+        "P1-08"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Parallel requests cannot process the same item as current owner.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E1"
+    },
+    {
+      "key": "G05",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Acquisition replay",
+      "phase": "P1",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P0-03",
+        "P1-08"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Repeating one request returns the same result, not another item.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E1"
+    },
+    {
+      "key": "G06",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Completion replay",
+      "phase": "P1",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P1-09",
+        "P1-11"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Lost response and retry preserve one completion and one event intent.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E1"
+    },
+    {
+      "key": "G07",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Delayed work",
+      "phase": "P3",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P0-04",
+        "P3-02",
+        "P3-07"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Item is not acquired early and is discovered after its delay without needing a fresh source event.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E3"
+    },
+    {
+      "key": "G08",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Missed wake-up",
+      "phase": "P2",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P2-05",
+        "P2-07"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Scheduled sweep processes eligible backlog.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E2"
+    },
+    {
+      "key": "G09",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Paused queue",
+      "phase": "P1",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P0-04",
+        "P1-08"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "No new business processing starts.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E1"
+    },
+    {
+      "key": "G10",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Unsupported payload",
+      "phase": "P2",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P1-07",
+        "P2-07"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Rejected before business effects.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E2"
+    },
+    {
+      "key": "G11",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Post-write failure",
+      "phase": "P2",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P0-09",
+        "P2-07"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Existing target record is reused or reconciled without duplication.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E2"
+    },
+    {
+      "key": "G12",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Stale worker",
+      "phase": "P3",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P3-01",
+        "P3-07"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Old attempt cannot complete, fail, or extend a newer attempt.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E3"
+    },
+    {
+      "key": "G13",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Unknown outcome",
+      "phase": "P3",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P3-02",
+        "P3-04",
+        "P3-07"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "No unsafe automatic replay.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E3"
+    },
+    {
+      "key": "G14",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Notification failure",
+      "phase": "P4",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P4-04"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Business result is unchanged; delivery failure remains visible.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E4"
+    },
+    {
+      "key": "G15",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Test isolation",
+      "phase": "P5",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P5-01",
+        "P5-04",
+        "P5-06"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Production destinations and unrestricted cleanup are blocked.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E5"
+    },
+    {
+      "key": "G16",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Test evidence",
+      "phase": "P5",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P5-03",
+        "P5-06"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "A pass includes assertions against actual authorized output, not only a worker-reported status.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E5"
+    },
+    {
+      "key": "G17",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: AI extraction",
+      "phase": "P5",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P5-05",
+        "P5-06"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Structured and field-level quality checks pass against approved fixtures; repeat-run failures remain visible.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E5"
+    },
+    {
+      "key": "G18",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Authorization",
+      "phase": "P7",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P7-03"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Producer, worker, reader, operator, and installer boundaries are tested with separate identities.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E7"
+    },
+    {
+      "key": "G19",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Lifecycle bypass",
+      "phase": "P7",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P0-05",
+        "P7-03"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Direct writes cannot invalidate framework invariants for supported managed queues.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E7"
+    },
+    {
+      "key": "G20",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Agent disconnection",
+      "phase": "P6",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P5-02",
+        "P6-07"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Runtime and initiated tests continue without the MCP process.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E6"
+    },
+    {
+      "key": "G21",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Upgrade",
+      "phase": "P7",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P7-02"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "Existing customer flows and retained evidence remain usable through a supported version transition.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E7"
+    },
+    {
+      "key": "G22",
+      "type": "gate",
+      "component": "testing",
+      "sections": "16",
+      "title": "Acceptance gate: Capacity",
+      "phase": "P7",
+      "priority": "P0-critical",
+      "scope": "mvp",
+      "deps": [
+        "P7-05"
+      ],
+      "steps": [
+        "Execute the linked implementation's positive, negative and failure-path checks in the appropriate approved environment",
+        "Attach reproducible commands or test-run IDs, version/environment metadata, actual observations and authorized evidence"
+      ],
+      "ac": [
+        "The reference load test publishes measured throughput, request usage, and known limits without extrapolating guarantees.",
+        "Gate remains open if evidence is missing, inaccessible or inconclusive; mocks do not prove native tenant behavior"
+      ],
+      "parent": "E7"
+    },
+    {
+      "key": "F01",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Read-only Teams notifications",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Validate a separately packaged Teams sender and destination/connection model before scheduling delivery.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F02",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Interactive Teams retry cards and group chats",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Design authenticated responder authority, stale-attempt/version checks and command deduplication; validate group-chat delivery separately.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F03",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Generic webhook notification package",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Design destination allowlists, secret storage, signatures, delivery retries and ambiguous-response handling.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F04",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Public connector distribution",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Evaluate an independent connector only after stable runtime APIs; validate host/environment and authentication packaging.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F05",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Hosted multi-tenant MCP",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Perform separate tenant isolation, OAuth audience, per-tenant authorization and deployment threat design.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F06",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Desktop-worker certification",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Define and test native desktop retry/history interaction and ownership interoperability before claiming support.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F07",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "General external-effect ledger",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Design provider-specific idempotency and reconciliation; a local sent flag cannot guarantee exactly-once external effects.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F08",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Advanced circuit breakers",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Measure recurring downstream failure patterns and define safe open/half-open/recovery behavior before implementation.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F09",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Large operations dashboards",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Validate operator needs beyond the MVP model-driven views and bound query/storage costs.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F10",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Large attachment storage adapters",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Define approved storage, access controls, retention and replay guarantees; never inline large binary payloads in queue JSON.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F11",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Automatic flow repair",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Define reviewable repair plans, authorization, rollback/recovery and validation before allowing automated edits.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    },
+    {
+      "key": "F12",
+      "type": "discovery",
+      "component": "architecture",
+      "sections": "4.2,4.3",
+      "phase": "Future",
+      "title": "Long-lived approval orchestration",
+      "priority": "P3-later",
+      "scope": "deferred",
+      "deps": [
+        "P7-07"
+      ],
+      "steps": [
+        "Design durable continuation and external-effect safety distinct from attempt heartbeats and cloud-flow duration limits.",
+        "Refine value, dependencies and acceptance criteria before promoting into a funded release"
+      ],
+      "ac": [
+        "Explicitly outside MVP; no implementation commitment or release date is implied",
+        "Promotion requires an approved scope decision and linked implementation work"
+      ],
+      "parent": "EF"
+    }
+  ]
+}
