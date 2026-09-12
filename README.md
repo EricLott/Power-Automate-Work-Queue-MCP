@@ -11,6 +11,8 @@ The installed Dataverse runtime owns processing, attempts, retries, recovery, no
 - [Tracking agreement and Definition of Done](docs/project-tracking.md)
 - [Backlog source](planning/backlog.json)
 - [Issue register](planning/issue-map.json)
+- [Readable build plan index](docs/backlog-index.md)
+- [Planning verification](planning/verification.json)
 
 Start with Phase 0: prove native acquisition, transaction boundaries, concurrency, request replay and recovery after a successful business write. Platform-dependent behaviors remain validation gates until supported by tenant evidence.
 

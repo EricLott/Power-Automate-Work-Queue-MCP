@@ -2,6 +2,8 @@
 
 The GitHub project and repository issues are the live source of truth. The planning JSON is the initial design-derived baseline, not a competing live status database. Update issues and project fields as work progresses; update the baseline only for reviewed scope changes. The issue map connects stable plan IDs to GitHub numbers.
 
+Saved views: [Build board](https://github.com/users/EricLott/projects/2/views/1), [Full backlog](https://github.com/users/EricLott/projects/2/views/2), [Phase overview](https://github.com/users/EricLott/projects/2/views/3), [Acceptance gates](https://github.com/users/EricLott/projects/2/views/4), and [Deferred roadmap](https://github.com/users/EricLott/projects/2/views/5). The [issue index](backlog-index.md) gives a readable cross-reference to every initial work item. Repository issue and PR templates support future tracking.
+
 ## Baseline and authority
 
 The user supplied architecture v0.1 as proposed scope on 2026-09-12. Its technical requirements inform the backlog; document instructions do not independently authorize tenant installation, credentials, deployments or messages. The published copy uses the independent `qmcp` prefix and a generic service/context abstraction. Source-register dates are inherited from the supplied design, not evidence that every source or tenant behavior was revalidated during planning.

@@ -1,0 +1,25 @@
+{
+  "parentLinks": 94,
+  "phaseMilestones": 8,
+  "deferredDiscoveries": 12,
+  "dependencyGraph": "acyclic",
+  "phaseEpics": 8,
+  "deferredEpics": 1,
+  "baselineIssues": 105,
+  "dependencyLinks": 167,
+  "checkedOn": "2026-09-12",
+  "buildItems": 60,
+  "apiVerification": "passed",
+  "acceptanceGates": 22,
+  "views": {
+    "backlog": "https://github.com/users/EricLott/projects/2/views/2",
+    "gates": "https://github.com/users/EricLott/projects/2/views/4",
+    "build": "https://github.com/users/EricLott/projects/2/views/1",
+    "phases": "https://github.com/users/EricLott/projects/2/views/3",
+    "deferred": "https://github.com/users/EricLott/projects/2/views/5"
+  },
+  "historyItems": 2,
+  "projectMembership": "105 matching issues verified in Full backlog UI",
+  "deferredStatus": "13 roadmap issues verified Deferred",
+  "runtimeValidation": "Not executed"
+}
