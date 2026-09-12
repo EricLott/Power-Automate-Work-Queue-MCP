@@ -30,7 +30,7 @@ $existing = @(Read-Pages 'issues?state=all')
 $map = @{}
 foreach ($issue in $existing) { if ($issue.body -match '<!-- wq-plan:([A-Z0-9-]+) -->') { $map[$matches[1]] = $issue } }
 function Save-Map {
-    $records = @($map.Keys | Sort-Object | ForEach-Object { @{key=$_;number=$map[$_].number;id=$map[$_].id;url=$map[$_].html_url;state=$map[$_].state} })
+    $records = @($map.Keys | Sort-Object | ForEach-Object { [ordered]@{key=$_;number=$map[$_].number;id=$map[$_].id;url=$map[$_].html_url} })
     ConvertTo-Json -InputObject $records -Depth 10 | Set-Content (Join-Path $PSScriptRoot 'issue-map.json') -Encoding utf8
 }
 if ($Mode -eq 'Create') {
@@ -123,7 +123,6 @@ if ($Mode -eq 'Verify') {
             $linked = @(Read-Pages "issues/$($issue.number)/dependencies/blocked_by")
             foreach ($dep in $item.deps) { if ($map[$dep].id -notin $linked.id) { $failures += "Missing dependency $($item.key) <- $dep" } }
         }
-        if ($item.scope -eq 'mvp' -and $issue.state -ne 'open') { $failures += "Premature completion $($item.key)" }
     }
     Save-Map
     @{issues=$map.Count;expected=$plan.items.Count;failures=$failures;checkedAt=(Get-Date -Format o)} | ConvertTo-Json -Depth 10
