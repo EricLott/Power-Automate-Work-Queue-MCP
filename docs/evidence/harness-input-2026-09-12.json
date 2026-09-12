@@ -1,0 +1,46 @@
+{
+  "cases": [
+    {
+      "case": "null-cases",
+      "fault": "INPUT_INVALID"
+    },
+    {
+      "case": "null-case",
+      "fault": "INPUT_INVALID"
+    },
+    {
+      "case": "null-input",
+      "fault": "INPUT_INVALID"
+    },
+    {
+      "case": "null-expected",
+      "fault": "INPUT_INVALID"
+    },
+    {
+      "case": "null-id",
+      "fault": "INPUT_INVALID"
+    }
+  ],
+  "before": {
+    "runs": 0,
+    "items": 5
+  },
+  "after": {
+    "runs": 0,
+    "items": 5
+  },
+  "noTestRunOrQueueSideEffects": true,
+  "date": "2026-09-12",
+  "classification": "synthetic-development-tenant-input-validation",
+  "organizationVerified": true,
+  "localTests": {
+    "runtime": 73,
+    "plugins": 35,
+    "python": 23,
+    "mcp": 10,
+    "total": 141
+  },
+  "allEightPackageRoundTripsPassed": true,
+  "pluginPushSucceeded": true,
+  "acceptanceGatesClosed": 0
+}

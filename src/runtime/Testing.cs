@@ -45,6 +45,7 @@ public sealed partial class Engine
         TestCase[] cases;
         try { cases = Json.ToObject<TestCase[]>(d["cases"]!); }
         catch (Fault) { throw new Fault("INPUT_INVALID"); }
+        if (cases.Any(x => x == null || x.Id == null || x.Input == null || x.Expected == null)) throw new Fault("INPUT_INVALID");
         if (cases.Length < 1 || cases.Length > 20 || cases.Any(x => x.Repetitions < 1 || x.Repetitions > 10) || cases.Sum(x => x.Repetitions) > 50 || cases.Select(x => x.Id).Distinct().Count() != cases.Length) throw new Fault("TEST_LIMIT");
         foreach (var test in cases)
         {

@@ -66,3 +66,10 @@ Native transition troubleshooting established that resending historical `delayun
 The final local suite passed **140 tests** (72 runtime, 35 plug-in adapter, 23 Python, 10 MCP/operator). All eight archives passed the build and PAC round trip. The corrected plug-in package was pushed successfully. The reference solution reimport and publishing also succeeded; a subsequent read verified that ProcessOne remains Draft and uses PrepareAcquire, native Dequeue and ResolveAcquire. The post-operation step and pre-image were verified again. See the [reproduction procedure](acquisition-proof.md) for the parameterized CLI proof utility.
 
 These results are selected synthetic single-operator experiments. They do not close the full rollback/failure matrix, separate-identity authorization, real flow/mailbox/prompt execution, clean installation or managed upgrade gates. All 22 acceptance gates remain open. Earlier sections retain their historical checkpoint results.
+
+The committed parameterized proof was subsequently executed against the freshly deployed package and passed the full focused sequence again. Its redacted repeat observations are included in the same evidence file. This adds two Processed synthetic items and three attempts; it does not broaden the acceptance scope.
+
+
+## Harness malformed-input checkpoint
+
+Luna review found null test cases and fields could trigger an unhandled exception. The corrected API returns `INPUT_INVALID` for null case arrays, case entries, input, expected values and IDs. All five cases were tested through the public Dataverse API after the fresh package push; test runs remained zero and the five synthetic queue items were unchanged. [Redacted evidence](evidence/harness-input-2026-09-12.json) records the API outcomes and the **141-test** local regression result. All eight archives passed the final build round trip. This validates malformed-input rejection, not production isolation or autonomous coordinator execution.
