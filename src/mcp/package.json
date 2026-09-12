@@ -1,0 +1,9 @@
+{
+  "name": "wq-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.js", "test": "node --test test" },
+  "dependencies": { "@modelcontextprotocol/sdk": "1.30.0", "zod": "4.6.2" }
+}

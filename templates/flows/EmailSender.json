@@ -1,0 +1,192 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "qmcp_Dataverse": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_notifications_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "qmcp_Outlook": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_notifications_outlook"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "0.1.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "qmcp_QueueKey": {
+          "defaultValue": "mail",
+          "type": "String"
+        },
+        "qmcp_NativeQueueId": {
+          "defaultValue": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "type": "String"
+        },
+        "qmcp_Mailbox": {
+          "defaultValue": "synthetic@example.invalid",
+          "type": "String"
+        },
+        "qmcp_NotificationAddress": {
+          "defaultValue": "operations@example.invalid",
+          "type": "String"
+        }
+      },
+      "triggers": {
+        "trigger": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Minute",
+            "interval": 1
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "runs": 1
+            }
+          }
+        }
+      },
+      "actions": {
+        "RequestIds": {
+          "type": "Compose",
+          "inputs": {
+            "ClaimEvent": "@guid()",
+            "FinishEvent": "@guid()"
+          },
+          "runAfter": {}
+        },
+        "ClaimEvent": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionReferenceName": "qmcp_Dataverse",
+              "operationId": "PerformUnboundAction"
+            },
+            "parameters": {
+              "actionName": "qmcp_WQ_ClaimEvent",
+              "item/QueueKey": "@parameters('qmcp_QueueKey')",
+              "item/RequestId": "@outputs('RequestIds')?['ClaimEvent']",
+              "item/DataJson": "{}"
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          },
+          "runAfter": {
+            "RequestIds": [
+              "Succeeded"
+            ]
+          }
+        },
+        "HasEvent": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@json(body('ClaimEvent')?['ResultJson'])?['Outcome']",
+              "Claimed"
+            ]
+          },
+          "actions": {
+            "Send": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "connectionReferenceName": "qmcp_Outlook",
+                  "operationId": "SendEmailV2"
+                },
+                "parameters": {
+                  "emailMessage/To": "@parameters('qmcp_NotificationAddress')",
+                  "emailMessage/Subject": "@concat('Queue event ', json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id'])",
+                  "emailMessage/Body": "@concat('Queue: ',parameters('qmcp_QueueKey'),'<br>Event: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id'],'<br>Item: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['ItemId'],'<br>Disposition: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Kind'])"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {}
+            },
+            "Accepted": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformUnboundAction"
+                },
+                "parameters": {
+                  "actionName": "qmcp_WQ_FinishEvent",
+                  "item/QueueKey": "@parameters('qmcp_QueueKey')",
+                  "item/RequestId": "@outputs('RequestIds')?['FinishEvent']",
+                  "item/DataJson": "@string(setProperty(setProperty(setProperty(setProperty(json('{}'),'eventId',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id']),'leaseToken',json(body('ClaimEvent')?['ResultJson'])?['Event']?['LeaseToken']),'accepted',true),'code','SENDER_FAILED'))"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {
+                "Send": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Rejected": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformUnboundAction"
+                },
+                "parameters": {
+                  "actionName": "qmcp_WQ_FinishEvent",
+                  "item/QueueKey": "@parameters('qmcp_QueueKey')",
+                  "item/RequestId": "@outputs('RequestIds')?['FinishEvent']",
+                  "item/DataJson": "@string(setProperty(setProperty(setProperty(setProperty(json('{}'),'eventId',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id']),'leaseToken',json(body('ClaimEvent')?['ResultJson'])?['Event']?['LeaseToken']),'accepted',false),'code','SENDER_FAILED'))"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {
+                "Send": [
+                  "Failed",
+                  "TimedOut"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "ClaimEvent": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

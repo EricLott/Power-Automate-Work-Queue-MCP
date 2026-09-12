@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ImportExportXml version="9.1.0.643" SolutionPackageVersion="9.1" languagecode="1033" generatedBy="CrmLive">
+  <SolutionManifest>
+    <UniqueName>WQReferenceSharedMailbox</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="WQReferenceSharedMailbox" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Local development candidate; tenant validation pending" languagecode="1033" />
+    </Descriptions>
+    <Version>0.1.0.0</Version>
+    <Managed>2</Managed>
+    <Publisher>
+      <UniqueName>QueueFramework</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Queue Framework" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Independent queue framework" languagecode="1033" />
+      </Descriptions>
+      <CustomizationPrefix>qmcp</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>40147</CustomizationOptionValuePrefix>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="qmcp_emailrequest" behavior="0" />
+      <RootComponent type="29" id="{6a491be2-4f32-549d-8afb-92d556e5c89b}" behavior="0" />
+      <RootComponent type="29" id="{656a2463-6fd0-5892-b382-3fc8babdc8ed}" behavior="0" />
+      <RootComponent type="29" id="{014c3583-22a5-5146-bf25-94768d689092}" behavior="0" />
+      <RootComponent type="29" id="{a0fed279-6860-5897-912d-ccfabee2de0d}" behavior="0" />
+      <RootComponent type="20" id="{64aa3dc6-b727-52df-a6b7-0e60202e9163}" behavior="0" />
+      <RootComponent type="20" id="{c43623d6-a78d-57d2-adec-b76e51e354b4}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies />
+  </SolutionManifest>
+</ImportExportXml>

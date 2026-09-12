@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "type": "object",
+  "properties": {
+    "envelopeVersion": { "type": "string", "required": true, "enum": ["1.0"] },
+    "contract": { "type": "string", "required": true },
+    "correlationId": { "type": "string", "required": true },
+    "deduplicationKey": { "type": "string", "required": true },
+    "source": { "type": "object", "required": true },
+    "payload": { "type": "object", "required": true }
+  },
+  "additionalProperties": false
+}

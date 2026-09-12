@@ -1,0 +1,355 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Entity>
+  <Name LocalizedName="wqcursor" OriginalName="wqcursor">qmcp_wqcursor</Name>
+  <EntityInfo>
+    <entity Name="qmcp_wqcursor">
+      <LocalizedNames>
+        <LocalizedName description="wqcursor" languagecode="1033" />
+      </LocalizedNames>
+      <LocalizedCollectionNames>
+        <LocalizedCollectionName description="wqcursor records" languagecode="1033" />
+      </LocalizedCollectionNames>
+      <Descriptions>
+        <Description description="Queue framework wqcursor" languagecode="1033" />
+      </Descriptions>
+      <attributes>
+        <attribute PhysicalName="qmcp_wqcursorid">
+          <Type>primarykey</Type>
+          <Name>qmcp_wqcursorid</Name>
+          <LogicalName>qmcp_wqcursorid</LogicalName>
+          <RequiredLevel>systemrequired</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>0</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>0</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <displaynames>
+            <displayname description="wqcursorid" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework wqcursorid" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_name">
+          <Type>nvarchar</Type>
+          <Name>qmcp_name</Name>
+          <LogicalName>qmcp_name</LogicalName>
+          <RequiredLevel>required</RequiredLevel>
+          <DisplayMask>PrimaryName|ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="name" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework name" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_key">
+          <Type>nvarchar</Type>
+          <Name>qmcp_key</Name>
+          <LogicalName>qmcp_key</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="key" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework key" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_queuekey">
+          <Type>nvarchar</Type>
+          <Name>qmcp_queuekey</Name>
+          <LogicalName>qmcp_queuekey</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="queuekey" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework queuekey" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_document">
+          <Type>ntext</Type>
+          <Name>qmcp_document</Name>
+          <LogicalName>qmcp_document</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format />
+          <MaxLength>1048576</MaxLength>
+          <displaynames>
+            <displayname description="document" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework document" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_outcome">
+          <Type>nvarchar</Type>
+          <Name>qmcp_outcome</Name>
+          <LogicalName>qmcp_outcome</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="outcome" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework outcome" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_itemid">
+          <Type>nvarchar</Type>
+          <Name>qmcp_itemid</Name>
+          <LogicalName>qmcp_itemid</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="itemid" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework itemid" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_attemptid">
+          <Type>nvarchar</Type>
+          <Name>qmcp_attemptid</Name>
+          <LogicalName>qmcp_attemptid</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="attemptid" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework attemptid" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_sourcekey">
+          <Type>nvarchar</Type>
+          <Name>qmcp_sourcekey</Name>
+          <LogicalName>qmcp_sourcekey</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="sourcekey" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework sourcekey" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_testrun">
+          <Type>nvarchar</Type>
+          <Name>qmcp_testrun</Name>
+          <LogicalName>qmcp_testrun</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="testrun" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework testrun" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+        <attribute PhysicalName="qmcp_reviewrequired">
+          <Type>nvarchar</Type>
+          <Name>qmcp_reviewrequired</Name>
+          <LogicalName>qmcp_reviewrequired</LogicalName>
+          <RequiredLevel>none</RequiredLevel>
+          <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+          <ImeMode>auto</ImeMode>
+          <ValidForUpdateApi>1</ValidForUpdateApi>
+          <ValidForReadApi>1</ValidForReadApi>
+          <ValidForCreateApi>1</ValidForCreateApi>
+          <IsCustomField>1</IsCustomField>
+          <IsAuditEnabled>0</IsAuditEnabled>
+          <IsSecured>0</IsSecured>
+          <IntroducedVersion>0.1.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <IsRenameable>1</IsRenameable>
+          <CanModifySearchSettings>1</CanModifySearchSettings>
+          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+          <Format>text</Format>
+          <MaxLength>100</MaxLength>
+          <displaynames>
+            <displayname description="reviewrequired" languagecode="1033" />
+          </displaynames>
+          <Descriptions>
+            <Description description="Framework reviewrequired" languagecode="1033" />
+          </Descriptions>
+        </attribute>
+      </attributes>
+      <EntitySetName>qmcp_wqcursors</EntitySetName>
+      <OwnershipTypeMask>UserOwned</OwnershipTypeMask>
+      <IsActivity>0</IsActivity>
+      <IsAuditEnabled>0</IsAuditEnabled>
+      <IsCustomizable>1</IsCustomizable>
+      <IsRenameable>1</IsRenameable>
+      <CanCreateAttributes>1</CanCreateAttributes>
+      <CanCreateForms>1</CanCreateForms>
+      <CanCreateViews>1</CanCreateViews>
+      <CanCreateCharts>1</CanCreateCharts>
+      <IntroducedVersion>0.1.0.0</IntroducedVersion>
+      <IsQuickCreateEnabled>0</IsQuickCreateEnabled>
+      <IsOfflineInMobileClient>0</IsOfflineInMobileClient>
+      <IsVisibleInMobileClient>0</IsVisibleInMobileClient>
+      <EntityKeys>
+        <EntityKey>
+          <Name>qmcp_wqcursor_identity</Name>
+          <LogicalName>qmcp_wqcursor_identity</LogicalName>
+          <displaynames>
+            <displayname description="Stable framework identity" languagecode="1033" />
+          </displaynames>
+          <IsCustomizable>1</IsCustomizable>
+          <EntityKeyAttributes>
+            <AttributeName>qmcp_key</AttributeName>
+          </EntityKeyAttributes>
+        </EntityKey>
+      </EntityKeys>
+    </entity>
+  </EntityInfo>
+  <RibbonDiffXml />
+  <FormXml />
+  <SavedQueries />
+</Entity>

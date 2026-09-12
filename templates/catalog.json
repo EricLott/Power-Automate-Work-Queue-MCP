@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0.0",
+  "customerFlows": [
+    "Intake.json",
+    "ProcessOne.json",
+    "OnQueueChanged.json",
+    "SweepQueue.json"
+  ],
+  "frameworkFlows": [
+    "Watchdog.json",
+    "TestCoordinator.json",
+    "EmailSender.json"
+  ],
+  "owner": "customer",
+  "activation": "disabled until tenant binding and validation",
+  "promptBinding": "ProcessOne/HasWork/Business/CreateIfAbsent/Prompt"
+}

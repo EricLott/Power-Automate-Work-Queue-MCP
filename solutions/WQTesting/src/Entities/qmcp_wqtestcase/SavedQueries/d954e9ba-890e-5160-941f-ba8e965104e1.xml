@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<savedqueries>
+  <savedquery>
+    <savedqueryid>{d954e9ba-890e-5160-941f-ba8e965104e1}</savedqueryid>
+    <querytype>0</querytype>
+    <isdefault>1</isdefault>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="qmcp_wqtestcase">
+          <attribute name="qmcp_wqtestcaseid" />
+          <attribute name="qmcp_name" />
+          <attribute name="qmcp_queuekey" />
+          <attribute name="qmcp_outcome" />
+          <attribute name="qmcp_reviewrequired" />
+          <order attribute="qmcp_name" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <layoutxml>
+      <grid name="resultset" jump="qmcp_name" select="1" icon="1" preview="1">
+        <row name="result" id="qmcp_wqtestcaseid">
+          <cell name="qmcp_name" width="150" />
+          <cell name="qmcp_queuekey" width="150" />
+          <cell name="qmcp_outcome" width="150" />
+          <cell name="qmcp_reviewrequired" width="150" />
+        </row>
+      </grid>
+    </layoutxml>
+    <LocalizedNames>
+      <LocalizedName description="wqtestcase overview" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

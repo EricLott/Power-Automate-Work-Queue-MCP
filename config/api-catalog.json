@@ -1,0 +1,57 @@
+{
+  "version": "0.1.0.0",
+  "prefix": "qmcp_WQ_",
+  "parameters": {
+    "QueueKey": {
+      "type": 10,
+      "optional": false
+    },
+    "RequestId": {
+      "type": 10,
+      "optional": false
+    },
+    "ItemId": {
+      "type": 10,
+      "optional": true
+    },
+    "AttemptId": {
+      "type": 10,
+      "optional": true
+    },
+    "Generation": {
+      "type": 7,
+      "optional": true
+    },
+    "ExpectedVersion": {
+      "type": 10,
+      "optional": true
+    },
+    "DataJson": {
+      "type": 10,
+      "optional": true
+    }
+  },
+  "operations": [
+    "RegisterQueue",
+    "RegisterContract",
+    "Enqueue",
+    "AcquireNext",
+    "Checkpoint",
+    "Complete",
+    "Fail",
+    "RequestRetry",
+    "ReportIntakeFailure",
+    "GetItemStatus",
+    "GetQueueHealth",
+    "RecoverExpiredAttempt",
+    "RunMaintenance",
+    "ApplyRetention",
+    "ClaimEvent",
+    "FinishEvent",
+    "StartTestRun",
+    "GetTestRun",
+    "AdvanceTestRun",
+    "CleanupTestRun"
+  ],
+  "response": "ResultJson"
+}

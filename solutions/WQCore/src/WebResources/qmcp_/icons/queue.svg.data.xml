@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<WebResource>
+  <WebResourceId>{566a0f46-458c-5b13-9162-cf352f2f4379}</WebResourceId>
+  <Name>qmcp_/icons/queue.svg</Name>
+  <DisplayName>Queue framework</DisplayName>
+  <WebResourceType>11</WebResourceType>
+  <IntroducedVersion>0.1.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <FileName>/WebResources/qmcp_/icons/queue.svg</FileName>
+</WebResource>

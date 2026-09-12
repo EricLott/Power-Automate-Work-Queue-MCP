@@ -1,0 +1,389 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "qmcp_Dataverse": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_reference_worker_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "0.1.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "qmcp_QueueKey": {
+          "defaultValue": "mail",
+          "type": "String"
+        },
+        "qmcp_NativeQueueId": {
+          "defaultValue": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "type": "String"
+        },
+        "qmcp_Mailbox": {
+          "defaultValue": "synthetic@example.invalid",
+          "type": "String"
+        },
+        "qmcp_NotificationAddress": {
+          "defaultValue": "operations@example.invalid",
+          "type": "String"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        }
+      },
+      "actions": {
+        "RequestIds": {
+          "type": "Compose",
+          "inputs": {
+            "AcquireNext": "@guid()",
+            "Complete": "@guid()",
+            "Fail": "@guid()"
+          },
+          "runAfter": {}
+        },
+        "AcquireNext": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionReferenceName": "qmcp_Dataverse",
+              "operationId": "PerformUnboundAction"
+            },
+            "parameters": {
+              "actionName": "qmcp_WQ_AcquireNext",
+              "item/QueueKey": "@parameters('qmcp_QueueKey')",
+              "item/RequestId": "@outputs('RequestIds')?['AcquireNext']",
+              "item/DataJson": "@string(setProperty(setProperty(json('{}'), 'runId', workflow()?['run']?['name']), 'templateVersion', '0.1.0.0'))"
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          },
+          "runAfter": {
+            "RequestIds": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Acquired": {
+          "type": "Compose",
+          "inputs": "@json(body('AcquireNext')?['ResultJson'])",
+          "runAfter": {
+            "AcquireNext": [
+              "Succeeded"
+            ]
+          }
+        },
+        "HasWork": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Acquired')?['Outcome']",
+              "Acquired"
+            ]
+          },
+          "actions": {
+            "Business": {
+              "type": "Scope",
+              "actions": {
+                "FindExisting": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionReferenceName": "qmcp_Dataverse",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "qmcp_emailrequests",
+                      "$filter": "@concat('qmcp_key eq ''', outputs('Acquired')?['BusinessKey'], '''')",
+                      "$top": 2
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "CreateIfAbsent": {
+                  "type": "If",
+                  "expression": {
+                    "equals": [
+                      "@length(body('FindExisting')?['value'])",
+                      0
+                    ]
+                  },
+                  "actions": {
+                    "Prompt": {
+                      "type": "Terminate",
+                      "inputs": {
+                        "runStatus": "Failed",
+                        "runError": {
+                          "code": "PROMPT_BINDING_REQUIRED",
+                          "message": "Bind the approved AI Builder prompt action before activation."
+                        }
+                      },
+                      "runAfter": {},
+                      "metadata": {
+                        "qmcpBinding": "approved-prompt-action"
+                      }
+                    },
+                    "ValidateExtraction": {
+                      "type": "ParseJson",
+                      "inputs": {
+                        "content": "@outputs('Prompt')?['body']",
+                        "schema": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "contact",
+                            "category",
+                            "summary"
+                          ],
+                          "properties": {
+                            "contact": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 320
+                            },
+                            "category": {
+                              "type": "string",
+                              "enum": [
+                                "service",
+                                "question"
+                              ]
+                            },
+                            "summary": {
+                              "type": "string",
+                              "maxLength": 4000
+                            }
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "Prompt": [
+                          "Succeeded"
+                        ]
+                      }
+                    },
+                    "BusinessDocument": {
+                      "type": "Compose",
+                      "inputs": {
+                        "sourceKey": "@outputs('Acquired')?['SourceKey']",
+                        "contentHash": "@outputs('Acquired')?['ContentHash']",
+                        "testRun": "@outputs('Acquired')?['TestRun']",
+                        "fields": "@body('ValidateExtraction')",
+                        "promptVersion": "mail-extraction-v1"
+                      },
+                      "runAfter": {
+                        "ValidateExtraction": [
+                          "Succeeded"
+                        ]
+                      }
+                    },
+                    "CreateRecord": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionReferenceName": "qmcp_Dataverse",
+                          "operationId": "CreateRecord"
+                        },
+                        "parameters": {
+                          "entityName": "qmcp_emailrequests",
+                          "item/qmcp_name": "@outputs('Acquired')?['BusinessKey']",
+                          "item/qmcp_key": "@outputs('Acquired')?['BusinessKey']",
+                          "item/qmcp_queuekey": "@parameters('qmcp_QueueKey')",
+                          "item/qmcp_document": "@string(outputs('BusinessDocument'))"
+                        },
+                        "retryPolicy": {
+                          "type": "none"
+                        }
+                      },
+                      "runAfter": {
+                        "BusinessDocument": [
+                          "Succeeded"
+                        ]
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "runAfter": {
+                    "FindExisting": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "FindResult": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionReferenceName": "qmcp_Dataverse",
+                      "operationId": "ListRecords"
+                    },
+                    "parameters": {
+                      "entityName": "qmcp_emailrequests",
+                      "$filter": "@concat('qmcp_key eq ''', outputs('Acquired')?['BusinessKey'], '''')",
+                      "$top": 2
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {
+                    "CreateIfAbsent": [
+                      "Succeeded"
+                    ]
+                  }
+                },
+                "Reconciled": {
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "equals": [
+                          "@length(body('FindResult')?['value'])",
+                          1
+                        ]
+                      },
+                      {
+                        "equals": [
+                          "@json(first(body('FindResult')?['value'])?['qmcp_document'])?['contentHash']",
+                          "@outputs('Acquired')?['ContentHash']"
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Complete": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                          "connectionReferenceName": "qmcp_Dataverse",
+                          "operationId": "PerformUnboundAction"
+                        },
+                        "parameters": {
+                          "actionName": "qmcp_WQ_Complete",
+                          "item/QueueKey": "@parameters('qmcp_QueueKey')",
+                          "item/RequestId": "@outputs('RequestIds')?['Complete']",
+                          "item/DataJson": "@string(setProperty(setProperty(json('{}'), 'table', 'qmcp_emailrequest'), 'recordId', first(body('FindResult')?['value'])?['qmcp_emailrequestid']))",
+                          "item/ItemId": "@outputs('Acquired')?['ItemId']",
+                          "item/AttemptId": "@outputs('Acquired')?['AttemptId']",
+                          "item/Generation": "@outputs('Acquired')?['Generation']"
+                        },
+                        "retryPolicy": {
+                          "type": "none"
+                        }
+                      },
+                      "runAfter": {}
+                    }
+                  },
+                  "else": {
+                    "actions": {
+                      "Conflict": {
+                        "type": "Terminate",
+                        "inputs": {
+                          "runStatus": "Failed",
+                          "runError": {
+                            "code": "BUSINESS_CONTENT_CONFLICT",
+                            "message": "Existing source identity failed reconciliation."
+                          }
+                        },
+                        "runAfter": {}
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "FindResult": [
+                      "Succeeded"
+                    ]
+                  }
+                }
+              },
+              "runAfter": {}
+            },
+            "ReportFailure": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformUnboundAction"
+                },
+                "parameters": {
+                  "actionName": "qmcp_WQ_Fail",
+                  "item/QueueKey": "@parameters('qmcp_QueueKey')",
+                  "item/RequestId": "@outputs('RequestIds')?['Fail']",
+                  "item/DataJson": "{\"category\":\"Unknown\",\"code\":\"WORKER_SCOPE_FAILED\",\"effect\":\"Unknown\"}",
+                  "item/ItemId": "@outputs('Acquired')?['ItemId']",
+                  "item/AttemptId": "@outputs('Acquired')?['AttemptId']",
+                  "item/Generation": "@outputs('Acquired')?['Generation']"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {
+                "Business": [
+                  "Failed",
+                  "TimedOut"
+                ]
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Acquired": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Respond": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "outcome": "@outputs('Acquired')?['Outcome']"
+            }
+          },
+          "runAfter": {
+            "HasWork": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

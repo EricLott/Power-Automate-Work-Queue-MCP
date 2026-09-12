@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Role id="{d78739d0-cec9-5b4e-bca9-76fddc924cca}" name="WQTesting Reader">
+  <IsCustomizable>1</IsCustomizable>
+  <RolePrivileges>
+    <RolePrivilege name="prvReadqmcp_wqtestcase" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqtestrun" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqtestresult" level="Basic" />
+  </RolePrivileges>
+</Role>

@@ -1,0 +1,160 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "qmcp_Dataverse": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_core_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "0.1.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "qmcp_QueueKey": {
+          "defaultValue": "mail",
+          "type": "String"
+        },
+        "qmcp_NativeQueueId": {
+          "defaultValue": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "type": "String"
+        },
+        "qmcp_Mailbox": {
+          "defaultValue": "synthetic@example.invalid",
+          "type": "String"
+        },
+        "qmcp_NotificationAddress": {
+          "defaultValue": "operations@example.invalid",
+          "type": "String"
+        }
+      },
+      "triggers": {
+        "trigger": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Minute",
+            "interval": 1
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "runs": 1
+            }
+          }
+        }
+      },
+      "actions": {
+        "Cursor": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "cursor",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          },
+          "runAfter": {}
+        },
+        "Sweep": {
+          "type": "Until",
+          "expression": "@empty(variables('cursor'))",
+          "limit": {
+            "count": 20,
+            "timeout": "PT5M"
+          },
+          "actions": {
+            "RequestIds": {
+              "type": "Compose",
+              "inputs": {
+                "RunMaintenance": "@guid()",
+                "ApplyRetention": "@guid()"
+              },
+              "runAfter": {}
+            },
+            "RunMaintenance": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformUnboundAction"
+                },
+                "parameters": {
+                  "actionName": "qmcp_WQ_RunMaintenance",
+                  "item/QueueKey": "@parameters('qmcp_QueueKey')",
+                  "item/RequestId": "@outputs('RequestIds')?['RunMaintenance']",
+                  "item/DataJson": "@string(setProperty(json('{}'),'cursor',variables('cursor')))"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {
+                "RequestIds": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "NextCursor": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "cursor",
+                "value": "@coalesce(json(body('RunMaintenance')?['ResultJson'])?['NextCursor'],'')"
+              },
+              "runAfter": {
+                "RunMaintenance": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "ApplyRetention": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformUnboundAction"
+                },
+                "parameters": {
+                  "actionName": "qmcp_WQ_ApplyRetention",
+                  "item/QueueKey": "@parameters('qmcp_QueueKey')",
+                  "item/RequestId": "@outputs('RequestIds')?['ApplyRetention']",
+                  "item/DataJson": "{}"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {
+                "NextCursor": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "Cursor": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

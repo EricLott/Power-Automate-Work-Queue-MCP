@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ImportExportXml>
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <WebResources />
+  <CustomControls />
+  <AppModuleSiteMaps />
+  <AppModules />
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="qmcp_core_dataverse">
+      <connectionreferencedisplayname>qmcp_core_dataverse</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+  </connectionreferences>
+</ImportExportXml>

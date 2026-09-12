@@ -9,3 +9,11 @@ obj/
 *.snk
 artifacts/private/
 evidence/private/
+artifacts/
+.tools/
+dist/
+*.log
+__pycache__/
+*.nupkg
+*.dll
+*.pdb

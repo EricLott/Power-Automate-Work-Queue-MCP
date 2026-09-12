@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<WebResource>
+  <WebResourceId>{3af28d88-73c6-59b2-aaa6-f3fa418bfd88}</WebResourceId>
+  <Name>qmcp_/retry.html</Name>
+  <DisplayName>Queue retry retry.html</DisplayName>
+  <WebResourceType>1</WebResourceType>
+  <IntroducedVersion>0.1.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <FileName>/WebResources/qmcp_/retry.html</FileName>
+</WebResource>

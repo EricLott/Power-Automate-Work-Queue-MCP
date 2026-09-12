@@ -1,0 +1,39 @@
+name: Credential-free validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  local:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.400
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/mcp/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned offline build tools
+        shell: pwsh
+        run: ./scripts/install-local-tools.ps1
+      - name: Build and pack without tenant credentials
+        shell: pwsh
+        run: ./scripts/build.ps1
+      - name: Test local models and adapters
+        shell: pwsh
+        run: ./scripts/test.ps1
+      - name: Retain local evidence and candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-candidate-and-evidence
+          path: |
+            artifacts/packages/
+            artifacts/validation/
+            artifacts/test-results/

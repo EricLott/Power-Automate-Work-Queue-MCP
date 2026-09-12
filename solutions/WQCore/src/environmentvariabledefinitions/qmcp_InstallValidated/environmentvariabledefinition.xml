@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<environmentvariabledefinition schemaname="qmcp_InstallValidated">
+  <defaultvalue>false</defaultvalue>
+  <type>100000000</type>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>1</isrequired>
+  <displayname default="qmcp_InstallValidated">
+    <label description="qmcp_InstallValidated" languagecode="1033" />
+  </displayname>
+  <description default="qmcp_InstallValidated">
+    <label description="qmcp_InstallValidated" languagecode="1033" />
+  </description>
+</environmentvariabledefinition>

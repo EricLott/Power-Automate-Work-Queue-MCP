@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Role id="{c43623d6-a78d-57d2-adec-b76e51e354b4}" name="WQReferenceSharedMailbox Reader">
+  <IsCustomizable>1</IsCustomizable>
+  <RolePrivileges>
+    <RolePrivilege name="prvReadqmcp_emailrequest" level="Basic" />
+  </RolePrivileges>
+</Role>

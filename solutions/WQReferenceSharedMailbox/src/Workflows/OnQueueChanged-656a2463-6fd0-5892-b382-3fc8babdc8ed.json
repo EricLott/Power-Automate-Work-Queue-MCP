@@ -1,0 +1,83 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "qmcp_Dataverse": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_reference_worker_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "0.1.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "qmcp_QueueKey": {
+          "defaultValue": "mail",
+          "type": "String"
+        },
+        "qmcp_NativeQueueId": {
+          "defaultValue": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "type": "String"
+        },
+        "qmcp_Mailbox": {
+          "defaultValue": "synthetic@example.invalid",
+          "type": "String"
+        },
+        "qmcp_NotificationAddress": {
+          "defaultValue": "operations@example.invalid",
+          "type": "String"
+        }
+      },
+      "triggers": {
+        "trigger": {
+          "type": "OpenApiConnectionNotification",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionReferenceName": "qmcp_Dataverse",
+              "operationId": "SubscribeWebhookTrigger"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 4,
+              "subscriptionRequest/entityname": "workqueueitem",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filterexpression": "@concat('_workqueueid_value eq ', parameters('qmcp_NativeQueueId'), ' and statecode eq 0')"
+            }
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "runs": 1
+            }
+          }
+        }
+      },
+      "actions": {
+        "ProcessOne": {
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "6a491be2-4f32-549d-8afb-92d556e5c89b"
+            },
+            "body": {}
+          },
+          "runAfter": {}
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

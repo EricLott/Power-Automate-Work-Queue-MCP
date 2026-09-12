@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<customapi uniquename="qmcp_WQ_RegisterContract">
+  <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
+  <bindingtype>0</bindingtype>
+  <boundentitylogicalname />
+  <iscustomizable>0</iscustomizable>
+  <executeprivilegename>prvReadqmcp_wqprincipal</executeprivilegename>
+  <isfunction>0</isfunction>
+  <isprivate>0</isprivate>
+  <name>qmcp_WQ_RegisterContract</name>
+  <workflowsdkstepenabled>0</workflowsdkstepenabled>
+  <description default="RegisterContract">
+    <label description="RegisterContract" languagecode="1033" />
+  </description>
+  <displayname default="RegisterContract">
+    <label description="RegisterContract" languagecode="1033" />
+  </displayname>
+  <plugintypeid />
+</customapi>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AppModule>
+  <UniqueName>qmcp_Operations</UniqueName>
+  <IntroducedVersion>0.1.0.0</IntroducedVersion>
+  <WebResourceId>566a0f46-458c-5b13-9162-cf352f2f4379</WebResourceId>
+  <FormFactor>1</FormFactor>
+  <ClientType>4</ClientType>
+  <AppModuleComponents>
+    <AppModuleComponent type="1" schemaName="workqueue" />
+    <AppModuleComponent type="1" schemaName="workqueueitem" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqdefinition" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqqueuebinding" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqcontract" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqitemcontext" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqattempt" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqcommand" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqevent" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqcursor" />
+    <AppModuleComponent type="1" schemaName="qmcp_wqintakefailure" />
+    <AppModuleComponent type="62" schemaName="qmcp_Operations" />
+  </AppModuleComponents>
+  <AppModuleRoleMaps>
+    <Role id="{2c049b4c-1a91-5ecf-853d-0d1c93c768b5}" />
+    <Role id="{430ed126-bf57-5459-bdf4-a24ba4c1fe1a}" />
+  </AppModuleRoleMaps>
+  <LocalizedNames>
+    <LocalizedName description="Queue Operations" languagecode="1033" />
+  </LocalizedNames>
+</AppModule>

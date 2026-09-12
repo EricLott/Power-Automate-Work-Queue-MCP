@@ -1,0 +1,141 @@
+{
+  "version": "0.1.0.0",
+  "pluginPackage": "QueueFramework.Plugins",
+  "runtimeType": "QueueFramework.Plugins.LifecyclePlugin",
+  "guardType": "QueueFramework.Plugins.LifecycleGuard",
+  "isolation": "Sandbox",
+  "transactionRequired": true,
+  "guardSteps": [
+    {
+      "table": "qmcp_wqdefinition",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqqueuebinding",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqcontract",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqitemcontext",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqattempt",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqcommand",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqevent",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqcursor",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqintakefailure",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqtestcase",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqtestrun",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "qmcp_wqtestresult",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    },
+    {
+      "table": "workqueueitem",
+      "messages": [
+        "Create",
+        "Update",
+        "Delete"
+      ],
+      "stage": 20,
+      "mode": 0
+    }
+  ],
+  "bootstrap": "Resolve actual plug-in type IDs from the imported dependent assembly package, then bind APIs and register guard steps before activating flows. Export the validated registration metadata after the first development import."
+}

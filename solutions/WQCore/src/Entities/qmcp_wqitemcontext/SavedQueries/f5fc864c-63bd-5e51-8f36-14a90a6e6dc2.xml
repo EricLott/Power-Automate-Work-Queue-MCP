@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<savedqueries>
+  <savedquery>
+    <savedqueryid>{f5fc864c-63bd-5e51-8f36-14a90a6e6dc2}</savedqueryid>
+    <querytype>0</querytype>
+    <isdefault>1</isdefault>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="qmcp_wqitemcontext">
+          <attribute name="qmcp_wqitemcontextid" />
+          <attribute name="qmcp_name" />
+          <attribute name="qmcp_queuekey" />
+          <attribute name="qmcp_outcome" />
+          <attribute name="qmcp_reviewrequired" />
+          <order attribute="qmcp_name" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <layoutxml>
+      <grid name="resultset" jump="qmcp_name" select="1" icon="1" preview="1">
+        <row name="result" id="qmcp_wqitemcontextid">
+          <cell name="qmcp_name" width="150" />
+          <cell name="qmcp_queuekey" width="150" />
+          <cell name="qmcp_outcome" width="150" />
+          <cell name="qmcp_reviewrequired" width="150" />
+        </row>
+      </grid>
+    </layoutxml>
+    <LocalizedNames>
+      <LocalizedName description="wqitemcontext overview" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

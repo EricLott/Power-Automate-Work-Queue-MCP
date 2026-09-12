@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ImportExportXml>
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="qmcp_testing_dataverse">
+      <connectionreferencedisplayname>qmcp_testing_dataverse</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+  </connectionreferences>
+</ImportExportXml>

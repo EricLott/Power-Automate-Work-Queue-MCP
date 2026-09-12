@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<AppModuleSiteMap>
+  <SiteMapUniqueName>qmcp_Operations</SiteMapUniqueName>
+  <SiteMap>
+    <Area Id="qmcp_work" ShowGroups="true">
+      <Titles>
+        <Title LCID="1033" Title="Queue Operations" />
+      </Titles>
+      <Group Id="qmcp_operations">
+        <Titles>
+          <Title LCID="1033" Title="Runtime" />
+        </Titles>
+        <SubArea Id="workqueueitem" Entity="workqueueitem" />
+        <SubArea Id="qmcp_wqitemcontext" Entity="qmcp_wqitemcontext" />
+        <SubArea Id="qmcp_wqattempt" Entity="qmcp_wqattempt" />
+        <SubArea Id="qmcp_wqevent" Entity="qmcp_wqevent" />
+        <SubArea Id="qmcp_wqintakefailure" Entity="qmcp_wqintakefailure" />
+        <SubArea Id="qmcp_wqdefinition" Entity="qmcp_wqdefinition" />
+        <SubArea Id="qmcp_retry" Url="$webresource:qmcp_/retry.html">
+          <Titles>
+            <Title LCID="1033" Title="Request retry" />
+          </Titles>
+        </SubArea>
+      </Group>
+    </Area>
+  </SiteMap>
+</AppModuleSiteMap>

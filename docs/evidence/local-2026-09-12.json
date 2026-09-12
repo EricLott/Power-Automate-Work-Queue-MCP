@@ -1,0 +1,278 @@
+{
+  "date": "2026-09-12",
+  "classification": "local-development-candidate",
+  "powerPlatformCredentialsUsed": false,
+  "tenantImport": "not-run",
+  "liveGatesPassed": 0,
+  "versions": {
+    "dotnetSdk": "8.0.400",
+    "pac": "2.12.2",
+    "pacRuntime": "10.0.12",
+    "node": "20.15.0",
+    "python": "3.12"
+  },
+  "suites": [
+    {
+      "suite": "runtime",
+      "passed": 58,
+      "failed": 0,
+      "tests": [
+        "QueueFramework.Tests.BoundaryTests.InvalidSchemaDefinitionsFailClosed(schema: \"{\\\"type\\\":\\\"string\\\",\\\"minLength\\\":10,\\\"maxLength\\\"\u00b7\u00b7\u00b7)",
+        "QueueFramework.Tests.LifecycleTests.MalformedAndDuplicateJsonRejected",
+        "QueueFramework.Tests.LifecycleTests.UncertainOrBusinessFailureRequiresReview(category: \"Unknown\")",
+        "QueueFramework.Tests.LifecycleTests.PausedQueueDoesNotAcquire",
+        "QueueFramework.Tests.LifecycleTests.QueueGrantRequiredEvenWithRole",
+        "QueueFramework.Tests.LifecycleTests.InvalidExtractionNeverWrites",
+        "QueueFramework.Tests.LifecycleTests.EmptyQueueIsNormal",
+        "QueueFramework.Tests.LifecycleTests.ActiveLeaseCannotBeRecovered",
+        "QueueFramework.Tests.LifecycleTests.PostWriteRecoveryReusesBusinessRecord",
+        "QueueFramework.Tests.BoundaryTests.CleanupRollbackPreservesEvidenceOnDeleteFailure",
+        "QueueFramework.Tests.BoundaryTests.PhysicalQueueCannotBeRegisteredTwice",
+        "QueueFramework.Tests.LifecycleTests.TestRunUsesActualEvidenceAndCleanupIsScoped",
+        "QueueFramework.Tests.LifecycleTests.ProducerCannotComplete",
+        "QueueFramework.Tests.LifecycleTests.FailedEvidenceCannotBeCleaned",
+        "QueueFramework.Tests.LifecycleTests.ExpiredAttemptCannotMutate(op: \"Checkpoint\")",
+        "QueueFramework.Tests.BoundaryTests.DeliveryLeaseCannotBeReusedAfterExpiry",
+        "QueueFramework.Tests.LifecycleTests.CorrelationChangeDoesNotChangeSourceIdentity",
+        "QueueFramework.Tests.LifecycleTests.MalformedTypedCommandsUseStableFaultCodes",
+        "QueueFramework.Tests.LifecycleTests.ReceiptRollbackRestoresNativeClaim",
+        "QueueFramework.Tests.BoundaryTests.RetentionRedactsOldInputButPreservesDedupeAndRequestTombstone",
+        "QueueFramework.Tests.LifecycleTests.UnsupportedEnvelopeHasNoEffects(field: \"contract\", value: \"unsupported\")",
+        "QueueFramework.Tests.BoundaryTests.InvalidSchemaDefinitionsFailClosed(schema: \"{\\\"type\\\":\\\"object\\\",\\\"properties\\\":[]}\")",
+        "QueueFramework.Tests.LifecycleTests.ProductionTestDenied",
+        "QueueFramework.Tests.LifecycleTests.DuplicateIntakeUsesOneItem",
+        "QueueFramework.Tests.LifecycleTests.TestDeadlineIsInconclusive",
+        "QueueFramework.Tests.LifecycleTests.RemoteSchemaIsRejected",
+        "QueueFramework.Tests.BoundaryTests.SenderContinuesPastFirstHundredTerminalEvents",
+        "QueueFramework.Tests.LifecycleTests.RuntimeSurvivesInstanceReplacement",
+        "QueueFramework.Tests.LifecycleTests.UnsupportedEnvelopeHasNoEffects(field: \"envelopeVersion\", value: \"9.0\")",
+        "QueueFramework.Tests.LifecycleTests.ConcurrentIdenticalRequestHasOneReceipt",
+        "QueueFramework.Tests.LifecycleTests.CheckpointRequiresProgressAndCapsDeadline",
+        "QueueFramework.Tests.LifecycleTests.StaleRetryVersionRejected",
+        "QueueFramework.Tests.LifecycleTests.ContentConflictIsRejected",
+        "QueueFramework.Tests.LifecycleTests.RequestIdentityRejectsDifferentArguments",
+        "QueueFramework.Tests.BoundaryTests.ExpectedErrorAndAttemptEvidenceMustMatch",
+        "QueueFramework.Tests.LifecycleTests.AttemptSnapshotsPolicy",
+        "QueueFramework.Tests.LifecycleTests.WorkerSuccessWithoutOutputCannotPass",
+        "QueueFramework.Tests.BoundaryTests.PoisonItemCannotBlockFollowingValidItem",
+        "QueueFramework.Tests.BoundaryTests.ExpiredItemCannotBeManuallyRescheduled",
+        "QueueFramework.Tests.BoundaryTests.NotificationEvidenceCanBeAsserted",
+        "QueueFramework.Tests.BoundaryTests.CompletionFromAnotherQueueIsDenied",
+        "QueueFramework.Tests.BoundaryTests.LongMailboxIdentityUsesBoundedStableBusinessKey",
+        "QueueFramework.Tests.LifecycleTests.AcquisitionReplayNeverClaimsSecondItem",
+        "QueueFramework.Tests.LifecycleTests.CompletionReplayHasOneIntent",
+        "QueueFramework.Tests.LifecycleTests.ExpiredAttemptCannotMutate(op: \"Fail\")",
+        "QueueFramework.Tests.LifecycleTests.IntakeFailureNeedsNoQueueItem",
+        "QueueFramework.Tests.LifecycleTests.NotificationFailurePreservesWork",
+        "QueueFramework.Tests.LifecycleTests.ConcurrentAcquisitionHasOneOwner",
+        "QueueFramework.Tests.BoundaryTests.RetentionPreservesReviewRequiredEvidence",
+        "QueueFramework.Tests.LifecycleTests.ContractIsImmutable",
+        "QueueFramework.Tests.LifecycleTests.WatchdogInvalidatesGeneration",
+        "QueueFramework.Tests.LifecycleTests.ExpiredAttemptCannotMutate(op: \"Complete\")",
+        "QueueFramework.Tests.LifecycleTests.UncertainOrBusinessFailureRequiresReview(category: \"Business\")",
+        "QueueFramework.Tests.BoundaryTests.InvalidSchemaDefinitionsFailClosed(schema: \"{\\\"type\\\":\\\"number\\\",\\\"maximum\\\":\\\"large\\\"}\")",
+        "QueueFramework.Tests.LifecycleTests.OversizedInputRejected",
+        "QueueFramework.Tests.LifecycleTests.DelayRequiresSweepAndDoesNotAcquireEarly",
+        "QueueFramework.Tests.BoundaryTests.InvalidSchemaDefinitionsFailClosed(schema: \"{\\\"type\\\":\\\"string\\\",\\\"enum\\\":\\\"x\\\"}\")",
+        "QueueFramework.Tests.BoundaryTests.WatchdogMarksMissingAttemptForReview"
+      ]
+    },
+    {
+      "suite": "plugins",
+      "passed": 8,
+      "failed": 0,
+      "tests": [
+        "QueueFramework.Tests.AdapterTests.UpdatesUseOptimisticConcurrency",
+        "QueueFramework.Tests.AdapterTests.TransactionRequiredBeforeAnyWrite",
+        "QueueFramework.Tests.AdapterTests.CompanionRawMutationDenied",
+        "QueueFramework.Tests.AdapterTests.NativeAcquisitionUsesDequeueInsteadOfListingWork",
+        "QueueFramework.Tests.AdapterTests.UnknownDequeueResponseFailsClosed",
+        "QueueFramework.Tests.AdapterTests.TrustedParentAllowsFrameworkMutation",
+        "QueueFramework.Tests.AdapterTests.MovingManagedItemToAnotherQueueCannotBypassGuard",
+        "QueueFramework.Tests.AdapterTests.PluginUsesInitiatingIdentityAndDoesNotElevate"
+      ]
+    },
+    {
+      "suite": "offline-python",
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "suite": "mcp-and-operator",
+      "passed": 10,
+      "failed": 0
+    }
+  ],
+  "totalPassed": 91,
+  "totalFailed": 0,
+  "demo": {
+    "classification": "local-simulation-fixture",
+    "state": "Passed",
+    "cases": 3
+  },
+  "generation": {
+    "classification": "offline-generation",
+    "files": 271,
+    "deterministic": true
+  },
+  "packages": {
+    "version": "0.1.0.0",
+    "tenantImport": "not-run",
+    "files": [
+      {
+        "file": "WQCore_managed.zip",
+        "sha256": "7ee79fc943c9b34847eac1d2f276c50d39b4fd26dd762761f23b9a18dd6e4df4"
+      },
+      {
+        "file": "WQCore.zip",
+        "sha256": "e4ea620c4656f7f8667209666a3b4085f6818858cb3f6f83545d527a61ea266b"
+      },
+      {
+        "file": "WQNotificationsEmail_managed.zip",
+        "sha256": "08b27d029f89aa482e9fdfb7e778466f86a29f3f72f7d7de92eb543ca6505d02"
+      },
+      {
+        "file": "WQNotificationsEmail.zip",
+        "sha256": "ab74f1eccfe041ce1a9720044cb8df6843ad159dee9ebc3e903b6132565defb3"
+      },
+      {
+        "file": "WQReferenceSharedMailbox_managed.zip",
+        "sha256": "f40bd24eeb39754602d40a49b56b68fe1e896faba3e32a65b9a34748df577086"
+      },
+      {
+        "file": "WQReferenceSharedMailbox.zip",
+        "sha256": "064fdbfd752d05c5e2e6bc15b095557887b585a0160c8945a08deb1a60eb22ff"
+      },
+      {
+        "file": "WQTesting_managed.zip",
+        "sha256": "4c9581055fb25a696723fc68bb23c06451d01bc1ecd6720e802880949aed5c6f"
+      },
+      {
+        "file": "WQTesting.zip",
+        "sha256": "a73cd54f1e9324d03ca1c6567a893815c869cb4ad09a661dff386020587a3ad5"
+      }
+    ],
+    "classification": "local-candidate"
+  },
+  "structure": {
+    "classification": "offline-structure",
+    "tenantImport": "not-run",
+    "checks": [
+      {
+        "package": "WQCore",
+        "tables": 10,
+        "xml": "parsed",
+        "publisher": "qmcp"
+      },
+      {
+        "package": "WQTesting",
+        "tables": 3,
+        "xml": "parsed",
+        "publisher": "qmcp"
+      },
+      {
+        "package": "WQNotificationsEmail",
+        "tables": 0,
+        "xml": "parsed",
+        "publisher": "qmcp"
+      },
+      {
+        "package": "WQReferenceSharedMailbox",
+        "tables": 1,
+        "xml": "parsed",
+        "publisher": "qmcp"
+      },
+      {
+        "flow": "EmailSender",
+        "actions": 6,
+        "invariants": "passed"
+      },
+      {
+        "flow": "Intake",
+        "actions": 7,
+        "invariants": "passed"
+      },
+      {
+        "flow": "OnQueueChanged",
+        "actions": 1,
+        "invariants": "passed"
+      },
+      {
+        "flow": "ProcessOne",
+        "actions": 17,
+        "invariants": "passed"
+      },
+      {
+        "flow": "SweepQueue",
+        "actions": 2,
+        "invariants": "passed"
+      },
+      {
+        "flow": "TestCoordinator",
+        "actions": 4,
+        "invariants": "passed"
+      },
+      {
+        "flow": "Watchdog",
+        "actions": 6,
+        "invariants": "passed"
+      },
+      {
+        "archive": "WQCore.zip",
+        "entries": 156,
+        "structure": "passed"
+      },
+      {
+        "archive": "WQCore_managed.zip",
+        "entries": 156,
+        "structure": "passed"
+      },
+      {
+        "archive": "WQNotificationsEmail.zip",
+        "entries": 4,
+        "structure": "passed"
+      },
+      {
+        "archive": "WQNotificationsEmail_managed.zip",
+        "entries": 4,
+        "structure": "passed"
+      },
+      {
+        "archive": "WQReferenceSharedMailbox.zip",
+        "entries": 7,
+        "structure": "passed"
+      },
+      {
+        "archive": "WQReferenceSharedMailbox_managed.zip",
+        "entries": 7,
+        "structure": "passed"
+      },
+      {
+        "archive": "WQTesting.zip",
+        "entries": 40,
+        "structure": "passed"
+      },
+      {
+        "archive": "WQTesting_managed.zip",
+        "entries": 40,
+        "structure": "passed"
+      }
+    ],
+    "bindingGates": [
+      "plug-in API/guard registration",
+      "AI Builder prompt action",
+      "connection references",
+      "queue owner-team configuration"
+    ]
+  },
+  "logHashes": {
+    "build-final.log": "2fcfccdce1f386094aa2f06173fe54679a2a0781c9c7d9eacab6208462e9b4ae",
+    "test-final.log": "75a7943e16e495a80f9e59fdd7e598ae8f4cc5e81263925aecd24c9a0aae2f73"
+  },
+  "limitations": [
+    "No tenant import, native transaction, security-role or connector validation",
+    "AI extraction used synthetic fixture provider",
+    "Legacy XSD 9.0.0.2090 rejects modern JsonFileName and connectionreferences; advisory only",
+    "Managed candidates require a validated unmanaged bootstrap/export before release"
+  ]
+}

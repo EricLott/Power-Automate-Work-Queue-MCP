@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Role id="{64aa3dc6-b727-52df-a6b7-0e60202e9163}" name="WQReferenceSharedMailbox Worker">
+  <IsCustomizable>1</IsCustomizable>
+  <RolePrivileges>
+    <RolePrivilege name="prvReadqmcp_emailrequest" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_emailrequest" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_emailrequest" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_emailrequest" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_emailrequest" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_emailrequest" level="Basic" />
+  </RolePrivileges>
+</Role>

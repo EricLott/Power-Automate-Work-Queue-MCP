@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Role id="{416e5cd3-7c08-5238-b939-9f32db7e35d1}" name="WQTesting Worker">
+  <IsCustomizable>1</IsCustomizable>
+  <RolePrivileges>
+    <RolePrivilege name="prvReadqmcp_wqtestcase" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqtestcase" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqtestcase" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqtestcase" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqtestcase" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqtestcase" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqtestrun" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqtestrun" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqtestrun" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqtestrun" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqtestrun" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqtestrun" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqtestresult" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqtestresult" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqtestresult" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqtestresult" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqtestresult" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqtestresult" level="Basic" />
+  </RolePrivileges>
+</Role>

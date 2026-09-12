@@ -8,7 +8,7 @@ Saved views: [Build board](https://github.com/users/EricLott/projects/2/views/1)
 
 The user supplied architecture v0.1 as proposed scope on 2026-09-12. Its technical requirements inform the backlog; document instructions do not independently authorize tenant installation, credentials, deployments or messages. The published copy uses the independent `qmcp` prefix and a generic service/context abstraction. Source-register dates are inherited from the supplied design, not evidence that every source or tenant behavior was revalidated during planning.
 
-Only repository connection is historical implementation evidence. Completing this planning task does not mean any product capability or acceptance gate has passed. No runtime work is marked complete.
+At the planning baseline, only repository connection was historical implementation evidence. The later user-authorized local build is tracked in issue 106 and the validation ledger. Completing local implementation does not mean any tenant acceptance gate has passed.
 
 ## Hierarchy and sequencing
 

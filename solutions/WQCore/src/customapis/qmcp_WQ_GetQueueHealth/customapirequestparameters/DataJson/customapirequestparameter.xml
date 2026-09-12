@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<customapirequestparameter uniquename="DataJson">
+  <iscustomizable>0</iscustomizable>
+  <isoptional>1</isoptional>
+  <logicalentityname />
+  <name>qmcp_WQ_GetQueueHealth.DataJson</name>
+  <type>10</type>
+  <description default="DataJson">
+    <label description="DataJson" languagecode="1033" />
+  </description>
+  <displayname default="DataJson">
+    <label description="DataJson" languagecode="1033" />
+  </displayname>
+</customapirequestparameter>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<pluginpackage uniquename="qmcp_QueueFramework">
+  <exportkeyversion>1</exportkeyversion>
+  <iscustomizable>1</iscustomizable>
+  <name>qmcp_QueueFramework</name>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <version>0.1.0</version>
+  <package mimetype="application/octet-stream">qmcp_QueueFramework.nupkg</package>
+</pluginpackage>

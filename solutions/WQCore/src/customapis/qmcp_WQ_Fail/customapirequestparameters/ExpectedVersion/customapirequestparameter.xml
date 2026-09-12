@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<customapirequestparameter uniquename="ExpectedVersion">
+  <iscustomizable>0</iscustomizable>
+  <isoptional>1</isoptional>
+  <logicalentityname />
+  <name>qmcp_WQ_Fail.ExpectedVersion</name>
+  <type>10</type>
+  <description default="ExpectedVersion">
+    <label description="ExpectedVersion" languagecode="1033" />
+  </description>
+  <displayname default="ExpectedVersion">
+    <label description="ExpectedVersion" languagecode="1033" />
+  </displayname>
+</customapirequestparameter>

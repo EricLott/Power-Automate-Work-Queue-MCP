@@ -1,0 +1,131 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "qmcp_Dataverse": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_testing_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "0.1.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "qmcp_QueueKey": {
+          "defaultValue": "mail",
+          "type": "String"
+        },
+        "qmcp_NativeQueueId": {
+          "defaultValue": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "type": "String"
+        },
+        "qmcp_Mailbox": {
+          "defaultValue": "synthetic@example.invalid",
+          "type": "String"
+        },
+        "qmcp_NotificationAddress": {
+          "defaultValue": "operations@example.invalid",
+          "type": "String"
+        }
+      },
+      "triggers": {
+        "trigger": {
+          "type": "Recurrence",
+          "recurrence": {
+            "frequency": "Minute",
+            "interval": 1
+          },
+          "runtimeConfiguration": {
+            "concurrency": {
+              "runs": 1
+            }
+          }
+        }
+      },
+      "actions": {
+        "ListRuns": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionReferenceName": "qmcp_Dataverse",
+              "operationId": "ListRecords"
+            },
+            "parameters": {
+              "entityName": "qmcp_wqtestruns",
+              "$filter": "qmcp_outcome eq 'Running'",
+              "$top": 50
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          },
+          "runAfter": {}
+        },
+        "Advance": {
+          "type": "Foreach",
+          "foreach": "@body('ListRuns')?['value']",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 1
+            }
+          },
+          "actions": {
+            "RequestIds": {
+              "type": "Compose",
+              "inputs": {
+                "AdvanceTestRun": "@guid()"
+              },
+              "runAfter": {}
+            },
+            "AdvanceTestRun": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformUnboundAction"
+                },
+                "parameters": {
+                  "actionName": "qmcp_WQ_AdvanceTestRun",
+                  "item/QueueKey": "@items('Advance')?['qmcp_queuekey']",
+                  "item/RequestId": "@outputs('RequestIds')?['AdvanceTestRun']",
+                  "item/DataJson": "{}",
+                  "item/ItemId": "@items('Advance')?['qmcp_key']"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {
+                "RequestIds": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "ListRuns": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

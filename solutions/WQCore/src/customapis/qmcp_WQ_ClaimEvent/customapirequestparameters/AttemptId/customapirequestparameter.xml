@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<customapirequestparameter uniquename="AttemptId">
+  <iscustomizable>0</iscustomizable>
+  <isoptional>1</isoptional>
+  <logicalentityname />
+  <name>qmcp_WQ_ClaimEvent.AttemptId</name>
+  <type>10</type>
+  <description default="AttemptId">
+    <label description="AttemptId" languagecode="1033" />
+  </description>
+  <displayname default="AttemptId">
+    <label description="AttemptId" languagecode="1033" />
+  </displayname>
+</customapirequestparameter>

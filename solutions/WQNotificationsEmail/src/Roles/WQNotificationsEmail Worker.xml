@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Role id="{19e2992a-f64b-5b01-bf97-09b5f07e7227}" name="WQNotificationsEmail Worker">
+  <IsCustomizable>1</IsCustomizable>
+  <RolePrivileges />
+</Role>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ImportExportXml version="9.1.0.643" SolutionPackageVersion="9.1" languagecode="1033" generatedBy="CrmLive">
+  <SolutionManifest>
+    <UniqueName>WQTesting</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="WQTesting" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Local development candidate; tenant validation pending" languagecode="1033" />
+    </Descriptions>
+    <Version>0.1.0.0</Version>
+    <Managed>2</Managed>
+    <Publisher>
+      <UniqueName>QueueFramework</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Queue Framework" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Independent queue framework" languagecode="1033" />
+      </Descriptions>
+      <CustomizationPrefix>qmcp</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>40147</CustomizationOptionValuePrefix>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="qmcp_wqtestcase" behavior="0" />
+      <RootComponent type="1" schemaName="qmcp_wqtestrun" behavior="0" />
+      <RootComponent type="1" schemaName="qmcp_wqtestresult" behavior="0" />
+      <RootComponent type="29" id="{5391db37-d88c-57c5-839a-d66c26ffd46a}" behavior="0" />
+      <RootComponent type="20" id="{416e5cd3-7c08-5238-b939-9f32db7e35d1}" behavior="0" />
+      <RootComponent type="20" id="{d78739d0-cec9-5b4e-bca9-76fddc924cca}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies />
+  </SolutionManifest>
+</ImportExportXml>

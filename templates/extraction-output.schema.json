@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contact",
+    "category",
+    "summary"
+  ],
+  "properties": {
+    "contact": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "service",
+        "question"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 4000
+    }
+  }
+}

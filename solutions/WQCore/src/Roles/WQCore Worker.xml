@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Role id="{2c049b4c-1a91-5ecf-853d-0d1c93c768b5}" name="WQCore Worker">
+  <IsCustomizable>1</IsCustomizable>
+  <RolePrivileges>
+    <RolePrivilege name="prvReadqmcp_wqdefinition" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqdefinition" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqdefinition" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqdefinition" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqdefinition" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqdefinition" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqqueuebinding" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqqueuebinding" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqqueuebinding" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqqueuebinding" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqqueuebinding" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqqueuebinding" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqcontract" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqcontract" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqcontract" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqcontract" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqcontract" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqcontract" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqitemcontext" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqitemcontext" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqitemcontext" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqitemcontext" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqitemcontext" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqitemcontext" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqattempt" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqattempt" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqattempt" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqattempt" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqattempt" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqattempt" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqcommand" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqcommand" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqcommand" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqcommand" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqcommand" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqcommand" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqevent" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqevent" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqevent" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqevent" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqevent" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqevent" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqcursor" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqcursor" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqcursor" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqcursor" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqcursor" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqcursor" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqintakefailure" level="Basic" />
+    <RolePrivilege name="prvCreateqmcp_wqintakefailure" level="Basic" />
+    <RolePrivilege name="prvWriteqmcp_wqintakefailure" level="Basic" />
+    <RolePrivilege name="prvAppendqmcp_wqintakefailure" level="Basic" />
+    <RolePrivilege name="prvAppendToqmcp_wqintakefailure" level="Basic" />
+    <RolePrivilege name="prvAssignqmcp_wqintakefailure" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqprincipal" level="Global" />
+    <RolePrivilege name="prvReadworkqueue" level="Basic" />
+    <RolePrivilege name="prvCreateworkqueue" level="Basic" />
+    <RolePrivilege name="prvWriteworkqueue" level="Basic" />
+    <RolePrivilege name="prvAppendworkqueue" level="Basic" />
+    <RolePrivilege name="prvAppendToworkqueue" level="Basic" />
+    <RolePrivilege name="prvReadworkqueueitem" level="Basic" />
+    <RolePrivilege name="prvCreateworkqueueitem" level="Basic" />
+    <RolePrivilege name="prvWriteworkqueueitem" level="Basic" />
+    <RolePrivilege name="prvAppendworkqueueitem" level="Basic" />
+    <RolePrivilege name="prvAppendToworkqueueitem" level="Basic" />
+  </RolePrivileges>
+</Role>

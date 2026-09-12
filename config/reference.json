@@ -1,0 +1,29 @@
+{
+  "policy": {
+    "NativeQueueId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "Enabled": true,
+    "MaxAttempts": 3,
+    "LeaseSeconds": 120,
+    "DeadlineSeconds": 1800,
+    "RetryBaseSeconds": 30,
+    "RetryMaxSeconds": 600,
+    "SafeEffects": true,
+    "Contracts": ["mail.v1"],
+    "Grants": { "local-developer": ["producer", "worker", "reader", "tester", "coordinator", "watchdog", "sender", "retry"] },
+    "Destinations": ["operations"]
+  },
+  "contract": {
+    "Id": "mail.v1",
+    "Dialect": "http://json-schema.org/draft-07/schema#",
+    "Schema": {
+      "type": "object",
+      "required": ["subject", "senderAddress", "bodyText"],
+      "additionalProperties": false,
+      "properties": {
+        "subject": { "type": "string", "maxLength": 1000 },
+        "senderAddress": { "type": "string", "maxLength": 320 },
+        "bodyText": { "type": "string", "maxLength": 50000 }
+      }
+    }
+  }
+}

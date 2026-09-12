@@ -1,0 +1,229 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "qmcp_Dataverse": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_reference_intake_dataverse"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "qmcp_Outlook": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_reference_outlook"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "qmcp_ContentConversion": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "qmcp_reference_contentconversion"
+        },
+        "api": {
+          "name": "shared_conversionservice"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "0.1.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "qmcp_QueueKey": {
+          "defaultValue": "mail",
+          "type": "String"
+        },
+        "qmcp_NativeQueueId": {
+          "defaultValue": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "type": "String"
+        },
+        "qmcp_Mailbox": {
+          "defaultValue": "synthetic@example.invalid",
+          "type": "String"
+        },
+        "qmcp_NotificationAddress": {
+          "defaultValue": "operations@example.invalid",
+          "type": "String"
+        }
+      },
+      "triggers": {
+        "trigger": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "connectionReferenceName": "qmcp_Outlook",
+              "operationId": "SharedMailboxOnNewEmailV2"
+            },
+            "parameters": {
+              "mailboxAddress": "@parameters('qmcp_Mailbox')",
+              "folderId": "Inbox",
+              "includeAttachments": false,
+              "importance": "Any",
+              "hasAttachments": false
+            }
+          },
+          "recurrence": {
+            "frequency": "Minute",
+            "interval": 1
+          },
+          "splitOn": "@triggerOutputs()?['body/value']"
+        }
+      },
+      "actions": {
+        "RequestIds": {
+          "type": "Compose",
+          "inputs": {
+            "Enqueue": "@guid()",
+            "ReportIntakeFailure": "@guid()"
+          },
+          "runAfter": {}
+        },
+        "Intake": {
+          "type": "Scope",
+          "actions": {
+            "HtmlToText": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_conversionservice",
+                  "connectionReferenceName": "qmcp_ContentConversion",
+                  "operationId": "HtmlToText"
+                },
+                "parameters": {
+                  "Content": "@triggerOutputs()?['body/body']"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {}
+            },
+            "Envelope": {
+              "type": "Compose",
+              "inputs": {
+                "envelopeVersion": "1.0",
+                "contract": "mail.v1",
+                "correlationId": "@workflow()?['run']?['name']",
+                "deduplicationKey": "@triggerOutputs()?['body/id']",
+                "source": {
+                  "type": "shared-mailbox",
+                  "mailbox": "@parameters('qmcp_Mailbox')"
+                },
+                "payload": {
+                  "subject": "@coalesce(triggerOutputs()?['body/subject'],'')",
+                  "senderAddress": "@triggerOutputs()?['body/from']",
+                  "bodyText": "@body('HtmlToText')"
+                }
+              },
+              "runAfter": {
+                "HtmlToText": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "Enqueue": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformUnboundAction"
+                },
+                "parameters": {
+                  "actionName": "qmcp_WQ_Enqueue",
+                  "item/QueueKey": "@parameters('qmcp_QueueKey')",
+                  "item/RequestId": "@outputs('RequestIds')?['Enqueue']",
+                  "item/DataJson": "@string(outputs('Envelope'))"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {
+                "Envelope": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "ValidateEnqueueResult": {
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@json(body('Enqueue')?['ResultJson'])",
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "Outcome",
+                    "ItemId"
+                  ],
+                  "properties": {
+                    "Outcome": {
+                      "type": "string",
+                      "enum": [
+                        "Enqueued",
+                        "Existing"
+                      ]
+                    },
+                    "ItemId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Enqueue": [
+                  "Succeeded"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "RequestIds": [
+              "Succeeded"
+            ]
+          }
+        },
+        "ReportIntakeFailure": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionReferenceName": "qmcp_Dataverse",
+              "operationId": "PerformUnboundAction"
+            },
+            "parameters": {
+              "actionName": "qmcp_WQ_ReportIntakeFailure",
+              "item/QueueKey": "@parameters('qmcp_QueueKey')",
+              "item/RequestId": "@outputs('RequestIds')?['ReportIntakeFailure']",
+              "item/DataJson": "@string(setProperty(setProperty(setProperty(json('{}'),'source',coalesce(triggerOutputs()?['body/id'],'unknown')),'correlationId',workflow()?['run']?['name']),'code','INTAKE_FAILED'))"
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          },
+          "runAfter": {
+            "Intake": [
+              "Failed",
+              "TimedOut"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

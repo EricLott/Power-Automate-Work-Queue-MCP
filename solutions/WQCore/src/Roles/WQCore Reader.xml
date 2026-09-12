@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Role id="{430ed126-bf57-5459-bdf4-a24ba4c1fe1a}" name="WQCore Reader">
+  <IsCustomizable>1</IsCustomizable>
+  <RolePrivileges>
+    <RolePrivilege name="prvReadqmcp_wqdefinition" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqqueuebinding" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqcontract" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqitemcontext" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqattempt" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqcommand" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqevent" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqcursor" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqintakefailure" level="Basic" />
+    <RolePrivilege name="prvReadqmcp_wqprincipal" level="Global" />
+    <RolePrivilege name="prvReadworkqueue" level="Basic" />
+    <RolePrivilege name="prvReadworkqueueitem" level="Basic" />
+  </RolePrivileges>
+</Role>

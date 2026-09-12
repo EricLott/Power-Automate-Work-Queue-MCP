@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ImportExportXml>
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="qmcp_reference_intake_dataverse">
+      <connectionreferencedisplayname>qmcp_reference_intake_dataverse</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="qmcp_reference_worker_dataverse">
+      <connectionreferencedisplayname>qmcp_reference_worker_dataverse</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="qmcp_reference_outlook">
+      <connectionreferencedisplayname>qmcp_reference_outlook</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="qmcp_reference_contentconversion">
+      <connectionreferencedisplayname>qmcp_reference_contentconversion</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_conversionservice</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+  </connectionreferences>
+</ImportExportXml>

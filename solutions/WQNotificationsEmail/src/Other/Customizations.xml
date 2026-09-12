@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ImportExportXml>
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="qmcp_notifications_dataverse">
+      <connectionreferencedisplayname>qmcp_notifications_dataverse</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="qmcp_notifications_outlook">
+      <connectionreferencedisplayname>qmcp_notifications_outlook</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365</connectorid>
+      <iscustomizable>1</iscustomizable>
+    </connectionreference>
+  </connectionreferences>
+</ImportExportXml>

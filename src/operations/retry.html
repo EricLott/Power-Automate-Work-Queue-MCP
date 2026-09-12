@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Request a retry</title>
+<style>body{font:16px system-ui,sans-serif;color:#183443;max-width:620px;margin:36px auto;padding:0 24px}h1{font-size:28px}label{display:block;margin-top:20px;font-weight:600}input[type=text],textarea{box-sizing:border-box;width:100%;padding:10px;border:1px solid #8b9ca5;border-radius:4px;font:inherit}button{margin:20px 12px 0 0;padding:10px 18px;border:0;border-radius:4px;background:#145a7a;color:white;font:inherit}button:disabled{opacity:.45}#status{padding:16px;background:#edf4f7;white-space:pre-wrap}small{font-weight:400}</style></head>
+<body><h1>Request a retry</h1><p>Review the work item and reconcile any existing business result before requesting another attempt.</p>
+<form id="retryForm"><label for="queue">Queue key</label><input id="queue" type="text" required maxlength="64" placeholder="mail">
+<label for="item">Work item ID</label><input id="item" type="text" required maxlength="36" placeholder="Work item GUID from the operations view">
+<button type="button" id="inspect">Inspect item</button><p id="status" role="status">Open this page inside the installed Queue Operations app.</p>
+<label for="reason">Reason for retry</label><textarea id="reason" maxlength="500" required rows="3"></textarea>
+<label><input id="reconciled" type="checkbox" required> I have reconciled the business result and verified that retrying is safe.</label>
+<button id="submit" type="submit" disabled>Request retry</button></form>
+<script src="retry.js"></script><script>
+const byId=id=>document.getElementById(id);let version=null;let inspected='';
+const xrm=parent.Xrm;const identity=()=>byId('queue').value+'|'+byId('item').value;
+byId('inspect').onclick=async()=>{byId('submit').disabled=true;version=null;try{if(!xrm?.WebApi)throw new Error('APP_REQUIRED');const r=await QueueOperations.invoke(xrm,'GetItemStatus',byId('queue').value,byId('item').value,{},'',crypto.randomUUID());byId('status').textContent='Status: '+r.Outcome+'\nAttempts: '+r.AttemptCount+'\nReview required: '+r.ReviewRequired;version=r.Version;inspected=identity();byId('submit').disabled=r.Outcome!=='Exception'||!!r.ActiveAttempt;}catch{byId('status').textContent='The item could not be read. Check the app connection, item identity, and your access.';}};
+byId('retryForm').onsubmit=async event=>{event.preventDefault();if(version===null||inspected!==identity()||!byId('reconciled').checked)return;byId('submit').disabled=true;try{const r=await QueueOperations.invoke(xrm,'RequestRetry',byId('queue').value,byId('item').value,{reason:byId('reason').value,reconciliation:'VerifiedSafe'},version,crypto.randomUUID());byId('status').textContent=r.Outcome+'. The scheduled worker will pick up eligible work.';version=null;}catch{byId('status').textContent='Retry was not accepted. Inspect the item again; its state, policy, or your permissions may have changed.';}};
+</script></body></html>

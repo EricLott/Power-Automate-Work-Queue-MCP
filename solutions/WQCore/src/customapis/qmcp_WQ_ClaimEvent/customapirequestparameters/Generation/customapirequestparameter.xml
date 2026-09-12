@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<customapirequestparameter uniquename="Generation">
+  <iscustomizable>0</iscustomizable>
+  <isoptional>1</isoptional>
+  <logicalentityname />
+  <name>qmcp_WQ_ClaimEvent.Generation</name>
+  <type>7</type>
+  <description default="Generation">
+    <label description="Generation" languagecode="1033" />
+  </description>
+  <displayname default="Generation">
+    <label description="Generation" languagecode="1033" />
+  </displayname>
+</customapirequestparameter>

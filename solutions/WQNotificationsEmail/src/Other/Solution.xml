@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ImportExportXml version="9.1.0.643" SolutionPackageVersion="9.1" languagecode="1033" generatedBy="CrmLive">
+  <SolutionManifest>
+    <UniqueName>WQNotificationsEmail</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="WQNotificationsEmail" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Local development candidate; tenant validation pending" languagecode="1033" />
+    </Descriptions>
+    <Version>0.1.0.0</Version>
+    <Managed>2</Managed>
+    <Publisher>
+      <UniqueName>QueueFramework</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Queue Framework" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Independent queue framework" languagecode="1033" />
+      </Descriptions>
+      <CustomizationPrefix>qmcp</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>40147</CustomizationOptionValuePrefix>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="29" id="{d6228ad8-9758-567d-a1a3-2d5c97ab4c73}" behavior="0" />
+      <RootComponent type="20" id="{19e2992a-f64b-5b01-bf97-09b5f07e7227}" behavior="0" />
+      <RootComponent type="20" id="{d52ef633-5189-5274-8a1d-460e0375bd3e}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies />
+  </SolutionManifest>
+</ImportExportXml>

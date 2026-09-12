@@ -1,0 +1,15 @@
+{
+  "version": "0.1.0.0",
+  "publisher": "QueueFramework",
+  "prefix": "qmcp",
+  "stage": "local-development-candidate",
+  "productionReady": false,
+  "schemaDialect": "http://json-schema.org/draft-07/schema#",
+  "packages": [
+    { "name": "WQCore", "requires": [] },
+    { "name": "WQTesting", "requires": ["WQCore"] },
+    { "name": "WQNotificationsEmail", "requires": ["WQCore"] },
+    { "name": "WQReferenceSharedMailbox", "requires": ["WQCore"] }
+  ],
+  "liveValidation": "pending"
+}
