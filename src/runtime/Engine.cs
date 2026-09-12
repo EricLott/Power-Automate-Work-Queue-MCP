@@ -66,7 +66,7 @@ public sealed partial class Engine
             case "RegisterContract": return RegisterContract(c, d);
             case "Enqueue": return Enqueue(c, d, p!);
             case "AcquireNext": return Acquire(c, a, d, p!);
-            case "PrepareAcquire": return PrepareAcquire(c, a, p!);
+            case "PrepareAcquire": return PrepareAcquire(c, a, d, p!);
             case "AcceptAcquire": return AcceptAcquire(c, a, d, p!);
             case "ResolveAcquire": return ResolveAcquire(c, a, p!);
             case "Checkpoint": return Checkpoint(c, a, d);
@@ -155,7 +155,7 @@ public sealed partial class Engine
         return new { Outcome = "Enqueued", ItemId = native.Id };
     }
     string AcquisitionKey(string queue, string actor) => Json.Hash("acquire|" + actor + "|" + queue);
-    object PrepareAcquire(Command c, Actor actor, QueuePolicy policy)
+    object PrepareAcquire(Command c, Actor actor, JObject data, QueuePolicy policy)
     {
         if (!policy.Enabled) return new { Outcome = "QueuePaused" };
         var key = AcquisitionKey(c.QueueKey, actor.Id); var now = clock(); var row = store.Get("cursor", key);
@@ -167,11 +167,11 @@ public sealed partial class Engine
                 if (prior.RequestId != c.RequestId) throw new Fault("ACQUIRE_BUSY");
                 return new { Outcome = "Prepared", NativeQueueId = policy.NativeQueueId, prior.Expires, prior.RequestId };
             }
-            var replacement = new AcquisitionIntent { RequestId = c.RequestId, ActorId = actor.Id, Expires = now.AddSeconds(policy.LeaseSeconds), Status = "Prepared" };
+            var replacement = new AcquisitionIntent { RequestId = c.RequestId, ActorId = actor.Id, Expires = now.AddSeconds(policy.LeaseSeconds), Status = "Prepared", Caller = Caller(data) };
             store.Put(new Row { Kind = "cursor", Key = key, Queue = c.QueueKey, Body = Json.Write(replacement), Updated = now }, row.Version);
             return new { Outcome = "Prepared", NativeQueueId = policy.NativeQueueId, replacement.Expires, replacement.RequestId };
         }
-        var intent = new AcquisitionIntent { RequestId = c.RequestId, ActorId = actor.Id, Expires = now.AddSeconds(policy.LeaseSeconds) };
+        var intent = new AcquisitionIntent { RequestId = c.RequestId, ActorId = actor.Id, Expires = now.AddSeconds(policy.LeaseSeconds), Caller = Caller(data) };
         Add("cursor", key, c.QueueKey, intent);
         return new { Outcome = "Prepared", NativeQueueId = policy.NativeQueueId, intent.Expires, intent.RequestId };
     }
@@ -189,7 +189,7 @@ public sealed partial class Engine
         var item = Item(c); JObject envelope = Json.Object(native.Input); var contract = ValidateEnvelope(c.QueueKey, envelope, policy);
         if (item.context.ActiveAttempt != "" || item.context.ReviewRequired || item.context.AttemptCount >= policy.MaxAttempts) throw new Fault("ITEM_INELIGIBLE");
         var now = clock(); int generation = item.context.Generation + 1;
-        var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, ContractHash = contract.Hash, Caller = new JObject { ["flowId"] = (string?)data["flowId"], ["runId"] = (string?)data["runId"], ["templateVersion"] = (string?)data["templateVersion"] } };
+        var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, ContractHash = contract.Hash, Caller = (JObject?)intent.Caller?.DeepClone() ?? new JObject() };
         Add("attempt", attempt.Id, c.QueueKey, attempt); item.context.ActiveAttempt = attempt.Id; item.context.Generation = generation; item.context.AttemptCount++;
         // Compare against the versions that were validated, not a fresh read that
         // could silently overwrite a concurrently replaced intent or item context.
@@ -199,6 +199,7 @@ public sealed partial class Engine
         intent.Status = "Consumed"; intent.Result = Json.Write(result);
         row.Body = Json.Write(intent); row.Updated = now; store.Put(row, row.Version); return result;
     }
+    static JObject Caller(JObject data) => new JObject { ["flowId"] = (string?)data["flowId"], ["runId"] = (string?)data["runId"], ["templateVersion"] = (string?)data["templateVersion"] };
     object ResolveAcquire(Command c, Actor actor, QueuePolicy policy)
     {
         var receiptRow = store.Get("command", Json.Hash(actor.Id + "|AcceptAcquire|" + c.RequestId));
@@ -274,9 +275,9 @@ public sealed partial class Engine
         Events(c.QueueKey, item.context.ItemId, item.attempt.Id, "Processed", item.attempt.Policy);
         return new { Outcome = "Processed", ItemId = item.native.Id };
     }
-    void Close(NativeItem native, ItemContext context, Attempt attempt, string status, string error)
+    void Close(NativeItem native, ItemContext context, Attempt attempt, string status, string error, string? nativeStatus = null)
     {
-        native.Status = status; store.NativeSet(native);
+        native.Status = nativeStatus ?? status; store.NativeSet(native);
         attempt.Outcome = status; attempt.ErrorCode = error; context.LastAttempt = attempt.Id; context.ActiveAttempt = "";
         Save("attempt", attempt.Id, attempt); Save("itemcontext", native.UniqueKey, context);
     }
@@ -285,16 +286,15 @@ public sealed partial class Engine
         var item = Owned(c, actor); string category = Required(d, "category", 40), code = Required(d, "code", 100);
         if (!new[] { "Technical", "Business", "Unknown" }.Contains(category)) throw new Fault("INPUT_INVALID");
         bool safe = category == "Technical" && (string?)d["effect"] == "None" && item.attempt.Policy.SafeEffects && item.context.AttemptCount < item.attempt.Policy.MaxAttempts && clock() < item.attempt.Deadline;
-        item.context.ReviewRequired = !safe;
-        Close(item.native, item.context, item.attempt, "Exception", code);
         if (safe)
         {
             var delay = Math.Min(item.attempt.Policy.RetryMaxSeconds, item.attempt.Policy.RetryBaseSeconds * Math.Pow(2, item.context.AttemptCount - 1));
             var jitter = Convert.ToInt32(Json.Hash(item.attempt.Id).Substring(0, 2), 16) % Math.Max(1, item.attempt.Policy.RetryBaseSeconds / 4);
             item.native.Available = clock().AddSeconds(Math.Min(item.attempt.Policy.RetryMaxSeconds, delay + jitter));
-            if (item.native.Available >= item.attempt.Deadline) { item.context.ReviewRequired = true; Save("itemcontext", item.native.UniqueKey, item.context); safe = false; }
-            else { item.native.Status = "Queued"; store.NativeSet(item.native); }
+            if (item.native.Available >= item.attempt.Deadline) safe = false;
         }
+        item.context.ReviewRequired = !safe;
+        Close(item.native, item.context, item.attempt, "Exception", code, safe ? "Queued" : null);
         Events(c.QueueKey, item.native.Id, item.attempt.Id, safe ? "RetryScheduled" : "ReviewRequired", item.attempt.Policy);
         return new { Outcome = safe ? "RetryScheduled" : "ReviewRequired", ItemId = item.native.Id };
     }
@@ -306,6 +306,7 @@ public sealed partial class Engine
         if (item.native.Expires <= clock()) throw new Fault("ITEM_EXPIRED");
         if (item.native.Status != "Exception" || item.context.ActiveAttempt != "" || !policy.SafeEffects || item.context.AttemptCount >= policy.MaxAttempts || (string?)d["reconciliation"] != "VerifiedSafe") throw new Fault("RETRY_UNSAFE");
         item.context.ReviewRequired = false; item.context.Generation++;
+        // The adapter resets an Error item to Queued without a delayed-requeue payload.
         item.native.Status = "Queued"; item.native.Available = clock(); store.NativeSet(item.native);
         Save("itemcontext", item.native.UniqueKey, item.context);
         return new { Outcome = "RetryScheduled", ItemId = item.native.Id };

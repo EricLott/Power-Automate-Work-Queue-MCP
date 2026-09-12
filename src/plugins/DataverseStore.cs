@@ -128,7 +128,12 @@ public sealed class DataverseStore : IStore
     public void NativeSet(NativeItem item)
     {
         int state = item.Status == "Queued" ? 0 : item.Status == "Processing" ? 1 : item.Status == "Processed" ? 2 : item.Status == "Exception" ? 4 : throw new Fault("NATIVE_STATE_UNSUPPORTED");
-        var e = new Entity("workqueueitem", Guid.Parse(item.Id)); e["statecode"] = new OptionSetValue(state); e["statuscode"] = new OptionSetValue(state); e["delayuntil"] = item.Available;
+        var e = new Entity("workqueueitem", Guid.Parse(item.Id)); e["statecode"] = new OptionSetValue(state); e["statuscode"] = new OptionSetValue(state);
+        // Supplying delayuntil invokes native requeue validation even for a
+        // terminal transition. Do not resend an item's historical availability.
+        // A due operator retry is a status reset from Error, without a requeue
+        // payload. A delayed automatic retry arrives directly from Processing.
+        if (state == 0 && item.Available > DateTime.UtcNow) e["delayuntil"] = item.Available;
         if (state == 2) e["completedon"] = DateTime.UtcNow; service.Update(e);
     }
     public void NativeRedactInput(string id) { var entity = new Entity("workqueueitem", Guid.Parse(id)); entity["input"] = "{}"; service.Update(entity); }

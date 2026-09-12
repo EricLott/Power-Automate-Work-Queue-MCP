@@ -47,3 +47,22 @@ Native dequeue exposed a separate boundary. An unregistered synthetic queue succ
 The next candidate uses a committed acquisition intent, standard native dequeue, a synchronous item Update post-operation handler that accepts the acquisition, and receipt resolution before business processing. This candidate is under implementation and security review; it has not yet passed tenant validation. Rollback, concurrent calls and lost-response recovery remain open gates. All seven flows remain Draft. Exception-only plug-in tracing was temporarily enabled for the investigation; its prior setting is retained locally for restoration.
 
 The handoff candidate passed **121 local tests** (67 runtime, 21 plug-in adapter, 23 Python and 10 MCP/operator), and all eight archives passed the packaging round trip. Coverage includes acquisition intent expiry/identity checks, direct and forged-handler admission rejection, receipt queue isolation and rejecting a changed intent version. These are local checks; they do not establish the proposed native transaction boundary.
+
+
+## Guarded handoff and recovery proof
+
+The next bounded development run succeeded. All 23 Custom APIs are bound; 39 pre-operation guards and one acquisition post-operation step with its pre-image were registered. Native core adds `processinguser` and `processingstarttime` after pre-operation admission, so the two guards intentionally validate different observed field sets. Nested companion writes retain the registered post-handler ancestor but omit the nested API ancestor; authorization is restricted to the four acquisition persistence writes.
+
+[Redacted proof evidence](evidence/acquisition-handoff-2026-09-12.json) records:
+
+- A forced failure before receipt persistence rolled back the native claim and attempt. Both candidate items remained Queued with zero attempts and acceptance receipts.
+- Two concurrent native dequeue calls against one prepared intent committed exactly one Processing item, attempt and acceptance receipt. The other item remained Queued. Repeated resolution returned the identical result.
+- A business record written before a completion failure was reconciled and reused during recovery. The item finished Processed without a duplicate record.
+- Safe automatic retry transitioned directly from Processing to Queued with a future delay while closing the failed attempt as Exception. An early dequeue left it unclaimed; a later claim used a higher ownership generation and completed.
+- Final reads found three Processed synthetic items, five attempts and three distinct business records. The injected principal fault was removed and the original organization tracing setting restored.
+
+Native transition troubleshooting established that resending historical `delayuntil` during completion invokes requeue validation. Delayed requeue also requires an initial Processing state. The adapter now omits delay for terminal transitions and immediate operator resets; automatic retry performs the delayed Processing-to-Queued transition directly.
+
+The final local suite passed **140 tests** (72 runtime, 35 plug-in adapter, 23 Python, 10 MCP/operator). All eight archives passed the build and PAC round trip. The corrected plug-in package was pushed successfully. The reference solution reimport and publishing also succeeded; a subsequent read verified that ProcessOne remains Draft and uses PrepareAcquire, native Dequeue and ResolveAcquire. The post-operation step and pre-image were verified again. See the [reproduction procedure](acquisition-proof.md) for the parameterized CLI proof utility.
+
+These results are selected synthetic single-operator experiments. They do not close the full rollback/failure matrix, separate-identity authorization, real flow/mailbox/prompt execution, clean installation or managed upgrade gates. All 22 acceptance gates remain open. Earlier sections retain their historical checkpoint results.

@@ -1,0 +1,103 @@
+{
+  "date": "2026-09-12",
+  "classification": "synthetic-development-tenant-experiment",
+  "organizationVerified": true,
+  "scope": "Single authenticated development operator; native Dataverse calls through CLI; installed flows remain Draft.",
+  "localTests": {
+    "runtime": 72,
+    "plugins": 35,
+    "python": 23,
+    "mcp": 10,
+    "total": 140
+  },
+  "packageValidation": "Eight managed/unmanaged archives passed build and PAC round-trip validation.",
+  "observations": [
+    {
+      "step": "receipt-failure-rollback",
+      "queuedItems": 2,
+      "attempts": 0,
+      "acceptReceipts": 0,
+      "profileRestored": true
+    },
+    {
+      "step": "concurrent-native-claims",
+      "responses": [
+        {
+          "ok": false,
+          "item": null
+        },
+        {
+          "ok": true,
+          "item": "synthetic-item-redacted"
+        }
+      ],
+      "nativeStates": [
+        1,
+        0
+      ],
+      "attempts": 1,
+      "acceptReceipts": 1,
+      "repeatedResolveIdentical": true
+    },
+    {
+      "step": "completed",
+      "item": "synthetic-item-redacted",
+      "nativeState": 2
+    },
+    {
+      "step": "safe-delayed-retry",
+      "nativeState": 0,
+      "attemptOutcome": "Exception",
+      "delayUntil": "2026-09-12T22:41:29Z"
+    },
+    {
+      "step": "delayed-item-not-claimed-early",
+      "nativeItemReturned": false
+    },
+    {
+      "step": "completed",
+      "item": "synthetic-item-redacted",
+      "nativeState": 2
+    },
+    {
+      "step": "proof-completed",
+      "processedItems": 2,
+      "attemptCounts": [
+        1,
+        2
+      ],
+      "allLiveGatesRemainOpen": true
+    }
+  ],
+  "postWriteRecovery": {
+    "businessRecordCreatedBeforeCompletionFailure": true,
+    "reconciliationFoundExistingRecord": true,
+    "retryReusedRecord": true,
+    "finalNativeState": "Processed",
+    "attemptCount": 2
+  },
+  "finalFixtureRead": {
+    "organizationVerified": true,
+    "processedItems": 3,
+    "attempts": 5,
+    "distinctBusinessRecords": 3,
+    "proofFaultAbsent": true
+  },
+  "traceSettingRestored": true,
+  "acceptanceGatesClosed": 0,
+  "limitations": [
+    "No flow activation or real mailbox/prompt execution.",
+    "No separate-user least-privilege proof.",
+    "No clean-environment install or managed upgrade proof.",
+    "Fault injection and concurrency cover selected boundaries, not the full matrix.",
+    "Reusable proof script is parameterized from the executed scratch proof; its new wrapper has only offline validation."
+  ],
+  "finalRegistrationRead": {
+    "referenceProcessOneDraft": true,
+    "handoffActionsVerified": true,
+    "postStepStage": 40,
+    "preImageVerified": true,
+    "originalTraceSettingRestored": true
+  },
+  "referenceSolutionImport": "Succeeded; Published All Customizations; ProcessOne remained Draft with handoff actions verified"
+}

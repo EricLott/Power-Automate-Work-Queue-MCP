@@ -172,4 +172,5 @@ public sealed class AcquisitionIntent
     public DateTime Expires { get; set; }
     public string Status { get; set; } = "Prepared";
     public string Result { get; set; } = "";
+    public JObject Caller { get; set; } = new JObject();
 }

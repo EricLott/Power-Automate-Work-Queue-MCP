@@ -30,3 +30,8 @@ GPT-5.6 Luna agents reviewed packaging, runtime/SDK handling, and MCP/operator b
 All [22 acceptance gates](validation.md) remain open. The next stage is the [first development import](first-import.md): actual API/guard registration, native dequeue transaction experiments, privileges/team ownership, connection references, child-flow bindings, and an approved AI Builder prompt. The [acquisition handoff decision](decisions/2026-09-12-acquisition-handoff.md) records the proposed post-operation composition and its unproven atomicity gates. Generated flows are draft, and the prompt action deliberately fails until its provider binding is supplied. The local extractor is a synthetic fixture.
 
 The older Microsoft XSD advisory reports unsupported `JsonFileName` and `connectionreferences` elements in each package. This is recorded as a legacy-schema limitation, not a passed current import validation. Managed import/upgrade, live AI quality, real mailbox behavior, and capacity measurements have not been demonstrated.
+
+
+## Subsequent handoff regression checkpoint
+
+After native transition corrections, **140 local tests** passed: 72 runtime, 35 plug-in adapter, 23 Python and 10 MCP/operator. The fresh build passed all eight archive round trips. [Live synthetic evidence](evidence/acquisition-handoff-2026-09-12.json) supplements these checks; all acceptance gates remain open. Earlier counts above describe historical runs.

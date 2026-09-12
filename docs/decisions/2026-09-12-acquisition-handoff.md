@@ -51,3 +51,10 @@ real tenant traces and rollback evidence are captured.
 
 These checks are the remaining evidence for G04/G05 and do not follow from
 local runtime tests or PAC pack/unpack success.
+
+
+## Bounded live evidence added on 2026-09-12
+
+The [redacted tenant checkpoint](../evidence/acquisition-handoff-2026-09-12.json) now demonstrates rollback before receipt persistence, one committed claim under two concurrent native calls, repeated receipt resolution, completion replay and delayed retry in the authorized synthetic development fixture. Full fault, identity and deployment matrices above remain release gates.
+
+Request ownership comes from the durable acceptance receipt. An old native call arriving after intent replacement can consume the new intent, but the old request cannot resolve the new receipt. Only the new request can enter business processing. Local tests cover expired unconsumed intent replacement and receipt isolation. An abandoned accepted attempt requires conservative watchdog recovery; raw native output never authorizes business processing. No arbitrary expiry quarantine is assumed to prove a platform duration bound.

@@ -79,7 +79,7 @@ public sealed class LifecyclePlugin : IPlugin
         return null;
     }
 
-    static bool HasAcquisitionPostAncestor(IPluginExecutionContext current, IOrganizationService metadata)
+    internal static bool HasAcquisitionPostAncestor(IPluginExecutionContext current, IOrganizationService metadata)
     {
         if (!current.IsInTransaction || current.Mode != 0) return false;
         for (var parent = current.ParentContext; parent != null; parent = parent.ParentContext)
@@ -110,7 +110,10 @@ public sealed class AcquisitionPostPlugin : IPlugin
     static readonly HashSet<string> Allowed = new HashSet<string>(StringComparer.Ordinal)
     {
         "machineuser", "processorid", "processortype", "statecode", "statuscode", "workqueueitemid",
-        "modifiedby", "modifiedon", "modifiedonbehalfby"
+        "modifiedby", "modifiedon", "modifiedonbehalfby",
+        // Observed additions from the native core operation. The pre-operation
+        // guard deliberately does not allow callers to supply these fields.
+        "processingstarttime", "processinguser"
     };
 
     public void Execute(IServiceProvider provider)
@@ -136,7 +139,12 @@ public sealed class AcquisitionPostPlugin : IPlugin
             if (!ClaimTransition(pre, target, native, context.InitiatingUserId)) return;
             if (context.InitiatingUserId == Guid.Empty || context.UserId != context.InitiatingUserId || context.PrimaryEntityId == Guid.Empty)
                 throw new Fault("ACQUISITION_HANDOFF_REQUIRED");
-            if (target.Attributes.Keys.Any(k => !Allowed.Contains(k))) throw new Fault("ACQUISITION_FIELDS_UNSUPPORTED");
+            if (target.Attributes.Keys.Any(k => !Allowed.Contains(k)))
+            {
+                var trace = (ITracingService)provider.GetService(typeof(ITracingService));
+                trace?.Trace("qmcp acquisition post target attributes: {0}", string.Join(",", target.Attributes.Keys.OrderBy(k => k, StringComparer.Ordinal)));
+                throw new Fault("ACQUISITION_FIELDS_UNSUPPORTED");
+            }
             var processingUser = native.GetAttributeValue<EntityReference>("processinguser");
             if (processingUser == null || processingUser.Id != context.InitiatingUserId) throw new Fault("ACQUISITION_HANDOFF_REQUIRED");
             var binding = bindingRows[0];
@@ -196,6 +204,13 @@ public sealed class LifecycleGuard : IPlugin
         catch (Exception) { }
         for (var parent = c.ParentContext; parent != null; parent = parent.ParentContext)
             if (metadata != null && IsTrustedFrameworkParent(c, parent, metadata)) return;
+        // In the observed native handoff, companion write contexts retain the
+        // registered post handler but omit the nested AcceptAcquire API context.
+        // This ancestry authorizes only the four acquisition persistence writes.
+        var acquisitionWrite =
+            (c.MessageName == "Create" && (c.PrimaryEntityName == "qmcp_wqattempt" || c.PrimaryEntityName == "qmcp_wqcommand")) ||
+            (c.MessageName == "Update" && (c.PrimaryEntityName == "qmcp_wqitemcontext" || c.PrimaryEntityName == "qmcp_wqcursor"));
+        if (acquisitionWrite && metadata != null && LifecyclePlugin.HasAcquisitionPostAncestor(c, metadata)) return;
         // Companion state is only writable through framework actions. Principal/bootstrap configuration is separately privileged.
         if (c.PrimaryEntityName != "workqueueitem") throw new InvalidPluginExecutionException("LIFECYCLE_BYPASS");
         var service = ((IOrganizationServiceFactory)provider.GetService(typeof(IOrganizationServiceFactory))).CreateOrganizationService(null);
