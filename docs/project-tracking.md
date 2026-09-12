@@ -61,6 +61,8 @@ At refinement, split oversized items, recheck dependency order and update later-
 
 ## Reconciliation tooling
 
+Manage the board and issues with GitHub CLI, not browser automation. Authenticate `gh` with project access, then inspect `gh project field-list 2 --owner EricLott --format json` and `gh project item-list 2 --owner EricLott --limit 200 --format json` before changing fields. Use `gh project item-edit` with verified field/item IDs or supported field-name arguments, and read back the result. Use `gh issue edit --body-file` for multiline evidence updates after preserving the existing body. Repository access alone does not prove project access; an authentication failure must not be reported as a completed board update.
+
 `planning/publish-backlog.ps1` uses the existing Git credential without printing or persisting it. Create mode deduplicates with stable issue markers, Link mode reconciles native hierarchy/dependencies, and Verify mode checks the baseline. These are explicit maintenance commands, not scheduled automation. The project auto-add workflow tracks new or updated issues from this repository; new work still needs labels, milestone, parent and prerequisites.
 
 ## Planning references

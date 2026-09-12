@@ -24,10 +24,10 @@ class FlowInvariantTests(unittest.TestCase):
         flow=self.flow('Watchdog');flow['properties']['definition']['actions']['Sweep']['limit']['count']=100000
         with self.assertRaises(AssertionError):validate_flow(flow,'Watchdog')
     def test_unstable_request_id_rejected(self):
-        flow=self.flow('ProcessOne');flow['properties']['definition']['actions']['AcquireNext']['inputs']['parameters']['item/RequestId']='@guid()'
+        flow=self.flow('ProcessOne');flow['properties']['definition']['actions']['PrepareAcquire']['inputs']['parameters']['item/RequestId']='@guid()'
         with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
     def test_missing_dependency_rejected(self):
-        flow=self.flow('ProcessOne');flow['properties']['definition']['actions']['AcquireNext']['runAfter']={'missing':['Succeeded']}
+        flow=self.flow('ProcessOne');flow['properties']['definition']['actions']['PrepareAcquire']['runAfter']={'missing':['Succeeded']}
         with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
 
 class XmlRoundTripTests(unittest.TestCase):

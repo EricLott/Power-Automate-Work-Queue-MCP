@@ -14,6 +14,16 @@ def action(op,data='{}',after=None,owned=False):
     if owned:
         for name in ['ItemId','AttemptId','Generation']:p['item/'+name]="@outputs('Acquired')?['"+name+"']"
     return connector('PerformUnboundAction',p,after)
+def native_dequeue(after=None):
+    # Dataverse documents Dequeue as a bound action on a Work Queues row.
+    # The connector's PerformBoundAction shape uses entityName/actionName/recordId.
+    return connector('PerformBoundAction', {
+        # Connector entityName values use the table's logical collection name;
+        # Work Queues is exposed as the plural workqueues entity set.
+        'entityName': 'workqueues',
+        'actionName': 'Microsoft.Dynamics.CRM.Dequeue',
+        'recordId': "@outputs('Prepared')?['NativeQueueId']",
+    }, after)
 def compose(value,after=None):return {'type':'Compose','inputs':value,'runAfter':{} if after is None else {after:['Succeeded']}}
 def request_ids(ops):return compose({op:'@guid()' for op in ops})
 def workflow(name,trigger,actions,connections=('qmcp_Dataverse',)):
@@ -43,7 +53,7 @@ def save(name,package,data):
     write_xml(solpath,sol.getroot())
 
 def generate():
-    acquired="@json(body('AcquireNext')?['ResultJson'])"
+    acquired="@outputs('Resolved')"
     record_doc={'sourceKey':"@outputs('Acquired')?['SourceKey']",'contentHash':"@outputs('Acquired')?['ContentHash']",'testRun':"@outputs('Acquired')?['TestRun']",'fields':"@body('ValidateExtraction')",'promptVersion':'mail-extraction-v1'}
     prompt={'type':'Terminate','inputs':{'runStatus':'Failed','runError':{'code':'PROMPT_BINDING_REQUIRED','message':'Bind the approved AI Builder prompt action before activation.'}},'runAfter':{},'metadata':{'qmcpBinding':'approved-prompt-action'}}
     output_schema={'type':'object','additionalProperties':False,'required':['contact','category','summary'],'properties':{'contact':{'type':'string','minLength':1,'maxLength':320},'category':{'type':'string','enum':['service','question']},'summary':{'type':'string','maxLength':4000}}}
@@ -54,9 +64,19 @@ def generate():
       'CreateIfAbsent':{'type':'If','expression':{'equals':["@length(body('FindExisting')?['value'])",0]},'actions':make,'else':{'actions':{}},'runAfter':{'FindExisting':['Succeeded']}},
       'FindResult':connector('ListRecords',{'entityName':'qmcp_emailrequests','$filter':"@concat('qmcp_key eq ''', outputs('Acquired')?['BusinessKey'], '''')",'$top':2},'CreateIfAbsent'),
       'Reconciled':{'type':'If','expression':{'and':[{'equals':["@length(body('FindResult')?['value'])",1]},{'equals':["@json(first(body('FindResult')?['value'])?['qmcp_document'])?['contentHash']","@outputs('Acquired')?['ContentHash']"]}]},'actions':{'Complete':action('Complete',"@string(setProperty(setProperty(json('{}'), 'table', 'qmcp_emailrequest'), 'recordId', first(body('FindResult')?['value'])?['qmcp_emailrequestid']))",owned=True)},'else':{'actions':{'Conflict':{'type':'Terminate','inputs':{'runStatus':'Failed','runError':{'code':'BUSINESS_CONTENT_CONFLICT','message':'Existing source identity failed reconciliation.'}},'runAfter':{}}}},'runAfter':{'FindResult':['Succeeded']}}}
-    a={'RequestIds':request_ids(['AcquireNext','Complete','Fail']),'AcquireNext':action('AcquireNext',"@string(setProperty(setProperty(json('{}'), 'runId', workflow()?['run']?['name']), 'templateVersion', '0.1.0.0'))",'RequestIds'),'Acquired':compose(acquired,'AcquireNext'),
+    a={'RequestIds':request_ids(['PrepareAcquire','ResolveAcquire','Complete','Fail']),
+       'PrepareAcquire':action('PrepareAcquire',"@string(setProperty(setProperty(json('{}'), 'runId', workflow()?['run']?['name']), 'templateVersion', '0.1.0.0'))",'RequestIds'),
+       'Prepared':compose("@json(body('PrepareAcquire')?['ResultJson'])",'PrepareAcquire'),
+       'HasPrepared':{'type':'If','expression':{'equals':["@outputs('Prepared')?['Outcome']",'Prepared']},'actions':{'Dequeue':native_dequeue()},'else':{'actions':{}},'runAfter':{'Prepared':['Succeeded']}},
+       'ResolveAcquire':action('ResolveAcquire','{}','HasPrepared'),
+       'Resolved':compose("@json(body('ResolveAcquire')?['ResultJson'])",'ResolveAcquire'),
+       'Acquired':compose(acquired,'Resolved'),
        'HasWork':{'type':'If','expression':{'equals':["@outputs('Acquired')?['Outcome']",'Acquired']},'actions':{'Business':{'type':'Scope','actions':business,'runAfter':{}},'ReportFailure':action('Fail','{"category":"Unknown","code":"WORKER_SCOPE_FAILED","effect":"Unknown"}',owned=True)},'else':{'actions':{}},'runAfter':{'Acquired':['Succeeded']}}}
+    # Resolve must replay the exact Prepare request identity after a lost or
+    # failed native Dequeue response.
+    a['ResolveAcquire']['inputs']['parameters']['item/RequestId']="@outputs('RequestIds')?['PrepareAcquire']"
     a['HasWork']['actions']['ReportFailure']['runAfter']={'Business':['Failed','TimedOut']}
+    a['ResolveAcquire']['runAfter']={'HasPrepared':['Succeeded','Failed','TimedOut']}
     a['Respond']={'type':'Response','kind':'PowerApp','inputs':{'statusCode':200,'body':{'outcome':"@outputs('Acquired')?['Outcome']"}},'runAfter':{'HasWork':['Succeeded']}}
     save('ProcessOne','WQReferenceSharedMailbox',workflow('ProcessOne',child(),a))
     trigger={'type':'OpenApiConnectionNotification','inputs':{'host':{'apiId':API,'connectionReferenceName':'qmcp_Dataverse','operationId':'SubscribeWebhookTrigger'},'parameters':{'subscriptionRequest/message':4,'subscriptionRequest/entityname':'workqueueitem','subscriptionRequest/scope':4,'subscriptionRequest/filterexpression':"@concat('_workqueueid_value eq ', parameters('qmcp_NativeQueueId'), ' and statecode eq 0')"}},'runtimeConfiguration':{'concurrency':{'runs':1}}}

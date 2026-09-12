@@ -1,0 +1,26 @@
+{
+  "classification": "tenant-read-only-metadata",
+  "tenantImport": "read-only-check",
+  "organizationVerified": true,
+  "organizationId": "redacted",
+  "source": "Dataverse Web API metadata via authenticated Microsoft Dataverse CLI",
+  "tables": [
+    {"logicalName":"qmcp_wqdefinition","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqqueuebinding","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqcontract","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqitemcontext","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqattempt","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqcommand","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqevent","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqcursor","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqintakefailure","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqprincipal","ownership":"OrganizationOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqtestcase","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqtestrun","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_wqtestresult","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"},
+    {"logicalName":"qmcp_emailrequest","ownership":"UserOwned","optimisticConcurrency":true,"keyStatus":"Active"}
+  ],
+  "limitations": [
+    "Read-only metadata confirms table definitions and alternate-key index status; it does not prove queue-team ownership, role enforcement, plug-in guards, API execution, or transaction behavior."
+  ]
+}

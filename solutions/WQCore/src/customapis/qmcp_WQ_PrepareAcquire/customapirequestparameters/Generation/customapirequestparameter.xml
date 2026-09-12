@@ -1,0 +1,13 @@
+<customapirequestparameter uniquename="Generation">
+  <iscustomizable>0</iscustomizable>
+  <isoptional>1</isoptional>
+  <logicalentityname />
+  <name>qmcp_WQ_PrepareAcquire.Generation</name>
+  <type>7</type>
+  <description default="Generation">
+    <label description="Generation" languagecode="1033" />
+  </description>
+  <displayname default="Generation">
+    <label description="Generation" languagecode="1033" />
+  </displayname>
+</customapirequestparameter>

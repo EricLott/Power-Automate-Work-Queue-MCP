@@ -165,3 +165,11 @@ public sealed class Delivery
     public int Tries { get; set; }
     public string ErrorCode { get; set; } = "";
 }
+public sealed class AcquisitionIntent
+{
+    public string RequestId { get; set; } = "";
+    public string ActorId { get; set; } = "";
+    public DateTime Expires { get; set; }
+    public string Status { get; set; } = "Prepared";
+    public string Result { get; set; } = "";
+}

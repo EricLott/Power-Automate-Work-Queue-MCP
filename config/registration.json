@@ -5,6 +5,21 @@
   "guardType": "QueueFramework.Plugins.LifecycleGuard",
   "isolation": "Sandbox",
   "transactionRequired": true,
+  "acquisitionHandoff": {
+    "prepareApi": "qmcp_WQ_PrepareAcquire",
+    "acceptApi": "qmcp_WQ_AcceptAcquire",
+    "resolveApi": "qmcp_WQ_ResolveAcquire",
+    "legacyApi": "qmcp_WQ_AcquireNext",
+    "legacyDisposition": "rejected: ACQUISITION_HANDOFF_REQUIRED",
+    "flowSequence": [
+      "PrepareAcquire",
+      "native Dequeue(workqueue)",
+      "ResolveAcquire"
+    ],
+    "sameRequestId": true,
+    "nativeQueueId": "PrepareAcquire.ResultJson.NativeQueueId",
+    "businessGate": "ResolveAcquire.ResultJson.Outcome == Acquired"
+  },
   "guardSteps": [
     {
       "table": "qmcp_wqdefinition",

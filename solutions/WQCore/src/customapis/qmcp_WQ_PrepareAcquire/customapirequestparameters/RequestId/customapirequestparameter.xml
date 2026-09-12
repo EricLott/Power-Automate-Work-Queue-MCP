@@ -1,0 +1,13 @@
+<customapirequestparameter uniquename="RequestId">
+  <iscustomizable>0</iscustomizable>
+  <isoptional>0</isoptional>
+  <logicalentityname />
+  <name>qmcp_WQ_PrepareAcquire.RequestId</name>
+  <type>10</type>
+  <description default="RequestId">
+    <label description="RequestId" languagecode="1033" />
+  </description>
+  <displayname default="RequestId">
+    <label description="RequestId" languagecode="1033" />
+  </displayname>
+</customapirequestparameter>

@@ -25,6 +25,9 @@ def plan():
     manifest=json.loads((ROOT/'artifacts/packages/manifest.json').read_text())
     body={'version':1,'purpose':'first unmanaged development import only','packageManifest':manifest,
         'apiType':'QueueFramework.Plugins.LifecyclePlugin','guardType':'QueueFramework.Plugins.LifecycleGuard',
+        'acquisitionPostType':'QueueFramework.Plugins.AcquisitionPostPlugin',
+        'acquisitionPostStep':{'table':'workqueueitem','message':'Update','stage':40,'mode':0,
+            'preImage':{'name':'Before','imageType':0,'attributes':'statecode,workqueueid'}},
         'apis':['qmcp_WQ_'+op for op in apis['operations']],'guardSteps':registration['guardSteps'],
         'activation':False,'createsActorProfiles':False,'assignsSecurityRoles':False}
     body['planHash']=hashlib.sha256(json.dumps(body,sort_keys=True,separators=(',',':')).encode()).hexdigest()
@@ -44,9 +47,8 @@ def _cli_command():
 
 def _cli_request(command,origin,method,relative,body=None,solution='WQCore',runner=subprocess.run):
     if '://' in relative or relative.startswith('/'): raise ValueError('RELATIVE_PATH_REQUIRED')
-    args=command+['api','request','--target','dataverse','--path',relative,'--method',method,
-        '--header','Accept: application/json','--header','OData-MaxVersion: 4.0',
-        '--header','OData-Version: 4.0','--header','MSCRM.SolutionUniqueName: '+solution,
+    args=command+['api','request','--target','dataverse','--path','/api/data/v9.2/'+relative,'--method',method,
+        '--header','Accept: application/json','--header','MSCRM.SolutionUniqueName: '+solution,
         '--environment',origin]
     temporary=None
     try:
@@ -103,17 +105,18 @@ def execute(binding,approved_hash,dataverse_cli=False,runner=None):
     if str(who['OrganizationId']).lower()!=expected:raise ValueError('ENVIRONMENT_MISMATCH')
     runtime=one(query('plugintypes','plugintypeid',"typename eq '"+p['apiType']+"'"))['plugintypeid']
     guard=one(query('plugintypes','plugintypeid',"typename eq '"+p['guardType']+"'"))['plugintypeid']
+    acquisition_post=one(query('plugintypes','plugintypeid',"typename eq '"+p['acquisitionPostType']+"'"))['plugintypeid']
     completed=[]
     for api in p['apis']:
-        row=one(query('customapis','customapiid',"uniquename eq '"+api+"'"))
-        request('PATCH','customapis('+row['customapiid']+')',{'plugintypeid@odata.bind':'/plugintypes('+runtime+')'},'WQTesting' if any(api.endswith(x) for x in ['StartTestRun','GetTestRun','AdvanceTestRun','CleanupTestRun']) else 'WQCore')
+        row=one(query('customapis','customapiid,_plugintypeid_value',"uniquename eq '"+api+"'"))
+        if row.get('_plugintypeid_value')!=runtime: request('PATCH','customapis('+row['customapiid']+')',{'PluginTypeId@odata.bind':'/plugintypes('+runtime+')'},'WQTesting' if any(api.endswith(x) for x in ['StartTestRun','GetTestRun','AdvanceTestRun','CleanupTestRun']) else 'WQCore')
         completed.append(api)
     for specification in p['guardSteps']:
         table=specification['table']
         metadata=request('GET',"EntityDefinitions(LogicalName='"+table+"')?$select=ObjectTypeCode")
         for message in specification['messages']:
             msg=one(query('sdkmessages','sdkmessageid',"name eq '"+message+"'"))['sdkmessageid']
-            filter=one(query('sdkmessagefilters','sdkmessagefilterid',"_sdkmessageid_value eq "+msg+" and primaryobjecttypecode eq "+str(metadata['ObjectTypeCode'])))['sdkmessagefilterid']
+            filter=one(query('sdkmessagefilters','sdkmessagefilterid',"_sdkmessageid_value eq "+msg+" and primaryobjecttypecode eq '"+table+"'"))['sdkmessagefilterid']
             step=uid('guard:'+table+':'+message)
             existing=query('sdkmessageprocessingsteps','sdkmessageprocessingstepid','sdkmessageprocessingstepid eq '+step)
             body={'name':'Queue framework guard: '+message+' '+table,'sdkmessageid@odata.bind':'/sdkmessages('+msg+')','sdkmessagefilterid@odata.bind':'/sdkmessagefilters('+filter+')','eventhandler_plugintype@odata.bind':'/plugintypes('+guard+')','stage':20,'mode':0,'rank':1,'supporteddeployment':0,'asyncautodelete':False}
@@ -121,6 +124,31 @@ def execute(binding,approved_hash,dataverse_cli=False,runner=None):
             if existing:request('PATCH','sdkmessageprocessingsteps('+step+')',body,solution)
             else:body['sdkmessageprocessingstepid']=step;request('POST','sdkmessageprocessingsteps',body,solution)
             completed.append(step)
+    # Native Dequeue claims are completed by this synchronous post-operation
+    # step inside the same transaction.  Keep its pre-image explicit and
+    # idempotent so a rerun repairs metadata without creating duplicates.
+    specification=p['acquisitionPostStep'];table=specification['table'];message=specification['message']
+    metadata=request('GET',"EntityDefinitions(LogicalName='"+table+"')?$select=ObjectTypeCode")
+    msg=one(query('sdkmessages','sdkmessageid',"name eq '"+message+"'"))['sdkmessageid']
+    filter_id=one(query('sdkmessagefilters','sdkmessagefilterid',"_sdkmessageid_value eq "+msg+" and primaryobjecttypecode eq '"+table+"'"))['sdkmessagefilterid']
+    step=uid('acquisition-post:'+table+':'+message)
+    solution='WQCore'
+    body={'name':'Queue framework acquisition handoff: '+message+' '+table,
+          'sdkmessageid@odata.bind':'/sdkmessages('+msg+')',
+          'sdkmessagefilterid@odata.bind':'/sdkmessagefilters('+filter_id+')',
+          'eventhandler_plugintype@odata.bind':'/plugintypes('+acquisition_post+')',
+          'stage':specification['stage'],'mode':specification['mode'],'rank':1,
+          'supporteddeployment':0,'asyncautodelete':False,'filteringattributes':'statecode,workqueueid'}
+    existing=query('sdkmessageprocessingsteps','sdkmessageprocessingstepid','sdkmessageprocessingstepid eq '+step)
+    if existing:request('PATCH','sdkmessageprocessingsteps('+step+')',body,solution)
+    else:body['sdkmessageprocessingstepid']=step;request('POST','sdkmessageprocessingsteps',body,solution)
+    image=specification['preImage'];image_id=uid('acquisition-post:'+table+':'+message+':'+image['name'])
+    image_body={'name':image['name'],'entityalias':image['name'],'imagetype':image['imageType'],'messagepropertyname':'Target',
+                'attributes':image['attributes'],'sdkmessageprocessingstepid@odata.bind':'/sdkmessageprocessingsteps('+step+')'}
+    existing_image=query('sdkmessageprocessingstepimages','sdkmessageprocessingstepimageid','sdkmessageprocessingstepimageid eq '+image_id)
+    if existing_image:request('PATCH','sdkmessageprocessingstepimages('+image_id+')',image_body,solution)
+    else:image_body['sdkmessageprocessingstepimageid']=image_id;request('POST','sdkmessageprocessingstepimages',image_body,solution)
+    completed.extend([step,image_id])
     return {'organizationId':expected,'completed':completed,'flowsEnabled':False,'liveGates':'still-required','planHash':p['planHash']}
 
 if __name__=='__main__':

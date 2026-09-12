@@ -32,4 +32,18 @@ Source checks now cover these required fields and the corrected binary path. `in
 
 Successful component import is partial evidence only. API invocation, key activation, transaction rollback/concurrency, lifecycle guards, separate-identity authorization, real connector execution, managed upgrades and all other acceptance criteria remain pending. No live acceptance gate is closed by this result.
 
-PAC authentication supports imports and FetchXML reads. The separate Microsoft Dataverse CLI authentication is needed for its direct API request transport; existing browser SSO did not complete that auxiliary sign-in. The prepared bootstrap can use that authenticated CLI or a caller-supplied Dataverse-scoped token. No token is stored in source or logged.
+Dataverse CLI device authentication subsequently succeeded, and its `WhoAmI` result matched the authorized organization. The direct transport requires `/api/data/v9.2/` in its request path. API binding uses the case-sensitive `PluginTypeId` navigation property; message filters use the table logical name in `primaryobjecttypecode`. The bootstrap now follows those observed contracts. No token is stored in source or logged.
+
+## Runtime checkpoint
+
+All 20 Custom APIs were bound to the installed lifecycle plug-in. A live call without a registered principal correctly returned `PRINCIPAL_NOT_REGISTERED`. [Table metadata evidence](evidence/tenant-metadata-2026-09-12.json) confirms all 14 alternate keys Active, optimistic concurrency enabled, and the intended ownership types.
+
+A synthetic owner team and native queue were provisioned. Dataverse rejected queue ownership while the team had no read privilege; assigning the framework's scoped Reader roles resolved that prerequisite. No members were added to the team. A non-production framework principal profile was created for the authenticated development operator.
+
+The initial `RegisterQueue` call was rejected as `LIFECYCLE_BYPASS`: a SharedVariables marker was not visible in the parent context. Admission now verifies the registered lifecycle handler, exact operation, synchronous transaction context and initiating identity instead of relying on that marker. Subsequent live `RegisterQueue`, `RegisterContract` and `Enqueue` calls succeeded. Repeating the same enqueue command returned the same item result.
+
+Native dequeue exposed a separate boundary. An unregistered synthetic queue successfully returned a Processing item, but acquisition on a registered queue was denied by the guard. Its item Update arrived in a separate context without the calling lifecycle API ancestor. The proposed outer API transaction therefore has not demonstrated atomic dequeue, attempt creation and receipt persistence.
+
+The next candidate uses a committed acquisition intent, standard native dequeue, a synchronous item Update post-operation handler that accepts the acquisition, and receipt resolution before business processing. This candidate is under implementation and security review; it has not yet passed tenant validation. Rollback, concurrent calls and lost-response recovery remain open gates. All seven flows remain Draft. Exception-only plug-in tracing was temporarily enabled for the investigation; its prior setting is retained locally for restoration.
+
+The handoff candidate passed **121 local tests** (67 runtime, 21 plug-in adapter, 23 Python and 10 MCP/operator), and all eight archives passed the packaging round trip. Coverage includes acquisition intent expiry/identity checks, direct and forged-handler admission rejection, receipt queue isolation and rejecting a changed intent version. These are local checks; they do not establish the proposed native transaction boundary.

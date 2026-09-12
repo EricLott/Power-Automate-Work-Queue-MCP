@@ -56,13 +56,14 @@
         "RequestIds": {
           "type": "Compose",
           "inputs": {
-            "AcquireNext": "@guid()",
+            "PrepareAcquire": "@guid()",
+            "ResolveAcquire": "@guid()",
             "Complete": "@guid()",
             "Fail": "@guid()"
           },
           "runAfter": {}
         },
-        "AcquireNext": {
+        "PrepareAcquire": {
           "type": "OpenApiConnection",
           "inputs": {
             "host": {
@@ -71,9 +72,9 @@
               "operationId": "PerformUnboundAction"
             },
             "parameters": {
-              "actionName": "qmcp_WQ_AcquireNext",
+              "actionName": "qmcp_WQ_PrepareAcquire",
               "item/QueueKey": "@parameters('qmcp_QueueKey')",
-              "item/RequestId": "@outputs('RequestIds')?['AcquireNext']",
+              "item/RequestId": "@outputs('RequestIds')?['PrepareAcquire']",
               "item/DataJson": "@string(setProperty(setProperty(json('{}'), 'runId', workflow()?['run']?['name']), 'templateVersion', '0.1.0.0'))"
             },
             "retryPolicy": {
@@ -86,11 +87,93 @@
             ]
           }
         },
+        "Prepared": {
+          "type": "Compose",
+          "inputs": "@json(body('PrepareAcquire')?['ResultJson'])",
+          "runAfter": {
+            "PrepareAcquire": [
+              "Succeeded"
+            ]
+          }
+        },
+        "HasPrepared": {
+          "type": "If",
+          "expression": {
+            "equals": [
+              "@outputs('Prepared')?['Outcome']",
+              "Prepared"
+            ]
+          },
+          "actions": {
+            "Dequeue": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "connectionReferenceName": "qmcp_Dataverse",
+                  "operationId": "PerformBoundAction"
+                },
+                "parameters": {
+                  "entityName": "workqueues",
+                  "actionName": "Microsoft.Dynamics.CRM.Dequeue",
+                  "recordId": "@outputs('Prepared')?['NativeQueueId']"
+                },
+                "retryPolicy": {
+                  "type": "none"
+                }
+              },
+              "runAfter": {}
+            }
+          },
+          "else": {
+            "actions": {}
+          },
+          "runAfter": {
+            "Prepared": [
+              "Succeeded"
+            ]
+          }
+        },
+        "ResolveAcquire": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "connectionReferenceName": "qmcp_Dataverse",
+              "operationId": "PerformUnboundAction"
+            },
+            "parameters": {
+              "actionName": "qmcp_WQ_ResolveAcquire",
+              "item/QueueKey": "@parameters('qmcp_QueueKey')",
+              "item/RequestId": "@outputs('RequestIds')?['PrepareAcquire']",
+              "item/DataJson": "{}"
+            },
+            "retryPolicy": {
+              "type": "none"
+            }
+          },
+          "runAfter": {
+            "HasPrepared": [
+              "Succeeded",
+              "Failed",
+              "TimedOut"
+            ]
+          }
+        },
+        "Resolved": {
+          "type": "Compose",
+          "inputs": "@json(body('ResolveAcquire')?['ResultJson'])",
+          "runAfter": {
+            "ResolveAcquire": [
+              "Succeeded"
+            ]
+          }
+        },
         "Acquired": {
           "type": "Compose",
-          "inputs": "@json(body('AcquireNext')?['ResultJson'])",
+          "inputs": "@outputs('Resolved')",
           "runAfter": {
-            "AcquireNext": [
+            "Resolved": [
               "Succeeded"
             ]
           }

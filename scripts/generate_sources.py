@@ -38,6 +38,11 @@ TABLES = {
  'WQReferenceSharedMailbox':['emailrequest']
 }
 OPS = re.findall(r'\["([A-Za-z]+)"\]\s*=\s*"[a-z]+"', (ROOT/'src/runtime/Engine.cs').read_text())
+# Acquisition handoff is intentionally generated ahead of the tenant bootstrap
+# registration; the legacy AcquireNext surface remains for compatibility but
+# production use is rejected until this handoff is bound and validated.
+for _operation in ['PrepareAcquire', 'AcceptAcquire', 'ResolveAcquire']:
+    if _operation not in OPS: OPS.append(_operation)
 TEST_OPS={'StartTestRun','GetTestRun','AdvanceTestRun','CleanupTestRun'}
 PARAMS={'QueueKey':(10,False),'RequestId':(10,False),'ItemId':(10,True),'AttemptId':(10,True),'Generation':(7,True),'ExpectedVersion':(10,True),'DataJson':(10,True)}
 
@@ -131,6 +136,10 @@ def solutions():
     write_json(ROOT/'config/api-catalog.json',{'version':VERSION,'prefix':'qmcp_WQ_','parameters':{k:{'type':v[0],'optional':v[1]} for k,v in PARAMS.items()},'operations':OPS,'response':'ResultJson'})
     write_json(ROOT/'config/registration.json',{'version':VERSION,'pluginPackage':'QueueFramework.Plugins','runtimeType':'QueueFramework.Plugins.LifecyclePlugin',
         'guardType':'QueueFramework.Plugins.LifecycleGuard','isolation':'Sandbox','transactionRequired':True,
+        'acquisitionHandoff':{'prepareApi':'qmcp_WQ_PrepareAcquire','acceptApi':'qmcp_WQ_AcceptAcquire','resolveApi':'qmcp_WQ_ResolveAcquire',
+            'legacyApi':'qmcp_WQ_AcquireNext','legacyDisposition':'rejected: ACQUISITION_HANDOFF_REQUIRED',
+            'flowSequence':['PrepareAcquire','native Dequeue(workqueue)','ResolveAcquire'],'sameRequestId':True,
+            'nativeQueueId':'PrepareAcquire.ResultJson.NativeQueueId','businessGate':'ResolveAcquire.ResultJson.Outcome == Acquired'},
         'guardSteps':[{'table':'qmcp_'+table,'messages':['Create','Update','Delete'],'stage':20,'mode':0} for tables in TABLES.values() for table in tables if table not in ('wqprincipal','emailrequest')]+[{'table':'workqueueitem','messages':['Create','Update','Delete'],'stage':20,'mode':0}],
         'bootstrap':'Resolve actual plug-in type IDs from the imported dependent assembly package, then bind APIs and register guard steps before activating flows. Export the validated registration metadata after the first development import.'})
 

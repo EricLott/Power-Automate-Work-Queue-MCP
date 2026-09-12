@@ -68,6 +68,9 @@ def validate_flow(flow,name):
         if a['type']=='OpenApiConnection':
             host=a['inputs']['host'];params=a['inputs']['parameters']
             assert host['connectionReferenceName'] in refs,(name,key,'unbound connection')
+            if host['operationId']=='PerformBoundAction' and params.get('actionName')=='Microsoft.Dynamics.CRM.Dequeue':
+                assert params.get('entityName')=='workqueues',(name,key,'Dequeue must target native workqueues entity set')
+                assert "@outputs('Prepared')?['NativeQueueId']"==params.get('recordId'),(name,key,'Dequeue queue must come from PrepareAcquire')
             if host['operationId']=='PerformUnboundAction':
                 operation=params['actionName'].removeprefix('qmcp_WQ_');assert operation in OPS
                 assert params.get('item/RequestId','').startswith("@outputs('RequestIds')"),(name,key,'unstable request identity')
@@ -80,7 +83,14 @@ def validate_flow(flow,name):
         if a['type']=='Until':assert a['limit']['count']<=20 and a['limit']['timeout']=='PT5M'
         if a['type']=='Foreach':assert a['runtimeConfiguration']['concurrency']['repetitions']==1
     if name=='ProcessOne':
-        assert actions['AcquireNext']['runAfter']=={'RequestIds':['Succeeded']}
+        assert list(actions)[:4]==['RequestIds','PrepareAcquire','Prepared','HasPrepared']
+        assert actions['PrepareAcquire']['runAfter']=={'RequestIds':['Succeeded']}
+        assert actions['HasPrepared']['runAfter']=={'Prepared':['Succeeded']}
+        assert actions['HasPrepared']['actions']['Dequeue']['runAfter']=={}
+        assert actions['ResolveAcquire']['runAfter']=={'HasPrepared':['Succeeded','Failed','TimedOut']}
+        assert actions['ResolveAcquire']['inputs']['parameters']['item/RequestId']=="@outputs('RequestIds')?['PrepareAcquire']"
+        assert actions['ResolveAcquire']['inputs']['parameters']['item/DataJson']=='{}'
+        assert actions['Acquired']['inputs']=="@outputs('Resolved')"
         assert actions['HasWork']['expression']=={'equals':["@outputs('Acquired')?['Outcome']",'Acquired']}
         assert actions['HasWork']['actions']['ReportFailure']['runAfter']=={'Business':['Failed','TimedOut']}
     if name=='OnQueueChanged':assert list(actions)==['ProcessOne'],'Event must be a wake-up only'

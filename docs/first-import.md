@@ -23,6 +23,22 @@ This runbook describes the development import and validation sequence. The [live
 
 The bootstrap also supports `--dataverse-cli` with a separately authenticated Microsoft Dataverse CLI profile (`@microsoft/dataverse` 1.0.77). This route uses the CLI's authenticated request command and temporary JSON body files; it does not export access tokens. PAC's `auth token` targets the Power Platform API and is not a Dataverse Web API token. Both bootstrap routes verify the organization ID before writes.
 
+### Read-only metadata preflight
+
+Before bootstrap, an authenticated Dataverse CLI profile can produce a
+structural inventory without changing the environment:
+
+```powershell
+python scripts/probe_tenant_metadata.py --dataverse-cli `
+  --binding C:\path\to\development-binding.json `
+  --output artifacts\validation\tenant-metadata.json
+```
+
+The utility verifies the development binding with `WhoAmI`, then reads
+filtered solution-version, Custom API binding, draft-flow, and guard-step
+metadata. It performs no writes and does not establish import, permission,
+transaction, connector, or activation success.
+
 ## Configure identities and the queue
 
 Create a native queue using the stable envelope in `templates/native-envelope.schema.json`. Do not mutate an existing native schema to introduce a breaking envelope. Create an owner team and record the native queue ID and team ID.

@@ -1,0 +1,91 @@
+{
+  "classification": "tenant-metadata-after-bootstrap",
+  "whoAmI": {
+    "organizationIdMatched": true
+  },
+  "solutions": [
+    {
+      "uniqueName": "WQCore",
+      "version": "0.1.0.0",
+      "friendlyName": "WQCore"
+    },
+    {
+      "uniqueName": "WQTesting",
+      "version": "0.1.0.0",
+      "friendlyName": "WQTesting"
+    },
+    {
+      "uniqueName": "WQNotificationsEmail",
+      "version": "0.1.0.0",
+      "friendlyName": "WQNotificationsEmail"
+    },
+    {
+      "uniqueName": "WQReferenceSharedMailbox",
+      "version": "0.1.0.0",
+      "friendlyName": "WQReferenceSharedMailbox"
+    }
+  ],
+  "apiBindings": {
+    "total": 20,
+    "boundPluginType": 20,
+    "unboundPluginType": 0
+  },
+  "flows": {
+    "expected": [
+      "ProcessOne",
+      "OnQueueChanged",
+      "SweepQueue",
+      "Intake",
+      "Watchdog",
+      "TestCoordinator",
+      "EmailSender"
+    ],
+    "found": [
+      {
+        "name": "ProcessOne",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "OnQueueChanged",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "SweepQueue",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "Intake",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "Watchdog",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "TestCoordinator",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "EmailSender",
+        "statecode": 0,
+        "statuscode": 1
+      }
+    ],
+    "draftCount": 7
+  },
+  "guardSteps": {
+    "count": 39
+  },
+  "writesPerformed": false,
+  "limitations": [
+    "Metadata reads are filtered public Web API queries and do not prove import, permissions, transactions, or connector activation.",
+    "Results are bounded by the requested query page size."
+  ],
+  "date": "2026-09-12"
+}

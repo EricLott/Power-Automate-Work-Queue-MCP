@@ -11,6 +11,9 @@ public sealed partial class Engine
         ["RegisterContract"] = "deployment",
         ["Enqueue"] = "producer",
         ["AcquireNext"] = "worker",
+        ["PrepareAcquire"] = "worker",
+        ["AcceptAcquire"] = "worker",
+        ["ResolveAcquire"] = "worker",
         ["Checkpoint"] = "worker",
         ["Complete"] = "worker",
         ["Fail"] = "worker",
@@ -34,7 +37,7 @@ public sealed partial class Engine
         if (!Roles.TryGetValue(command.Operation, out var role) || !actor.Has(role) || string.IsNullOrWhiteSpace(actor.Id)) throw new Fault("FORBIDDEN");
         if (command.QueueKey.Length < 1 || command.QueueKey.Length > 100) throw new Fault("INPUT_INVALID");
         var data = Json.Object(command.DataJson);
-        var read = command.Operation == "GetItemStatus" || command.Operation == "GetQueueHealth" || command.Operation == "GetTestRun";
+        var read = command.Operation == "GetItemStatus" || command.Operation == "GetQueueHealth" || command.Operation == "GetTestRun" || command.Operation == "ResolveAcquire";
         if (!read && !Guid.TryParse(command.RequestId, out _)) throw new Fault("REQUEST_ID_INVALID");
         return store.Atomic(() =>
         {
@@ -63,6 +66,9 @@ public sealed partial class Engine
             case "RegisterContract": return RegisterContract(c, d);
             case "Enqueue": return Enqueue(c, d, p!);
             case "AcquireNext": return Acquire(c, a, d, p!);
+            case "PrepareAcquire": return PrepareAcquire(c, a, p!);
+            case "AcceptAcquire": return AcceptAcquire(c, a, d, p!);
+            case "ResolveAcquire": return ResolveAcquire(c, a, p!);
             case "Checkpoint": return Checkpoint(c, a, d);
             case "Complete": return Complete(c, a, d);
             case "Fail": return Fail(c, a, d);
@@ -147,6 +153,62 @@ public sealed partial class Engine
         var now = clock(); var native = store.NativeCreate(new NativeItem { Id = Guid.NewGuid().ToString(), Queue = c.QueueKey, UniqueKey = key, Input = envelope.ToString(Newtonsoft.Json.Formatting.None), Created = now, Available = now, Expires = now.AddDays(7) });
         Add("itemcontext", key, c.QueueKey, new ItemContext { ItemId = native.Id, SourceKey = Json.Hash(source), ContentHash = hash, CorrelationId = (string)envelope["correlationId"]! });
         return new { Outcome = "Enqueued", ItemId = native.Id };
+    }
+    string AcquisitionKey(string queue, string actor) => Json.Hash("acquire|" + actor + "|" + queue);
+    object PrepareAcquire(Command c, Actor actor, QueuePolicy policy)
+    {
+        if (!policy.Enabled) return new { Outcome = "QueuePaused" };
+        var key = AcquisitionKey(c.QueueKey, actor.Id); var now = clock(); var row = store.Get("cursor", key);
+        if (row != null)
+        {
+            var prior = Json.Read<AcquisitionIntent>(row.Body);
+            if (prior.Status == "Prepared" && prior.Expires > now)
+            {
+                if (prior.RequestId != c.RequestId) throw new Fault("ACQUIRE_BUSY");
+                return new { Outcome = "Prepared", NativeQueueId = policy.NativeQueueId, prior.Expires, prior.RequestId };
+            }
+            var replacement = new AcquisitionIntent { RequestId = c.RequestId, ActorId = actor.Id, Expires = now.AddSeconds(policy.LeaseSeconds), Status = "Prepared" };
+            store.Put(new Row { Kind = "cursor", Key = key, Queue = c.QueueKey, Body = Json.Write(replacement), Updated = now }, row.Version);
+            return new { Outcome = "Prepared", NativeQueueId = policy.NativeQueueId, replacement.Expires, replacement.RequestId };
+        }
+        var intent = new AcquisitionIntent { RequestId = c.RequestId, ActorId = actor.Id, Expires = now.AddSeconds(policy.LeaseSeconds) };
+        Add("cursor", key, c.QueueKey, intent);
+        return new { Outcome = "Prepared", NativeQueueId = policy.NativeQueueId, intent.Expires, intent.RequestId };
+    }
+    object AcceptAcquire(Command c, Actor actor, JObject data, QueuePolicy policy)
+    {
+        if (!policy.Enabled) throw new Fault("QUEUE_PAUSED");
+        var key = AcquisitionKey(c.QueueKey, actor.Id); var row = store.Get("cursor", key) ?? throw new Fault("ACQUIRE_INTENT_NOT_FOUND");
+        var intent = Json.Read<AcquisitionIntent>(row.Body);
+        if (intent.ActorId != actor.Id || intent.RequestId != c.RequestId || intent.Status != "Prepared") throw new Fault("ACQUIRE_INTENT_INVALID");
+        if (intent.Expires <= clock()) throw new Fault("ACQUIRE_INTENT_EXPIRED");
+        var native = store.NativeGet(c.ItemId) ?? throw new Fault("ITEM_NOT_FOUND");
+        if (native.Queue != c.QueueKey || native.Status != "Processing") throw new Fault("NATIVE_ITEM_INVALID");
+        if (native.Expires <= clock()) throw new Fault("ITEM_EXPIRED");
+        if (native.Available > clock()) throw new Fault("ITEM_NOT_AVAILABLE");
+        var item = Item(c); JObject envelope = Json.Object(native.Input); var contract = ValidateEnvelope(c.QueueKey, envelope, policy);
+        if (item.context.ActiveAttempt != "" || item.context.ReviewRequired || item.context.AttemptCount >= policy.MaxAttempts) throw new Fault("ITEM_INELIGIBLE");
+        var now = clock(); int generation = item.context.Generation + 1;
+        var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, ContractHash = contract.Hash, Caller = new JObject { ["flowId"] = (string?)data["flowId"], ["runId"] = (string?)data["runId"], ["templateVersion"] = (string?)data["templateVersion"] } };
+        Add("attempt", attempt.Id, c.QueueKey, attempt); item.context.ActiveAttempt = attempt.Id; item.context.Generation = generation; item.context.AttemptCount++;
+        // Compare against the versions that were validated, not a fresh read that
+        // could silently overwrite a concurrently replaced intent or item context.
+        item.row.Body = Json.Write(item.context); item.row.Updated = now;
+        store.Put(item.row, item.row.Version);
+        var result = new { Outcome = "Acquired", ItemId = native.Id, AttemptId = attempt.Id, Generation = generation, attempt.LeaseExpires, Envelope = envelope, SourceKey = item.context.SourceKey, BusinessKey = native.UniqueKey, ContentHash = item.context.ContentHash, TestRun = item.context.TestRun };
+        intent.Status = "Consumed"; intent.Result = Json.Write(result);
+        row.Body = Json.Write(intent); row.Updated = now; store.Put(row, row.Version); return result;
+    }
+    object ResolveAcquire(Command c, Actor actor, QueuePolicy policy)
+    {
+        var receiptRow = store.Get("command", Json.Hash(actor.Id + "|AcceptAcquire|" + c.RequestId));
+        if (receiptRow != null && receiptRow.Queue == c.QueueKey) return Json.Read<object>(Json.Read<Receipt>(receiptRow.Body).Result);
+        var row = store.Get("cursor", AcquisitionKey(c.QueueKey, actor.Id));
+        if (row == null) return new { Outcome = "NoAcquisition" };
+        var intent = Json.Read<AcquisitionIntent>(row.Body);
+        if (intent.RequestId != c.RequestId) return new { Outcome = "NoAcquisition" };
+        if (intent.Status == "Consumed" && intent.Result != "") return Json.Read<object>(intent.Result);
+        return intent.Expires <= clock() ? new { Outcome = "Expired" } : new { Outcome = "Pending" };
     }
     (NativeItem native, Row row, ItemContext context) Item(Command c)
     {

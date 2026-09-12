@@ -1,5 +1,6 @@
 import json
 import os
+import urllib.parse
 import sys
 import unittest
 from pathlib import Path
@@ -59,3 +60,58 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(result,{})
         self.assertTrue(observed['exists_during']);self.assertEqual(observed['body'],{'x':1})
         self.assertFalse(os.path.exists(observed['path']))
+
+    def test_dataverse_cli_uses_web_api_path_prefix(self):
+        seen={}
+        def runner(args,**kwargs):
+            seen['args']=args
+            return type('Result',(),{'returncode':0,'stdout':'{}','stderr':''})()
+        bootstrap._cli_request(['dataverse'],'https://synthetic.crm.dynamics.com','GET','WhoAmI',runner=runner)
+        self.assertEqual(seen['args'][seen['args'].index('--path')+1],'/api/data/v9.2/WhoAmI')
+
+    def test_cli_registration_uses_logical_name_and_case_sensitive_binding(self):
+        expected='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
+        fixture={'planHash':'hash','packageManifest':{'files':[]},'apiType':'Runtime','guardType':'Guard',
+            'acquisitionPostType':'AcquisitionPost','acquisitionPostStep':{'table':'workqueueitem','message':'Update','stage':40,'mode':0,
+                'preImage':{'name':'Before','imageType':0,'attributes':'statecode,workqueueid'}},
+            'apis':['DoThing'],'guardSteps':[{'table':'account','messages':['Create']}]}
+        calls=[]
+        patch_bodies=[]
+        def runner(args,**kwargs):
+            path=args[args.index('--path')+1];calls.append(path)
+            if '--body-file' in args:
+                with open(args[args.index('--body-file')+1],encoding='utf-8') as stream: patch_bodies.append(json.load(stream))
+            if path.endswith('/WhoAmI'): value={'OrganizationId':expected}
+            elif path.startswith('/api/data/v9.2/plugintypes?') and 'Runtime' in path: value={'value':[{'plugintypeid':'runtime'}]}
+            elif path.startswith('/api/data/v9.2/plugintypes?'): value={'value':[{'plugintypeid':'guard'}]}
+            elif 'customapis?' in path: value={'value':[{'customapiid':'api'}]}
+            elif "EntityDefinitions(LogicalName='account')" in path: value={'ObjectTypeCode':1}
+            elif "EntityDefinitions(LogicalName='workqueueitem')" in path: value={'ObjectTypeCode':150}
+            elif 'sdkmessages?' in path: value={'value':[{'sdkmessageid':'message'}]}
+            elif 'sdkmessagefilters?' in path: value={'value':[{'sdkmessagefilterid':'filter'}]}
+            elif 'sdkmessageprocessingsteps?' in path: value={'value':[]}
+            elif 'sdkmessageprocessingstepimages?' in path: value={'value':[]}
+            else: value={}
+            return type('Result',(),{'returncode':0,'stdout':json.dumps(value),'stderr':''})()
+        binding={'environmentUrl':'https://synthetic.crm.dynamics.com','organizationId':expected,'environmentClass':'development'}
+        with patch.dict('os.environ',{},clear=True),patch.object(bootstrap,'plan',return_value=fixture),patch.object(bootstrap,'_cli_command',return_value=['dataverse']):
+            bootstrap.execute(binding,'hash',dataverse_cli=True,runner=runner)
+        filters=[path for path in calls if 'sdkmessagefilters?' in path]
+        self.assertEqual(len(filters),2)
+        decoded_filters=[urllib.parse.unquote_plus(path) for path in filters]
+        self.assertTrue(any("primaryobjecttypecode eq 'account'" in path for path in decoded_filters))
+        self.assertTrue(any("primaryobjecttypecode eq 'workqueueitem'" in path for path in decoded_filters))
+        self.assertTrue(all(path.startswith('/api/data/v9.2/') for path in calls))
+        self.assertTrue(any('PluginTypeId@odata.bind' in body for body in patch_bodies))
+        self.assertFalse(any('plugintypeid@odata.bind' in body for body in patch_bodies))
+        images=[body for body in patch_bodies if 'imagetype' in body]
+        self.assertEqual(len(images),1)
+        self.assertEqual(images[0]['messagepropertyname'],'Target')
+
+    def test_plan_contains_deterministic_acquisition_post_step(self):
+        plan=bootstrap.plan()
+        step=plan['acquisitionPostStep']
+        self.assertEqual(plan['acquisitionPostType'],'QueueFramework.Plugins.AcquisitionPostPlugin')
+        self.assertEqual(step,{'table':'workqueueitem','message':'Update','stage':40,'mode':0,
+                               'preImage':{'name':'Before','imageType':0,'attributes':'statecode,workqueueid'}})
+        self.assertRegex(bootstrap.uid('acquisition-post:workqueueitem:Update'),r'^[0-9a-f-]{36}$')
