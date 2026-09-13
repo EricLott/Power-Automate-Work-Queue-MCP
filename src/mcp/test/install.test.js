@@ -12,6 +12,21 @@ test('installation plan reports local package state and missing binding', async 
   assert.ok(result.packages.length > 0);
   assert.equal(result.binding.status, 'missing');
   assert.equal(result.liveVerification, 'not-run');
+  assert.deepEqual(result.installOrder, ['WQCore','WQNotificationsEmail','WQReferenceSharedMailbox','WQTesting']);
+  assert.equal(result.provenance.signedRelease, false);
+});
+
+test('installation plan validates dependency graph and binds order to hash', async () => {
+  const manifest={version:'test',files:[{file:'A.zip',sha256:'0'.repeat(64)},{file:'A_managed.zip',sha256:'0'.repeat(64)},{file:'B.zip',sha256:'0'.repeat(64)},{file:'B_managed.zip',sha256:'0'.repeat(64)}]};
+  const release={version:'test',packages:[{name:'A',requires:[]},{name:'B',requires:['A']}]};
+  const first=await planInstallation({packageDir:path.join(os.tmpdir(),'qmcp-no-packages'),release,manifest});
+  assert.deepEqual(first.installOrder,['A','B']);
+  const badManifest={version:'test',files:manifest.files};
+  const oneManifest={version:'test',files:manifest.files.slice(0,2)};
+  await assert.rejects(planInstallation({release:{version:'test',packages:[{name:'A',requires:['Missing']}]},manifest:oneManifest}),/INSTALL_RELEASE_INVALID/);
+  await assert.rejects(planInstallation({release:{version:'test',packages:[{name:'A',requires:'B'}]},manifest:oneManifest}),/INSTALL_RELEASE_INVALID/);
+  await assert.rejects(planInstallation({release:{version:'test',packages:[{name:'A',requires:['A','A']}]},manifest:oneManifest}),/INSTALL_RELEASE_INVALID/);
+  await assert.rejects(planInstallation({release:{version:'test',packages:[{name:'A',requires:['B']},{name:'B',requires:['A']}]},manifest:badManifest}),/INSTALL_RELEASE_INVALID/);
 });
 
 test('installation plan validates explicit development binding without contacting it', async () => {
@@ -36,11 +51,11 @@ test('installation plan reports tampered and missing pinned packages and binds h
 
 test('installation plan rejects unsafe binding and malformed manifests', async () => {
   await assert.rejects(planInstallation({manifest:{files:[{file:'../escape.zip',sha256:'0'.repeat(64)}]},release:{version:'test',packages:[{name:'WQCore'}]}}),/INSTALL_MANIFEST_INVALID/);
-  await assert.rejects(planInstallation({manifest:{files:null},release:{version:'test',packages:[]}}),/INSTALL_MANIFEST_INVALID/);
+  await assert.rejects(planInstallation({manifest:{files:null},release:{version:'test',packages:[]}}),/INSTALL_RELEASE_INVALID/);
   await assert.rejects(planInstallation({manifest:{files:[null,{file:'WQCore_managed.zip',sha256:'0'.repeat(64)}]},release:{version:'test',packages:[{name:'WQCore'}]}}),/INSTALL_MANIFEST_INVALID/);
   await assert.rejects(planInstallation({manifest:{files:[{file:'WQCore.zip',sha256:'0'.repeat(64)},{file:'WQCore.zip',sha256:'0'.repeat(64)}]},release:{version:'test',packages:[{name:'WQCore'}]}}),/INSTALL_MANIFEST_INVALID/);
-  const dir=await mkdtemp(path.join(os.tmpdir(),'qmcp-packages-')); await assert.rejects(planInstallation({packageDir:dir,manifest:{},release:{version:'test',packages:[]}}),/INSTALL_MANIFEST_INVALID/);
-  await assert.rejects(planInstallation({packageDir:dir,release:{version:'test',packages:[]}}),/INSTALL_MANIFEST_INVALID/);
+  const dir=await mkdtemp(path.join(os.tmpdir(),'qmcp-packages-')); await assert.rejects(planInstallation({packageDir:dir,manifest:{},release:{version:'test',packages:[]}}),/INSTALL_RELEASE_INVALID/);
+  await assert.rejects(planInstallation({packageDir:dir,release:{version:'test',packages:[]}}),/INSTALL_RELEASE_INVALID/);
   await writeFile(path.join(dir,'manifest.json'),'null'); await assert.rejects(planInstallation({packageDir:dir}),/INSTALL_MANIFEST_INVALID/);
   const binding=path.join(dir,'binding.json'); await writeFile(binding,JSON.stringify({environmentUrl:'http://unsafe.example',organizationId:'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',environmentClass:'development',queueKeys:['mail']})); const result=await planInstallation({bindingPath:binding}); assert.equal(result.binding.error,'ENVIRONMENT_URL_INVALID');
   await writeFile(binding,'null'); const nullBinding=await planInstallation({bindingPath:binding}); assert.equal(nullBinding.binding.error,'ENVIRONMENT_URL_INVALID'); assert.equal(nullBinding.binding.environmentUrl,'');

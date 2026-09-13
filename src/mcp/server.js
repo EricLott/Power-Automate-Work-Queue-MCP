@@ -3,6 +3,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { inspect, plan, provision, scaffold, command, validateScaffold } from './local.js';
 import { planInstallation } from './install.js';
+import { applyDeployment, deploymentStatus } from './deployment.js';
+import { planDeployment } from './deployment-plan.js';
 const server = new McpServer({ name: 'wq-mcp', version: '0.1.0' });
 const queueKey = z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/);
 const wrap = fn => async args => { try { return { content: [{ type: 'text', text: JSON.stringify(await fn(args)) }] }; } catch (error) { return { isError: true, content: [{ type: 'text', text: JSON.stringify({ error: /^[A-Z_]+$/.test(error.message) ? error.message : 'LOCAL_OPERATION_FAILED' }) }] }; } };
@@ -18,4 +20,7 @@ server.registerTool('start_test_run', { description: 'Persist a test run on the 
 server.registerTool('cancel_test_run', { description: 'Cancel pending test results and prevent further acquisition or retry. An external action already in flight cannot be revoked. Reuse requestId after an uncertain response.', inputSchema: { queueKey, runId: z.string().uuid(), requestId: z.string().uuid() } }, wrap(a => command('CancelTestRun', a.queueKey, {}, { ItemId: a.runId, RequestId: a.requestId })));
 server.registerTool('test_evidence', { description: 'Read persisted local test evidence, including inconclusive results.', inputSchema: { queueKey, runId: z.string().uuid() }, annotations: { readOnlyHint: true } }, wrap(a => command('GetTestRun', a.queueKey, {}, { ItemId: a.runId })));
 server.registerTool('cleanup_test', { description: 'Remove only recorded successful-test-owned business records; retain diagnostic evidence.', inputSchema: { queueKey, runId: z.string().uuid() }, annotations: { destructiveHint: true } }, wrap(a => command('CleanupTestRun', a.queueKey, {}, { ItemId: a.runId })));
+server.registerTool('plan_deployment', { description: 'Read the configured development target and pinned package/settings inputs to produce an environment-bound deployment hash. Does not import or activate flows.', inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(planDeployment));
+server.registerTool('apply_deployment', { description: 'Launch a development import using the exact plan hash approved in the host configuration. The independent worker persists a journal and leaves flows Draft.', inputSchema: { planHash: z.string().regex(/^[a-f0-9]{64}$/), requestId: z.string().uuid() } }, wrap(applyDeployment));
+server.registerTool('deployment_status', { description: 'Read a deployment journal for the bound organization. A Running record is not proof that its worker is still alive.', inputSchema: { requestId: z.string().uuid() }, annotations: { readOnlyHint: true } }, wrap(deploymentStatus));
 await server.connect(new StdioServerTransport());
