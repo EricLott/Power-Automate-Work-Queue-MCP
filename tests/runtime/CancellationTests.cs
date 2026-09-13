@@ -23,6 +23,49 @@ public class CancellationTests
     }
 
     [Fact]
+    public void RetentionRedactsExpiredCancelledOnHoldInputButPreservesIdentity()
+    {
+        var f = new Fixture(); var run = Start(f); var item = f.Store.NativePage("mail", "", 100).Single();
+        f.Run(f.Cmd("CancelTestRun", item: (string)run["RunId"]!)); f.Now = f.Now.AddDays(31);
+        f.Run(f.Cmd("ApplyRetention"));
+        Assert.Equal("{}", f.Store.NativeGet(item.Id)!.Input);
+        Assert.Equal(item.UniqueKey, f.Store.NativeGet(item.Id)!.UniqueKey);
+        var savedRun = Json.Read<TestRun>(f.Store.Get("testrun", (string)run["RunId"]!)!.Body);
+        Assert.Equal("Cancelled", savedRun.State);
+        Assert.Equal("Cancelled", savedRun.Results.Single().State);
+    }
+
+    [Fact]
+    public void RetentionPreservesRecentAndReviewHeldCancelledInputs()
+    {
+        var f = new Fixture(); var run = Start(f); var item = f.Store.NativePage("mail", "", 100).Single();
+        f.Run(f.Cmd("CancelTestRun", item: (string)run["RunId"]!)); f.Run(f.Cmd("ApplyRetention"));
+        Assert.NotEqual("{}", f.Store.NativeGet(item.Id)!.Input);
+        var row = f.Store.Get("itemcontext", item.UniqueKey)!; var context = Json.Read<ItemContext>(row.Body); context.ReviewRequired = true; row.Body = Json.Write(context); f.Store.Put(row, row.Version);
+        f.Now = f.Now.AddDays(31); f.Run(f.Cmd("ApplyRetention"));
+        Assert.NotEqual("{}", f.Store.NativeGet(item.Id)!.Input);
+    }
+
+    [Fact]
+    public void RetentionPreservesExpiredCancelledInputWithActiveAttempt()
+    {
+        var f = new Fixture(); var run = Start(f); var acquired = f.Acquire(); var item = f.Store.NativeGet((string)acquired["ItemId"]!)!;
+        f.Run(f.Cmd("CancelTestRun", item: (string)run["RunId"]!)); f.Now = f.Now.AddDays(31);
+        f.Run(f.Cmd("ApplyRetention"));
+        Assert.NotEqual("{}", f.Store.NativeGet(item.Id)!.Input);
+        Assert.Equal("Processing", f.Store.NativeGet(item.Id)!.Status);
+    }
+
+    [Fact]
+    public void RetentionPreservesOrdinaryExpiredOnHoldInput()
+    {
+        var f = new Fixture(); var id = f.Enqueue(); var item = f.Store.NativeGet(id)!;
+        item.Status = "OnHold"; f.Store.NativeSet(item); f.Now = f.Now.AddDays(31);
+        f.Run(f.Cmd("ApplyRetention"));
+        Assert.NotEqual("{}", f.Store.NativeGet(id)!.Input);
+    }
+
+    [Fact]
     public void CancellationLeavesActiveAttemptForConservativeReconciliation()
     {
         var f = new Fixture();

@@ -1,0 +1,60 @@
+{
+  "classification": "cancellation-retention-regression",
+  "localTests": {
+    "runtime": 88,
+    "python": 42,
+    "mcp": 28,
+    "plugins": 40,
+    "total": 198
+  },
+  "archiveRoundtrips": 8,
+  "packageManifest": {
+    "classification": "local-candidate",
+    "files": [
+      {
+        "sha256": "ab110046e3c80048259c07718f10516a68696514d75f2d995035ca6aa943d53e",
+        "file": "WQCore_managed.zip"
+      },
+      {
+        "sha256": "e63814e4b692c4454af8e72cbca0e27e9a6d6dcfecc307e6675e4a307ce04660",
+        "file": "WQCore.zip"
+      },
+      {
+        "sha256": "41d8c7af17d1a0d4782f9f182f0df5897bff44aae942b53bd82b60cd7d5a9c6e",
+        "file": "WQNotificationsEmail_managed.zip"
+      },
+      {
+        "sha256": "29e13fbe1e11d96ecc9b2f41c1c08e3a523aa201ac50521f23b3f6b284a1eb4a",
+        "file": "WQNotificationsEmail.zip"
+      },
+      {
+        "sha256": "4b920e2eb365ef73fdb984d692b29100213815b0eec2b48671acb0f155895ab1",
+        "file": "WQReferenceSharedMailbox_managed.zip"
+      },
+      {
+        "sha256": "e44fd137d1bc513f764efc74baa0136c158e2c9141fdb9360a544374cf253e66",
+        "file": "WQReferenceSharedMailbox.zip"
+      },
+      {
+        "sha256": "7a91d1bc0e8426ff538ec87873b041170a60ec322e75558805bf1fb483e69dab",
+        "file": "WQTesting_managed.zip"
+      },
+      {
+        "sha256": "edeca5384ab497381f2f84d16e8f1af9c485802c335dfeab85dafd0f5f32f318",
+        "file": "WQTesting.zip"
+      }
+    ],
+    "tenantImport": "not-run",
+    "version": "0.1.0.0"
+  },
+  "pluginPush": "succeeded",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "existingCancellationRunId": "29f8aa92-c55b-4648-a653-e2bce1993666",
+  "replayEqual": true,
+  "state": "Cancelled",
+  "nativeState": "OnHold",
+  "limitations": [
+    "Expiry clock is simulated locally; no backdated native item was used.",
+    "Live check verifies existing cancellation replay after package update, not aged native retention."
+  ]
+}

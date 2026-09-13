@@ -46,3 +46,9 @@ The final output-evidence adapter and webhook correction passed **152 local test
 ## Cancellation and authenticated CLI transport
 
 The latest suites pass 175 tests: 84 runtime, 40 SDK adapter, 34 Python, and 17 MCP tests. Coverage includes cancellation receipt replay, active-attempt preservation, denied retry, injected version conflicts, authenticated CLI identity/queue boundaries, and conservative preflight reporting. See [the cancellation evidence](evidence/test-cancellation-2026-09-12.json) for the separate live result. Local conflict injection is not a native concurrency proof.
+
+## Development deployment and cancellation retention checkpoint
+
+The hash-bound deployment worker imported all four unmanaged development packages, repaired registrations, and passed all observable post-import component checks. The journal returned `ImportedAwaitingAcceptance`, with affected solution IDs and all seven flows still Draft. [Evidence](evidence/deployment-2026-09-12.json) records the pinned hashes and remaining manual prerequisites. This is not a clean managed installation or managed upgrade proof.
+
+A subsequent retention fix permits expired cancelled OnHold inputs to be redacted while preserving identity and cancellation results. Recent inputs, review holds, active work, and ordinary OnHold items remain protected. All 198 local tests passed (88 runtime, 40 SDK adapter, 42 Python, 28 MCP), as did eight archive round trips. The updated plug-in package was pushed successfully; repeating the existing MCP cancellation request preserved Cancelled/OnHold, zero attempts, and identical replay. Aging was simulated locally; native aged-retention behavior remains to be tested.

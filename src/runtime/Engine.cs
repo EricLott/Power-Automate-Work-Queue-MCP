@@ -411,7 +411,8 @@ public sealed partial class Engine
         foreach (var item in items)
         {
             var context = Get<ItemContext>("itemcontext", item.UniqueKey);
-            if (item.Status == "Processed" && item.Created < cutoff && context != null && !context.ReviewRequired && context.ActiveAttempt == "" && item.Input != "{}") { store.NativeRedactInput(item.Id); inputs++; }
+            bool terminalForRetention = item.Status == "Processed" || (item.Status == "OnHold" && context?.TestCancelled == true);
+            if (terminalForRetention && item.Created < cutoff && context != null && !context.ReviewRequired && context.ActiveAttempt == "" && item.Input != "{}") { store.NativeRedactInput(item.Id); inputs++; }
         }
         SetCursor(c.QueueKey, "input-retention", items.Count == 50 ? items.Last().Id : "");
         var commands = store.Page("command", c.QueueKey, Cursor(c.QueueKey, "receipt-retention"), 100);

@@ -1,0 +1,111 @@
+{
+  "classification": "live-development-deployment",
+  "requestId": "88d8def5-f213-4f74-9505-0eaf2a3ac94e",
+  "planHash": "4aa24c1bf7fd61e572ee538c456421edfae2926aa00e0485f0ca2cee1f003d89",
+  "inputHash": "2184482fdf06f0dfd5b849c72dd238a15f0731b08c0639edc3852b3265e5c2d1",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "status": "ImportedAwaitingAcceptance",
+  "packages": [
+    {
+      "package": "WQCore",
+      "status": "Imported"
+    },
+    {
+      "package": "WQNotificationsEmail",
+      "status": "Imported"
+    },
+    {
+      "package": "WQReferenceSharedMailbox",
+      "status": "Imported"
+    },
+    {
+      "package": "WQTesting",
+      "status": "Imported"
+    }
+  ],
+  "affectedSolutions": [
+    {
+      "solutionid": "d70c3cd9-c571-49e7-a8ac-03c4a32ece3d",
+      "uniquename": "WQNotificationsEmail",
+      "version": "0.1.0.0"
+    },
+    {
+      "solutionid": "c87593df-dee8-4b08-8f9c-6907f7253ddc",
+      "uniquename": "WQCore",
+      "version": "0.1.0.0"
+    },
+    {
+      "solutionid": "a88798a9-bd5e-4e96-b668-8f92fc8265ca",
+      "uniquename": "WQTesting",
+      "version": "0.1.0.0"
+    },
+    {
+      "solutionid": "8d86b37d-cd2e-4006-9b3b-b826fefec640",
+      "uniquename": "WQReferenceSharedMailbox",
+      "version": "0.1.0.0"
+    }
+  ],
+  "observableComplete": true,
+  "flowsActivated": false,
+  "packageHashes": [
+    {
+      "file": "WQCore_managed.zip",
+      "expectedSha256": "732d29b8ab8026f88bca73052ef1818c7743fca6f2893b5bcbec6acc1ab128fe",
+      "actualSha256": "732d29b8ab8026f88bca73052ef1818c7743fca6f2893b5bcbec6acc1ab128fe",
+      "status": "verified-local"
+    },
+    {
+      "file": "WQCore.zip",
+      "expectedSha256": "34fa4e7372fc11849d8ece95580368f5cc147f484ee07b9ac4894db9c92f77ab",
+      "actualSha256": "34fa4e7372fc11849d8ece95580368f5cc147f484ee07b9ac4894db9c92f77ab",
+      "status": "verified-local"
+    },
+    {
+      "file": "WQNotificationsEmail_managed.zip",
+      "expectedSha256": "ac379cd20f98cd6c4470cc87d2ed2af35ce5e1f0de30c94a8a07cb0e6dde478e",
+      "actualSha256": "ac379cd20f98cd6c4470cc87d2ed2af35ce5e1f0de30c94a8a07cb0e6dde478e",
+      "status": "verified-local"
+    },
+    {
+      "file": "WQNotificationsEmail.zip",
+      "expectedSha256": "304c3f2d3dac208ff097ff142f1245e9be393470971dd770ae91834ffba3a240",
+      "actualSha256": "304c3f2d3dac208ff097ff142f1245e9be393470971dd770ae91834ffba3a240",
+      "status": "verified-local"
+    },
+    {
+      "file": "WQReferenceSharedMailbox_managed.zip",
+      "expectedSha256": "10cb31a39b09d9dbaa8e9a484cac7b9841ea1a79fd6d9c633e9a85a9c84fef81",
+      "actualSha256": "10cb31a39b09d9dbaa8e9a484cac7b9841ea1a79fd6d9c633e9a85a9c84fef81",
+      "status": "verified-local"
+    },
+    {
+      "file": "WQReferenceSharedMailbox.zip",
+      "expectedSha256": "610ffd766cff0936266f646627a04269074fbf7c21f252156fc854923ce5a933",
+      "actualSha256": "610ffd766cff0936266f646627a04269074fbf7c21f252156fc854923ce5a933",
+      "status": "verified-local"
+    },
+    {
+      "file": "WQTesting_managed.zip",
+      "expectedSha256": "aeb8d4df1f3dababf6f0dcd5f8b494a0e83cc9de8c1645d439842d39be32e372",
+      "actualSha256": "aeb8d4df1f3dababf6f0dcd5f8b494a0e83cc9de8c1645d439842d39be32e372",
+      "status": "verified-local"
+    },
+    {
+      "file": "WQTesting.zip",
+      "expectedSha256": "2882677ecd2e079798f0f192d6abfdc7711ab2747cce9e8f80fa885ac0fe5a6b",
+      "actualSha256": "2882677ecd2e079798f0f192d6abfdc7711ab2747cce9e8f80fa885ac0fe5a6b",
+      "status": "verified-local"
+    }
+  ],
+  "manualPrerequisites": {
+    "licensesCapacity": "unknown",
+    "targetUserPrivileges": "unknown",
+    "connectionOwnership": "unknown"
+  },
+  "limitations": [
+    "Existing unmanaged development environment; clean managed installation and upgrades are not proven.",
+    "Final component checks are structural; end-to-end reference and security acceptance remain open.",
+    "This deployment used the CLI executor; MCP planning, journal inspection and negative detached execution were separately verified."
+  ]
+}
