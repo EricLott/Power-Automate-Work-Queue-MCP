@@ -1,0 +1,17 @@
+{
+  "classification": "read-only-effective-identity",
+  "recordedAtUtc": "2026-09-13T04:34:49.585293+00:00",
+  "completed": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "mappingVerified": true,
+  "operatorControlVerified": true,
+  "secondEffectiveIdentityVerified": true,
+  "writesPerformed": false,
+  "transport": "@microsoft/dataverse@1.0.77 api request; CallerObjectId header",
+  "query": "<fetch top='2'><entity name='systemuser'><attribute name='systemuserid'/><filter><condition attribute='systemuserid' operator='eq-userid'/></filter></entity></fetch>",
+  "limitations": [
+    "Raw identity mapping retained locally.",
+    "Second identity has System Administrator role; least privilege is unproved.",
+    "WhoAmI alone did not distinguish the effective identity in this environment."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "classification": "separate-effective-identity-direct-update-guard",
+  "recordedAtUtc": "2026-09-13T04:32:50.130701+00:00",
+  "organizationMatched": true,
+  "effectiveIdentityVerifiedByFetchXml": true,
+  "case": "same-name direct update of registered synthetic Queued item",
+  "itemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+  "expectedError": "LIFECYCLE_BYPASS",
+  "observed": {
+    "exitCode": 1,
+    "error": "LIFECYCLE_BYPASS",
+    "transportResult": "DATAVERSE_CLI_FAILED"
+  },
+  "nativeRowAndEtagUnchanged": true,
+  "completed": true,
+  "limitations": [
+    "Second identity has System Administrator role; this tests plug-in denial, not least privilege.",
+    "Only direct Update tested; Create/Delete, unrelated queues and native dequeue remain separate.",
+    "Impersonation is not an independent interactive login."
+  ]
+}
