@@ -1,0 +1,510 @@
+{
+  "activeFault": "after-receipt",
+  "baseline": {
+    "attempts": [],
+    "context": {
+      "ActiveAttempt": "",
+      "AttemptCount": 0,
+      "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+      "CorrelationId": "identity-final-20260913-1",
+      "Generation": 0,
+      "ItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+      "LastAttempt": "",
+      "OutputJson": "{}",
+      "ReviewRequired": false,
+      "SourceKey": "84f32a3063d5d34fae1d6fc455a70e45cca0cbd77a3d06bd658f919168593f6c",
+      "TestCancelled": false,
+      "TestRun": ""
+    },
+    "native": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,uniqueidbyqueue)/$entity",
+      "@odata.etag": "W/\"19078004\"",
+      "statecode": 0,
+      "statuscode": 0,
+      "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+      "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+    },
+    "receipts": []
+  },
+  "classification": "synthetic-transaction-boundaries",
+  "completed": true,
+  "faults": {
+    "after-attempt": {
+      "acceptReceipts": 0,
+      "attemptCount": 0,
+      "context": {
+        "ActiveAttempt": "",
+        "AttemptCount": 0,
+        "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+        "CorrelationId": "identity-final-20260913-1",
+        "Generation": 0,
+        "ItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+        "LastAttempt": "",
+        "OutputJson": "{}",
+        "ReviewRequired": false,
+        "SourceKey": "84f32a3063d5d34fae1d6fc455a70e45cca0cbd77a3d06bd658f919168593f6c",
+        "TestCancelled": false,
+        "TestRun": ""
+      },
+      "error": "ACQUISITION_HANDOFF_FAILED",
+      "injectedFaultVerified": true,
+      "native": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,uniqueidbyqueue)/$entity",
+        "@odata.etag": "W/\"19078004\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+        "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+      },
+      "resolve": {
+        "Outcome": "Pending"
+      },
+      "traces": [
+        {
+          "correlationid": "24252f60-7f01-4414-9c3a-e4c01992117d",
+          "createdon": "2026-09-13T03:54:17Z",
+          "depth": 2,
+          "transactionLines": [
+            "qmcp operation qmcp_WQ_AcceptAcquire; correlation 24252f60-7f01-4414-9c3a-e4c01992117d; transaction True; depth 2"
+          ],
+          "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        {
+          "correlationid": "24252f60-7f01-4414-9c3a-e4c01992117d",
+          "createdon": "2026-09-13T03:54:17Z",
+          "depth": 1,
+          "transactionLines": [
+            "qmcp acquisition claim validated; correlation 24252f60-7f01-4414-9c3a-e4c01992117d; depth 1; transaction True; requestId 2111f6af-900e-5523-a0b1-af4d6cb3986e"
+          ],
+          "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        }
+      ],
+      "injectedFailureLines": [
+        "qmcp failure INJECTED_PROOF_FAILURE; correlation 24252f60-7f01-4414-9c3a-e4c01992117d"
+      ]
+    },
+    "after-context": {
+      "acceptReceipts": 0,
+      "attemptCount": 0,
+      "context": {
+        "ActiveAttempt": "",
+        "AttemptCount": 0,
+        "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+        "CorrelationId": "identity-final-20260913-1",
+        "Generation": 0,
+        "ItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+        "LastAttempt": "",
+        "OutputJson": "{}",
+        "ReviewRequired": false,
+        "SourceKey": "84f32a3063d5d34fae1d6fc455a70e45cca0cbd77a3d06bd658f919168593f6c",
+        "TestCancelled": false,
+        "TestRun": ""
+      },
+      "error": "ACQUISITION_HANDOFF_FAILED",
+      "injectedFaultVerified": true,
+      "native": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,uniqueidbyqueue)/$entity",
+        "@odata.etag": "W/\"19078004\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+        "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+      },
+      "resolve": {
+        "Outcome": "Pending"
+      },
+      "traces": [
+        {
+          "correlationid": "eea46c12-36a8-49b3-9a95-2801eb072e38",
+          "createdon": "2026-09-13T03:54:47Z",
+          "depth": 1,
+          "transactionLines": [
+            "qmcp acquisition claim validated; correlation eea46c12-36a8-49b3-9a95-2801eb072e38; depth 1; transaction True; requestId 2111f6af-900e-5523-a0b1-af4d6cb3986e"
+          ],
+          "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        {
+          "correlationid": "eea46c12-36a8-49b3-9a95-2801eb072e38",
+          "createdon": "2026-09-13T03:54:47Z",
+          "depth": 2,
+          "transactionLines": [
+            "qmcp operation qmcp_WQ_AcceptAcquire; correlation eea46c12-36a8-49b3-9a95-2801eb072e38; transaction True; depth 2"
+          ],
+          "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        }
+      ],
+      "injectedFailureLines": [
+        "qmcp failure INJECTED_PROOF_FAILURE; correlation eea46c12-36a8-49b3-9a95-2801eb072e38"
+      ]
+    },
+    "after-intent": {
+      "acceptReceipts": 0,
+      "attemptCount": 0,
+      "context": {
+        "ActiveAttempt": "",
+        "AttemptCount": 0,
+        "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+        "CorrelationId": "identity-final-20260913-1",
+        "Generation": 0,
+        "ItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+        "LastAttempt": "",
+        "OutputJson": "{}",
+        "ReviewRequired": false,
+        "SourceKey": "84f32a3063d5d34fae1d6fc455a70e45cca0cbd77a3d06bd658f919168593f6c",
+        "TestCancelled": false,
+        "TestRun": ""
+      },
+      "error": "ACQUISITION_HANDOFF_FAILED",
+      "injectedFaultVerified": true,
+      "native": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,uniqueidbyqueue)/$entity",
+        "@odata.etag": "W/\"19078004\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+        "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+      },
+      "resolve": {
+        "Outcome": "Pending"
+      },
+      "traces": [
+        {
+          "correlationid": "c2b20b28-c8dc-4980-971f-9c41cb0bffff",
+          "createdon": "2026-09-13T03:55:47Z",
+          "depth": 2,
+          "transactionLines": [
+            "qmcp operation qmcp_WQ_AcceptAcquire; correlation c2b20b28-c8dc-4980-971f-9c41cb0bffff; transaction True; depth 2"
+          ],
+          "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        {
+          "correlationid": "c2b20b28-c8dc-4980-971f-9c41cb0bffff",
+          "createdon": "2026-09-13T03:55:47Z",
+          "depth": 1,
+          "transactionLines": [
+            "qmcp acquisition claim validated; correlation c2b20b28-c8dc-4980-971f-9c41cb0bffff; depth 1; transaction True; requestId 7e1cf8b0-4a7f-530e-b163-d1d94eb54106"
+          ],
+          "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        }
+      ],
+      "injectedFailureLines": [
+        "qmcp failure INJECTED_PROOF_FAILURE; correlation c2b20b28-c8dc-4980-971f-9c41cb0bffff"
+      ]
+    },
+    "after-native-claim": {
+      "acceptReceipts": 0,
+      "attemptCount": 0,
+      "context": {
+        "ActiveAttempt": "",
+        "AttemptCount": 0,
+        "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+        "CorrelationId": "identity-final-20260913-1",
+        "Generation": 0,
+        "ItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+        "LastAttempt": "",
+        "OutputJson": "{}",
+        "ReviewRequired": false,
+        "SourceKey": "84f32a3063d5d34fae1d6fc455a70e45cca0cbd77a3d06bd658f919168593f6c",
+        "TestCancelled": false,
+        "TestRun": ""
+      },
+      "error": "ACQUISITION_HANDOFF_FAILED",
+      "injectedFaultVerified": true,
+      "native": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,uniqueidbyqueue)/$entity",
+        "@odata.etag": "W/\"19078004\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+        "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+      },
+      "resolve": {
+        "Outcome": "Pending"
+      },
+      "traces": [
+        {
+          "correlationid": "7b0d250e-86b9-4ccd-9474-dc97de122237",
+          "createdon": "2026-09-13T03:53:47Z",
+          "depth": 2,
+          "transactionLines": [
+            "qmcp operation qmcp_WQ_AcceptAcquire; correlation 7b0d250e-86b9-4ccd-9474-dc97de122237; transaction True; depth 2"
+          ],
+          "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        {
+          "correlationid": "7b0d250e-86b9-4ccd-9474-dc97de122237",
+          "createdon": "2026-09-13T03:53:47Z",
+          "depth": 1,
+          "transactionLines": [
+            "qmcp acquisition claim validated; correlation 7b0d250e-86b9-4ccd-9474-dc97de122237; depth 1; transaction True; requestId 2111f6af-900e-5523-a0b1-af4d6cb3986e"
+          ],
+          "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        }
+      ],
+      "injectedFailureLines": [
+        "qmcp failure INJECTED_PROOF_FAILURE; correlation 7b0d250e-86b9-4ccd-9474-dc97de122237"
+      ]
+    },
+    "after-receipt": {
+      "acceptReceipts": 0,
+      "attemptCount": 0,
+      "context": {
+        "ActiveAttempt": "",
+        "AttemptCount": 0,
+        "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+        "CorrelationId": "identity-final-20260913-1",
+        "Generation": 0,
+        "ItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+        "LastAttempt": "",
+        "OutputJson": "{}",
+        "ReviewRequired": false,
+        "SourceKey": "84f32a3063d5d34fae1d6fc455a70e45cca0cbd77a3d06bd658f919168593f6c",
+        "TestCancelled": false,
+        "TestRun": ""
+      },
+      "error": "ACQUISITION_HANDOFF_FAILED",
+      "injectedFaultVerified": true,
+      "native": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,uniqueidbyqueue)/$entity",
+        "@odata.etag": "W/\"19078004\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+        "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+      },
+      "resolve": {
+        "Outcome": "Pending"
+      },
+      "traces": [
+        {
+          "correlationid": "159e6617-18b1-4147-a931-92e62632e764",
+          "createdon": "2026-09-13T03:56:47Z",
+          "depth": 1,
+          "transactionLines": [
+            "qmcp acquisition claim validated; correlation 159e6617-18b1-4147-a931-92e62632e764; depth 1; transaction True; requestId 7e1cf8b0-4a7f-530e-b163-d1d94eb54106"
+          ],
+          "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        {
+          "correlationid": "159e6617-18b1-4147-a931-92e62632e764",
+          "createdon": "2026-09-13T03:56:47Z",
+          "depth": 2,
+          "transactionLines": [
+            "qmcp operation qmcp_WQ_AcceptAcquire; correlation 159e6617-18b1-4147-a931-92e62632e764; transaction True; depth 2"
+          ],
+          "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        }
+      ],
+      "injectedFailureLines": [
+        "qmcp failure INJECTED_PROOF_FAILURE; correlation 159e6617-18b1-4147-a931-92e62632e764"
+      ]
+    },
+    "before-receipt": {
+      "acceptReceipts": 0,
+      "attemptCount": 0,
+      "context": {
+        "ActiveAttempt": "",
+        "AttemptCount": 0,
+        "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+        "CorrelationId": "identity-final-20260913-1",
+        "Generation": 0,
+        "ItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+        "LastAttempt": "",
+        "OutputJson": "{}",
+        "ReviewRequired": false,
+        "SourceKey": "84f32a3063d5d34fae1d6fc455a70e45cca0cbd77a3d06bd658f919168593f6c",
+        "TestCancelled": false,
+        "TestRun": ""
+      },
+      "error": "ACQUISITION_HANDOFF_FAILED",
+      "injectedFaultVerified": true,
+      "native": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,uniqueidbyqueue)/$entity",
+        "@odata.etag": "W/\"19078004\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+        "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+      },
+      "resolve": {
+        "Outcome": "Pending"
+      },
+      "traces": [
+        {
+          "correlationid": "79fddff7-4906-4bfb-abe2-67938b64c18b",
+          "createdon": "2026-09-13T03:56:17Z",
+          "depth": 1,
+          "transactionLines": [
+            "qmcp acquisition claim validated; correlation 79fddff7-4906-4bfb-abe2-67938b64c18b; depth 1; transaction True; requestId 7e1cf8b0-4a7f-530e-b163-d1d94eb54106"
+          ],
+          "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        {
+          "correlationid": "79fddff7-4906-4bfb-abe2-67938b64c18b",
+          "createdon": "2026-09-13T03:56:17Z",
+          "depth": 2,
+          "transactionLines": [
+            "qmcp operation qmcp_WQ_AcceptAcquire; correlation 79fddff7-4906-4bfb-abe2-67938b64c18b; transaction True; depth 2"
+          ],
+          "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+        }
+      ],
+      "injectedFailureLines": [
+        "qmcp failure INJECTED_PROOF_FAILURE; correlation 79fddff7-4906-4bfb-abe2-67938b64c18b"
+      ]
+    }
+  },
+  "matrixVerified": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "originalPluginTraceLogSetting": 0,
+  "queueKey": "qmcp-proof-20260912",
+  "queuedItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+  "requests": {
+    "PrepareAcquire": "2111f6af-900e-5523-a0b1-af4d6cb3986e",
+    "after-intent": "7e1cf8b0-4a7f-530e-b163-d1d94eb54106"
+  },
+  "restorationErrors": [],
+  "runId": "transaction-v4-20260913",
+  "tenantCalls": true,
+  "traces": [
+    {
+      "correlationid": "7b0d250e-86b9-4ccd-9474-dc97de122237",
+      "createdon": "2026-09-13T03:53:47Z",
+      "depth": 2,
+      "transactionLines": [
+        "qmcp operation qmcp_WQ_AcceptAcquire; correlation 7b0d250e-86b9-4ccd-9474-dc97de122237; transaction True; depth 2"
+      ],
+      "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "7b0d250e-86b9-4ccd-9474-dc97de122237",
+      "createdon": "2026-09-13T03:53:47Z",
+      "depth": 1,
+      "transactionLines": [
+        "qmcp acquisition claim validated; correlation 7b0d250e-86b9-4ccd-9474-dc97de122237; depth 1; transaction True; requestId 2111f6af-900e-5523-a0b1-af4d6cb3986e"
+      ],
+      "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "24252f60-7f01-4414-9c3a-e4c01992117d",
+      "createdon": "2026-09-13T03:54:17Z",
+      "depth": 2,
+      "transactionLines": [
+        "qmcp operation qmcp_WQ_AcceptAcquire; correlation 24252f60-7f01-4414-9c3a-e4c01992117d; transaction True; depth 2"
+      ],
+      "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "24252f60-7f01-4414-9c3a-e4c01992117d",
+      "createdon": "2026-09-13T03:54:17Z",
+      "depth": 1,
+      "transactionLines": [
+        "qmcp acquisition claim validated; correlation 24252f60-7f01-4414-9c3a-e4c01992117d; depth 1; transaction True; requestId 2111f6af-900e-5523-a0b1-af4d6cb3986e"
+      ],
+      "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "eea46c12-36a8-49b3-9a95-2801eb072e38",
+      "createdon": "2026-09-13T03:54:47Z",
+      "depth": 1,
+      "transactionLines": [
+        "qmcp acquisition claim validated; correlation eea46c12-36a8-49b3-9a95-2801eb072e38; depth 1; transaction True; requestId 2111f6af-900e-5523-a0b1-af4d6cb3986e"
+      ],
+      "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "eea46c12-36a8-49b3-9a95-2801eb072e38",
+      "createdon": "2026-09-13T03:54:47Z",
+      "depth": 2,
+      "transactionLines": [
+        "qmcp operation qmcp_WQ_AcceptAcquire; correlation eea46c12-36a8-49b3-9a95-2801eb072e38; transaction True; depth 2"
+      ],
+      "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "c2b20b28-c8dc-4980-971f-9c41cb0bffff",
+      "createdon": "2026-09-13T03:55:47Z",
+      "depth": 2,
+      "transactionLines": [
+        "qmcp operation qmcp_WQ_AcceptAcquire; correlation c2b20b28-c8dc-4980-971f-9c41cb0bffff; transaction True; depth 2"
+      ],
+      "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "c2b20b28-c8dc-4980-971f-9c41cb0bffff",
+      "createdon": "2026-09-13T03:55:47Z",
+      "depth": 1,
+      "transactionLines": [
+        "qmcp acquisition claim validated; correlation c2b20b28-c8dc-4980-971f-9c41cb0bffff; depth 1; transaction True; requestId 7e1cf8b0-4a7f-530e-b163-d1d94eb54106"
+      ],
+      "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "79fddff7-4906-4bfb-abe2-67938b64c18b",
+      "createdon": "2026-09-13T03:56:17Z",
+      "depth": 1,
+      "transactionLines": [
+        "qmcp acquisition claim validated; correlation 79fddff7-4906-4bfb-abe2-67938b64c18b; depth 1; transaction True; requestId 7e1cf8b0-4a7f-530e-b163-d1d94eb54106"
+      ],
+      "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "79fddff7-4906-4bfb-abe2-67938b64c18b",
+      "createdon": "2026-09-13T03:56:17Z",
+      "depth": 2,
+      "transactionLines": [
+        "qmcp operation qmcp_WQ_AcceptAcquire; correlation 79fddff7-4906-4bfb-abe2-67938b64c18b; transaction True; depth 2"
+      ],
+      "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "159e6617-18b1-4147-a931-92e62632e764",
+      "createdon": "2026-09-13T03:56:47Z",
+      "depth": 1,
+      "transactionLines": [
+        "qmcp acquisition claim validated; correlation 159e6617-18b1-4147-a931-92e62632e764; depth 1; transaction True; requestId 7e1cf8b0-4a7f-530e-b163-d1d94eb54106"
+      ],
+      "typename": "QueueFramework.Plugins.AcquisitionPostPlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "correlationid": "159e6617-18b1-4147-a931-92e62632e764",
+      "createdon": "2026-09-13T03:56:47Z",
+      "depth": 2,
+      "transactionLines": [
+        "qmcp operation qmcp_WQ_AcceptAcquire; correlation 159e6617-18b1-4147-a931-92e62632e764; transaction True; depth 2"
+      ],
+      "typename": "QueueFramework.Plugins.LifecyclePlugin, QueueFramework.Plugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+    }
+  ],
+  "metadata": {
+    "dateUtc": "2026-09-13",
+    "environmentId": "7f4c5058-8003-e789-b5f5-e761953c8a0e",
+    "pluginSourceCommit": "639aad7",
+    "proofSourceCommit": "79c997a",
+    "solutionVersion": "0.1.0.0",
+    "packageSha256": "9ad9e44fcd62a59331f39a675411248134d9c3ef4bc60a4b8d05ed7fc264a4fa",
+    "dataverseCliVersion": "1.0.77",
+    "localTests": {
+      "runtime": 93,
+      "plugins": 47,
+      "python": 111,
+      "mcp": 31
+    },
+    "packageRoundTrips": 8,
+    "scope": "One authorized development actor; synthetic fixture; all flows Draft; no business processing or notification delivery."
+  },
+  "earlierAttempts": [
+    {
+      "runId": "transaction-20260913",
+      "result": "Script stopped on an unrecognized nested fault wrapper; settings restored."
+    },
+    {
+      "runId": "transaction-v2-20260913",
+      "result": "Script stopped on the native item-update wrapper; settings restored."
+    },
+    {
+      "runId": "transaction-v3-20260913",
+      "result": "Script stopped before asynchronous trace records became available; settings restored."
+    }
+  ]
+}

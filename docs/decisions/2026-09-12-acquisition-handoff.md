@@ -1,6 +1,6 @@
 # Acquisition handoff decision
 
-**Status:** proposed candidate; tenant validation pending
+**Status:** selected handoff; bounded tenant transaction/concurrency/replay validation passed; broader release validation remains open
 
 **Date:** 2026-09-12
 
@@ -51,6 +51,10 @@ real tenant traces and rollback evidence are captured.
 
 These checks are the remaining evidence for G04/G05 and do not follow from
 local runtime tests or PAC pack/unpack success.
+
+### Review update — 2026-09-13
+
+The checklist above is the original validation plan, not the current gate status. The [acquisition identity experiment](../acquisition-identity-proof.md) completed G04/G05. The [six-boundary transaction experiment](../transaction-boundary-proof.md) observed transaction True in the native post-operation handler and nested AcceptAcquire, with independent rollback after native claim, attempt, context, consumed intent and receipt persistence. The original outer-Custom-API composition remains rejected; the selected stage-40 handoff now has tenant evidence for its own atomic boundary. Separate-identity, clean-install, managed-upgrade and flow-specific failure checks remain tracked independently.
 
 
 ## Bounded live evidence added on 2026-09-12
