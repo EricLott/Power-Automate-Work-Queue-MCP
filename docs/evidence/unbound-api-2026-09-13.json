@@ -1,0 +1,197 @@
+{
+  "date": "2026-09-13",
+  "runtimeBaseline": "a976940",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "classification": "installed-global-action-parameter-review",
+  "apiMetadata": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#customapis(uniquename,bindingtype,isfunction)",
+    "value": [
+      {
+        "@odata.etag": "W/\"19072577\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_GetItemStatus",
+        "isfunction": false,
+        "customapiid": "28fc410d-997f-4e87-89ab-005ea5820c57"
+      },
+      {
+        "@odata.etag": "W/\"19072547\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_Checkpoint",
+        "isfunction": false,
+        "customapiid": "a47fac59-76d5-4ae0-89f6-05e945bf47dd"
+      },
+      {
+        "@odata.etag": "W/\"19072610\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_ClaimEvent",
+        "isfunction": false,
+        "customapiid": "02407e54-763a-4bb3-8254-187d81c9d8e2"
+      },
+      {
+        "@odata.etag": "W/\"19072604\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_ApplyRetention",
+        "isfunction": false,
+        "customapiid": "0e3547c3-5ec1-4992-937c-3640575727d0"
+      },
+      {
+        "@odata.etag": "W/\"19072646\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_CleanupTestRun",
+        "isfunction": false,
+        "customapiid": "d95c7dac-eb82-4762-9179-409209c7b96c"
+      },
+      {
+        "@odata.etag": "W/\"19072559\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_Fail",
+        "isfunction": false,
+        "customapiid": "fd849cac-8d12-438d-b7b3-4a3c15aff989"
+      },
+      {
+        "@odata.etag": "W/\"19072595\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_RunMaintenance",
+        "isfunction": false,
+        "customapiid": "29898134-cee3-4403-9b41-4b0a0da95aab"
+      },
+      {
+        "@odata.etag": "W/\"19072583\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_GetQueueHealth",
+        "isfunction": false,
+        "customapiid": "7509028d-f85a-4ccf-99d0-565769c35085"
+      },
+      {
+        "@odata.etag": "W/\"19072571\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_ReportIntakeFailure",
+        "isfunction": false,
+        "customapiid": "abb2f8b4-1228-402f-9a34-58f67d054c27"
+      },
+      {
+        "@odata.etag": "W/\"19072553\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_Complete",
+        "isfunction": false,
+        "customapiid": "e82db786-557a-49e2-90b9-712e52b3a210"
+      },
+      {
+        "@odata.etag": "W/\"19072589\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_RecoverExpiredAttempt",
+        "isfunction": false,
+        "customapiid": "d0c0966c-a0d7-4d5c-9dfd-947c386c694a"
+      },
+      {
+        "@odata.etag": "W/\"19072616\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_FinishEvent",
+        "isfunction": false,
+        "customapiid": "db795e43-8723-47bd-84bd-98854a326cd5"
+      },
+      {
+        "@odata.etag": "W/\"19072510\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_RegisterContract",
+        "isfunction": false,
+        "customapiid": "65c43941-4feb-4d62-bf5d-9b8d73f8fa9b"
+      },
+      {
+        "@odata.etag": "W/\"19072523\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_AcquireNext",
+        "isfunction": false,
+        "customapiid": "d7fd14f4-8197-4127-801c-9d7ad38cf438"
+      },
+      {
+        "@odata.etag": "W/\"19072622\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_StartTestRun",
+        "isfunction": false,
+        "customapiid": "0842ef21-46d9-490e-8a97-a1fd6f29aa97"
+      },
+      {
+        "@odata.etag": "W/\"19072634\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_GetTestRun",
+        "isfunction": false,
+        "customapiid": "21fa7801-5167-4226-a201-a26a406b3f1b"
+      },
+      {
+        "@odata.etag": "W/\"19072529\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_PrepareAcquire",
+        "isfunction": false,
+        "customapiid": "00840f67-43d7-4dac-b3f6-a4cd224898b7"
+      },
+      {
+        "@odata.etag": "W/\"19072565\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_RequestRetry",
+        "isfunction": false,
+        "customapiid": "56a0690b-ea6b-43c4-a552-b95d65666b21"
+      },
+      {
+        "@odata.etag": "W/\"19072535\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_AcceptAcquire",
+        "isfunction": false,
+        "customapiid": "5493b2ba-836e-409d-81b2-bec1bcbc3451"
+      },
+      {
+        "@odata.etag": "W/\"19072517\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_Enqueue",
+        "isfunction": false,
+        "customapiid": "ed9543e2-f1b6-4a50-84b3-d6b62ed4d2fb"
+      },
+      {
+        "@odata.etag": "W/\"19072640\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_AdvanceTestRun",
+        "isfunction": false,
+        "customapiid": "77c11ba4-1f29-4605-b6c1-d733e69db4b1"
+      },
+      {
+        "@odata.etag": "W/\"19072628\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_CancelTestRun",
+        "isfunction": false,
+        "customapiid": "0b6f0e5a-668c-4d2e-a26d-e51a39f8168a"
+      },
+      {
+        "@odata.etag": "W/\"19072504\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_RegisterQueue",
+        "isfunction": false,
+        "customapiid": "d884b7a9-43b6-4fe8-b0de-f0704d03faa1"
+      },
+      {
+        "@odata.etag": "W/\"19072541\"",
+        "bindingtype": 0,
+        "uniquename": "qmcp_WQ_ResolveAcquire",
+        "isfunction": false,
+        "customapiid": "c23953b0-d03e-4486-96d8-f2e65a9d8462"
+      }
+    ]
+  },
+  "request": {
+    "method": "POST",
+    "path": "qmcp_WQ_GetQueueHealth",
+    "body": {
+      "QueueKey": "qmcp-proof-20260912",
+      "RequestId": "a6817b49-5670-4334-82f1-bb06a039db4b",
+      "DataJson": "{}"
+    }
+  },
+  "response": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#Microsoft.Dynamics.CRM.qmcp_WQ_GetQueueHealthResponse",
+    "ResultJson": "{\"Outcome\":\"Health\",\"Enabled\":true,\"Revision\":12,\"CountInPage\":38,\"OldestInPage\":\"2026-09-12T21:28:33Z\",\"Items\":[{\"Id\":\"3b36d575-eb08-44ce-a64e-01e41b2a8851\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:05:06Z\",\"Expires\":\"2026-09-20T02:05:06Z\"},{\"Id\":\"4d7dc4b9-4d46-4f31-82e9-0b76d288f689\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:03:36Z\",\"Expires\":\"2026-09-20T02:03:36Z\"},{\"Id\":\"0a5d55d5-40a7-43e4-abea-246e10ecdd84\",\"Status\":\"Processed\",\"Available\":\"2026-09-12T23:27:01Z\",\"Expires\":\"2026-09-19T23:27:01Z\"},{\"Id\":\"a9f03b2c-0723-4d5d-b335-29de764c9fa5\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:03:34Z\",\"Expires\":\"2026-09-20T02:03:34Z\"},{\"Id\":\"07d20a47-a62e-44ee-a438-29f67f103362\",\"Status\":\"Processed\",\"Available\":\"2026-09-12T21:28:33Z\",\"Expires\":\"2026-09-19T21:28:33Z\"},{\"Id\":\"ecd097ff-3084-47df-88e8-35650228c603\",\"Status\":\"OnHold\",\"Available\":\"2026-09-12T23:52:06Z\",\"Expires\":\"2026-09-19T23:52:06Z\"},{\"Id\":\"9e54a96b-b3d9-4430-a882-447bf39e69bb\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T01:43:37Z\",\"Expires\":\"2026-09-20T01:43:37Z\"},{\"Id\":\"04c08d74-9da0-4a84-9d81-469e745d646f\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:05:09Z\",\"Expires\":\"2026-09-20T02:05:09Z\"},{\"Id\":\"483623e6-fe0a-49b7-8f4e-485eadd43940\",\"Status\":\"Processed\",\"Available\":\"2026-09-12T22:41:29Z\",\"Expires\":\"2026-09-19T22:39:49Z\"},{\"Id\":\"46a15c38-e999-42bf-b67a-579bbfa92879\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:05:06Z\",\"Expires\":\"2026-09-20T02:05:06Z\"},{\"Id\":\"d9e6610b-73ea-40be-ac71-60ac85941286\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:16:50Z\",\"Expires\":\"2026-09-20T02:16:50Z\"},{\"Id\":\"cf01f207-cc41-403c-b023-60adac5552db\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T00:47:01Z\",\"Expires\":\"2026-09-20T00:47:01Z\"},{\"Id\":\"87ee62ee-5eef-4507-97c3-64e6ee6f7e36\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:05:09Z\",\"Expires\":\"2026-09-20T02:05:09Z\"},{\"Id\":\"d22a667e-05d4-4e61-a258-651a76d4ba1c\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T01:43:41Z\",\"Expires\":\"2026-09-20T01:43:41Z\"},{\"Id\":\"7de7c611-29a4-4248-bc59-6a65d1b2c73b\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:03:35Z\",\"Expires\":\"2026-09-20T02:03:35Z\"},{\"Id\":\"14192af4-22b8-4189-83ac-7f47adcc2530\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:03:32Z\",\"Expires\":\"2026-09-20T02:03:32Z\"},{\"Id\":\"4851d47b-3979-4c80-be62-7f5d14107a62\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:03:36Z\",\"Expires\":\"2026-09-20T02:03:36Z\"},{\"Id\":\"e9c6cd8a-43f5-4031-a867-7ff3320f251f\",\"Status\":\"Processed\",\"Available\":\"2026-09-12T22:39:45Z\",\"Expires\":\"2026-09-19T22:39:45Z\"},{\"Id\":\"310d005d-916b-4bb9-bb98-8e3684be99fd\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T01:43:40Z\",\"Expires\":\"2026-09-20T01:43:40Z\"},{\"Id\":\"9cc6b3d3-8843-47a8-a9d8-916bb0a4b93f\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T01:19:21Z\",\"Expires\":\"2026-09-20T01:19:21Z\"},{\"Id\":\"7b2f47f4-0c07-47c8-9977-95cb7662c153\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:05:09Z\",\"Expires\":\"2026-09-20T02:05:09Z\"},{\"Id\":\"5e192e15-2b94-4e57-ac92-96b33f47d7e4\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T01:43:38Z\",\"Expires\":\"2026-09-20T01:43:38Z\"},{\"Id\":\"bab9c482-068a-45be-9aff-a0d61468fac0\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:05:07Z\",\"Expires\":\"2026-09-20T02:05:07Z\"},{\"Id\":\"6490cedc-37fd-4772-ba23-a29b4be75b75\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:05:10Z\",\"Expires\":\"2026-09-20T02:05:10Z\"},{\"Id\":\"453ce201-5f95-4a88-a635-b2b05821e89d\",\"Status\":\"Processed\",\"Available\":\"2026-09-12T22:59:31Z\",\"Expires\":\"2026-09-19T22:57:51Z\"},{\"Id\":\"bc6beb7f-80d3-4070-ad8a-b4a61d28ab3c\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T00:44:01Z\",\"Expires\":\"2026-09-20T00:44:01Z\"},{\"Id\":\"5f79780f-682c-440f-bdc4-c6bb7d5f9c68\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:03:33Z\",\"Expires\":\"2026-09-20T02:03:33Z\"},{\"Id\":\"f64f4ea6-df4b-430e-93b1-c800f91d954d\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:05:07Z\",\"Expires\":\"2026-09-20T02:05:07Z\"},{\"Id\":\"93f42faf-e53a-4c67-8625-d376789875fc\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T01:43:39Z\",\"Expires\":\"2026-09-20T01:43:39Z\"},{\"Id\":\"d0bcad13-a7e0-4e3d-9956-dc836bc4043f\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:05:08Z\",\"Expires\":\"2026-09-20T02:05:08Z\"},{\"Id\":\"59ed6734-bc97-4bfe-806d-dddc1be5858b\",\"Status\":\"Processed\",\"Available\":\"2026-09-12T22:57:48Z\",\"Expires\":\"2026-09-19T22:57:48Z\"},{\"Id\":\"7675b879-2b85-43ae-af45-e0044b432e90\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:05:07Z\",\"Expires\":\"2026-09-20T02:05:07Z\"},{\"Id\":\"aeec0b6c-584b-41ce-80f6-ea553aeab6e3\",\"Status\":\"Exception\",\"Available\":\"2026-09-12T23:12:39Z\",\"Expires\":\"2026-09-19T23:12:39Z\"},{\"Id\":\"a0ddf096-b8d7-4a41-b482-f2bcc7b6c267\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T02:05:08Z\",\"Expires\":\"2026-09-20T02:05:08Z\"},{\"Id\":\"8fdef255-7bf2-484a-9ea5-f814232f15b4\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T01:32:10Z\",\"Expires\":\"2026-09-20T01:32:10Z\"},{\"Id\":\"a8347059-e972-4ab4-96f2-f8acdf04e4f5\",\"Status\":\"Processed\",\"Available\":\"2026-09-13T02:05:07Z\",\"Expires\":\"2026-09-20T02:05:07Z\"},{\"Id\":\"3e1708d7-3d41-4b51-a35d-f9962a9fd9c0\",\"Status\":\"Exception\",\"Available\":\"2026-09-13T01:43:40Z\",\"Expires\":\"2026-09-20T01:43:40Z\"},{\"Id\":\"cb4515b4-6312-40ff-b23e-fae5c9278cce\",\"Status\":\"Queued\",\"Available\":\"2026-09-13T02:31:40Z\",\"Expires\":\"2026-09-20T02:31:40Z\"}],\"NextCursor\":null}"
+  },
+  "completed": true,
+  "limitations": [
+    "Read-only action example; replay/conflict evidence is linked separately.",
+    "Native item guard plugins still use entity Target for their native Update contexts."
+  ]
+}
