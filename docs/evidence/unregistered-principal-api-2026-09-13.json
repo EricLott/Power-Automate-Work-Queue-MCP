@@ -1,0 +1,13 @@
+{
+  "classification": "unregistered-effective-identity-api-denial",
+  "completed": true,
+  "principalAbsent": true,
+  "requestId": "f4c80fc7-72a4-4731-905f-8ad5132a3895",
+  "exitCode": 1,
+  "error": "PRINCIPAL_NOT_REGISTERED",
+  "returnedResult": false,
+  "transportResult": "DATAVERSE_CLI_FAILED",
+  "limitations": [
+    "Unregistered effective-identity denial only; no native least-privilege claim."
+  ]
+}

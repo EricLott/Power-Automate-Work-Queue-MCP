@@ -1,0 +1,45 @@
+{
+  "completed": true,
+  "classification": "temporary-framework-reader-boundaries",
+  "cases": [
+    {
+      "operation": "Enqueue",
+      "requestId": "d3b43b3f-b3c7-4ac9-b9df-ba74208cdce4",
+      "error": "FORBIDDEN",
+      "receiptAbsent": true
+    },
+    {
+      "operation": "GetQueueHealth",
+      "requestId": "539941b7-66c5-4961-a212-5c2e672afe82",
+      "error": "FORBIDDEN",
+      "receiptAbsent": true
+    },
+    {
+      "operation": "Enqueue",
+      "requestId": "f288d202-e0c6-484c-ac33-452e1b46e254",
+      "error": "FORBIDDEN",
+      "receiptAbsent": true
+    }
+  ],
+  "principalId": "9efc76e7-a85e-4144-a934-1d8eedc14f6d",
+  "restoreErrors": [],
+  "recordedAtUtc": "2026-09-13T04:48:41.278963+00:00",
+  "authorizedHealth": {
+    "Outcome": "Health",
+    "Enabled": true,
+    "Revision": 13,
+    "CountInPage": 41,
+    "OldestInPage": "2026-09-12T21:28:33Z",
+    "NextCursor": null
+  },
+  "matrixPassed": true,
+  "policyRestored": true,
+  "temporaryPrincipalRemoved": true,
+  "verifiedAtUtc": "2026-09-13T04:50:18.061195+00:00",
+  "limitations": [
+    "Dataverse user retained System Administrator; this proves framework role and queue-grant enforcement, not native restricted security roles.",
+    "Temporary principal removed and original queue policy restored; policy revision increment is retained."
+  ],
+  "sourceCommit": "f7f6a34",
+  "toolVersion": "@microsoft/dataverse@1.0.77"
+}
