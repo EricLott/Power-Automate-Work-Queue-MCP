@@ -14,7 +14,7 @@ class MailExtractionQualityFixtureTests(unittest.TestCase):
 
     def test_fixture_has_reviewed_unique_cases_and_valid_envelopes(self):
         fixture = self.fixture
-        self.assertEqual("mail-extraction-quality-v1", fixture["fixtureVersion"])
+        self.assertEqual("mail-extraction-quality-v1.1", fixture["fixtureVersion"])
         self.assertEqual("mail-extraction-v1.1", fixture["promptVersion"])
         self.assertEqual("not-run", fixture["tenantExecution"])
         self.assertEqual(["contact", "category"], fixture["expectedFields"])
@@ -52,6 +52,7 @@ class MailExtractionQualityFixtureTests(unittest.TestCase):
             case = by_id[case_id]
             self.assertEqual("Exception", case["ExpectedOutcome"])
             self.assertEqual({}, case["Expected"])
+            self.assertEqual("VALIDATEEXTRACTION_FAILED", case["ExpectedErrorCode"])
         self.assertEqual("", by_id["missing-sender"]["Input"]["payload"]["senderAddress"])
 
 

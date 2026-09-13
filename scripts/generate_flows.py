@@ -32,6 +32,12 @@ def failure_data():
         token=stage.upper()
         code=f"if(equals(actions('{stage}')?['status'],'TimedOut'),'{token}_TIMED_OUT',if(equals(actions('{stage}')?['status'],'Failed'),'{token}_FAILED',{code}))"
     return "@string(setProperty(setProperty(setProperty(json('{}'),'category','Unknown'),'code',"+code+"),'effect','Unknown'))"
+def response_outcome():
+    acquired="coalesce(outputs('Acquired')?['Outcome'],'Unknown')"
+    outcome="'Unknown'"
+    for action_name in ['ReportFailure','CompleteRetry','Complete']:
+        outcome=f"if(equals(actions('{action_name}')?['status'],'Succeeded'),coalesce(json(coalesce(body('{action_name}')?['ResultJson'],'{{}}'))?['Outcome'],'Unknown'),{outcome})"
+    return "@if(not(equals("+acquired+",'Acquired')),"+acquired+","+outcome+")"
 
 def validation_failure(code):
     # A failed ParseJson action is catchable by the business Scope; Terminate
@@ -93,16 +99,17 @@ def generate():
        'ResolveAcquire':action('ResolveAcquire','{}','HasPrepared'),
        'Resolved':compose("@json(body('ResolveAcquire')?['ResultJson'])",'ResolveAcquire'),
        'Acquired':compose(acquired,'Resolved'),
-       'HasWork':{'type':'If','expression':{'equals':["@outputs('Acquired')?['Outcome']",'Acquired']},'actions':{'Business':{'type':'Scope','actions':business,'runAfter':{}},'OutputRecordId':compose("@first(body('FindResult')?['value'])?['qmcp_emailrequestid']",'Business'),'Complete':action('Complete',complete_data,'OutputRecordId',owned=True),'CompleteRetry':action('Complete',complete_data,'Complete',owned=True),'CompletionUnknown':{'type':'Terminate','inputs':{'runStatus':'Failed','runError':{'code':'OUTCOME_UNKNOWN','message':'Completion remained uncertain after an idempotent retry.'}},'runAfter':{'CompleteRetry':['Failed','TimedOut']}},'ReportFailure':action('Fail',failure_data(),owned=True)},'else':{'actions':{}},'runAfter':{'Acquired':['Succeeded']}}}
+       'HasWork':{'type':'If','expression':{'equals':["@outputs('Acquired')?['Outcome']",'Acquired']},'actions':{'Business':{'type':'Scope','actions':business,'runAfter':{}},'OutputRecordId':compose("@first(body('FindResult')?['value'])?['qmcp_emailrequestid']",'Business'),'Complete':action('Complete',complete_data,'OutputRecordId',owned=True),'CompleteRetry':action('Complete',complete_data,'Complete',owned=True),'CompletionUnknown':compose("Unknown",'CompleteRetry'),'ReportFailure':action('Fail',failure_data(),owned=True)},'else':{'actions':{}},'runAfter':{'Acquired':['Succeeded']}}}
     # Resolve must replay the exact Prepare request identity after a lost or
     # failed native Dequeue response.
     a['ResolveAcquire']['inputs']['parameters']['item/RequestId']="@outputs('RequestIds')?['PrepareAcquire']"
     a['HasWork']['actions']['OutputRecordId']['runAfter']={'Business':['Succeeded']}
     a['HasWork']['actions']['Complete']['runAfter']={'OutputRecordId':['Succeeded']}
     a['HasWork']['actions']['CompleteRetry']['runAfter']={'Complete':['Failed','TimedOut']}
+    a['HasWork']['actions']['CompletionUnknown']['runAfter']={'CompleteRetry':['Failed','TimedOut']}
     a['HasWork']['actions']['ReportFailure']['runAfter']={'Business':['Failed','TimedOut']}
     a['ResolveAcquire']['runAfter']={'HasPrepared':['Succeeded','Failed','TimedOut']}
-    a['Respond']={'type':'Response','kind':'PowerApp','inputs':{'statusCode':200,'body':{'outcome':"@outputs('Acquired')?['Outcome']"}},'runAfter':{'HasWork':['Succeeded']}}
+    a['Respond']={'type':'Response','kind':'PowerApp','inputs':{'statusCode':200,'body':{'outcome':response_outcome()}},'runAfter':{'HasWork':['Succeeded','Failed','TimedOut','Skipped']}}
     process=workflow('ProcessOne',child(),a)
     process['properties']['definition']['parameters']['qmcp_PromptModelId']={'type':'String','defaultValue':''}
     save('ProcessOne','WQReferenceSharedMailbox',process)

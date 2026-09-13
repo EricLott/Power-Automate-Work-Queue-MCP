@@ -107,11 +107,18 @@ def validate_flow(flow,name):
         assert branch['Complete']['runAfter']=={'OutputRecordId':['Succeeded']}
         assert branch['CompleteRetry']['runAfter']=={'Complete':['Failed','TimedOut']}
         assert branch['CompletionUnknown']['runAfter']=={'CompleteRetry':['Failed','TimedOut']}
+        assert branch['CompletionUnknown']['type']=='Compose'
         complete_id=branch['Complete']['inputs']['parameters']['item/RequestId']
         assert branch['CompleteRetry']['inputs']['parameters']['item/RequestId']==complete_id
         assert branch['CompleteRetry']['inputs']['parameters']==branch['Complete']['inputs']['parameters']
         assert 'outputs(\'OutputRecordId\')' in branch['Complete']['inputs']['parameters']['item/DataJson']
         assert actions['HasWork']['actions']['ReportFailure']['runAfter']=={'Business':['Failed','TimedOut']}
+        assert actions['Respond']['runAfter']=={'HasWork':['Succeeded','Failed','TimedOut','Skipped']}
+        response=actions['Respond']['inputs']['body']['outcome']
+        assert "actions('Complete')?['status']" in response
+        assert "actions('CompleteRetry')?['status']" in response
+        assert "actions('ReportFailure')?['status']" in response
+        assert "'Unknown'" in response
         make=branch['Business']['actions']['CreateIfAbsent']['actions']
         prompt=make['Prompt']['inputs']['parameters']
         assert prompt['entityName']=='msdyn_aimodels' and prompt['actionName']=='Microsoft.Dynamics.CRM.Predict'

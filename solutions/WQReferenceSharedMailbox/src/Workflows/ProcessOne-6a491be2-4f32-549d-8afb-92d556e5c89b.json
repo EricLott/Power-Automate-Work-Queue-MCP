@@ -557,14 +557,8 @@
               }
             },
             "CompletionUnknown": {
-              "type": "Terminate",
-              "inputs": {
-                "runStatus": "Failed",
-                "runError": {
-                  "code": "OUTCOME_UNKNOWN",
-                  "message": "Completion remained uncertain after an idempotent retry."
-                }
-              },
+              "type": "Compose",
+              "inputs": "Unknown",
               "runAfter": {
                 "CompleteRetry": [
                   "Failed",
@@ -616,12 +610,15 @@
           "inputs": {
             "statusCode": 200,
             "body": {
-              "outcome": "@outputs('Acquired')?['Outcome']"
+              "outcome": "@if(not(equals(coalesce(outputs('Acquired')?['Outcome'],'Unknown'),'Acquired')),coalesce(outputs('Acquired')?['Outcome'],'Unknown'),if(equals(actions('Complete')?['status'],'Succeeded'),coalesce(json(coalesce(body('Complete')?['ResultJson'],'{}'))?['Outcome'],'Unknown'),if(equals(actions('CompleteRetry')?['status'],'Succeeded'),coalesce(json(coalesce(body('CompleteRetry')?['ResultJson'],'{}'))?['Outcome'],'Unknown'),if(equals(actions('ReportFailure')?['status'],'Succeeded'),coalesce(json(coalesce(body('ReportFailure')?['ResultJson'],'{}'))?['Outcome'],'Unknown'),'Unknown'))))"
             }
           },
           "runAfter": {
             "HasWork": [
-              "Succeeded"
+              "Succeeded",
+              "Failed",
+              "TimedOut",
+              "Skipped"
             ]
           }
         }

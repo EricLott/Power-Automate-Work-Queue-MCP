@@ -55,7 +55,18 @@ class FlowInvariantTests(unittest.TestCase):
         flow=self.flow('ProcessOne');branch=flow['properties']['definition']['actions']['HasWork']['actions']
         self.assertEqual(branch['ReportFailure']['runAfter'],{'Business':['Failed','TimedOut']})
         self.assertEqual(branch['CompletionUnknown']['runAfter'],{'CompleteRetry':['Failed','TimedOut']})
+        self.assertEqual(branch['CompletionUnknown']['type'],'Compose')
         self.assertNotIn('Complete',branch['ReportFailure']['runAfter'])
+
+    def test_response_returns_on_handled_failure_and_is_truthful(self):
+        flow=self.flow('ProcessOne');actions=flow['properties']['definition']['actions'];response=actions['Respond']
+        self.assertEqual(response['runAfter'],{'HasWork':['Succeeded','Failed','TimedOut','Skipped']})
+        outcome=response['inputs']['body']['outcome']
+        for action in ('Complete','CompleteRetry','ReportFailure'):
+            self.assertIn("actions('%s')?['status']"%action,outcome)
+            self.assertIn("json(coalesce(body('%s')?['ResultJson'],'{}'))?['Outcome']"%action,outcome)
+        self.assertIn("coalesce(outputs('Acquired')?['Outcome'],'Unknown')",outcome)
+        self.assertIn("'Unknown'",outcome)
 
     def test_failure_diagnostics_use_bounded_stage_codes(self):
         flow=self.flow('ProcessOne');data=flow['properties']['definition']['actions']['HasWork']['actions']['ReportFailure']['inputs']['parameters']['item/DataJson']
