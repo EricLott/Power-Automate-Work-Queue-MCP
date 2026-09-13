@@ -139,6 +139,8 @@ public sealed class Attempt
     public string ErrorCode { get; set; } = "";
     public string Checkpoint { get; set; } = "";
     public QueuePolicy Policy { get; set; } = new QueuePolicy();
+    // Null denotes an attempt persisted before full contract snapshots were added.
+    public Contract? Contract { get; set; }
     public string ContractHash { get; set; } = "";
     public JObject Caller { get; set; } = new JObject();
 }

@@ -147,6 +147,13 @@ public sealed partial class Engine
         var contract = Get<Contract>("contract", Json.Hash(queue + "|" + id)) ?? throw new Fault("CONTRACT_UNSUPPORTED");
         Schema.Validate(envelope["payload"]!, contract.Schema); return contract;
     }
+    static Contract Snapshot(Contract contract) => new Contract
+    {
+        Id = contract.Id,
+        Dialect = contract.Dialect,
+        Schema = (JObject)contract.Schema.DeepClone(),
+        Hash = contract.Hash
+    };
     object Enqueue(Command c, JObject envelope, QueuePolicy policy)
     {
         ValidateEnvelope(c.QueueKey, envelope, policy);
@@ -199,7 +206,7 @@ public sealed partial class Engine
         if (item.context.TestCancelled) throw new Fault("TEST_CANCELLED");
         if (item.context.ActiveAttempt != "" || item.context.ReviewRequired || item.context.AttemptCount >= policy.MaxAttempts) throw new Fault("ITEM_INELIGIBLE");
         var now = clock(); int generation = item.context.Generation + 1;
-        var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, ContractHash = contract.Hash, Caller = (JObject?)intent.Caller?.DeepClone() ?? new JObject() };
+        var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, Contract = Snapshot(contract), ContractHash = contract.Hash, Caller = (JObject?)intent.Caller?.DeepClone() ?? new JObject() };
         Add("attempt", attempt.Id, c.QueueKey, attempt); item.context.ActiveAttempt = attempt.Id; item.context.Generation = generation; item.context.AttemptCount++;
         // Compare against the versions that were validated, not a fresh read that
         // could silently overwrite a concurrently replaced intent or item context.
@@ -252,7 +259,7 @@ public sealed partial class Engine
             return new { Outcome = "ReviewRequired", ItemId = native.Id, Code = error.Code };
         }
         int generation = item.context.Generation + 1;
-        var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, ContractHash = contract.Hash, Caller = new JObject { ["flowId"] = (string?)data["flowId"], ["runId"] = (string?)data["runId"], ["templateVersion"] = (string?)data["templateVersion"] } };
+        var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, Contract = Snapshot(contract), ContractHash = contract.Hash, Caller = new JObject { ["flowId"] = (string?)data["flowId"], ["runId"] = (string?)data["runId"], ["templateVersion"] = (string?)data["templateVersion"] } };
         Add("attempt", attempt.Id, c.QueueKey, attempt);
         item.context.ActiveAttempt = attempt.Id; item.context.Generation = generation; item.context.AttemptCount++;
         Save("itemcontext", native.UniqueKey, item.context);

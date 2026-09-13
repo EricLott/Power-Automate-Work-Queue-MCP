@@ -1,0 +1,116 @@
+{
+  "classification": "live-contract-snapshot-completion-replay",
+  "proofId": "bf5ae3d3-6c50-49ce-b036-2f48ab0afc5f",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "completed": true,
+  "businessRecordId": "eeb94441-46b6-57c3-a3aa-b814ed09212d",
+  "requests": {
+    "contract-change": "89565b4b-fd6c-5b01-929c-0013cbc42804",
+    "policy-effective": "6189e5ed-cc34-5ecf-b73f-0ff1b21aaedb",
+    "acquire": "fe24f653-039e-5aa2-8814-dba48ed1f7d3",
+    "policy-later": "0292060e-3371-566c-a6ae-9434e79070dc",
+    "complete": "188371a1-520a-543a-8d8d-0db8a2cf6783",
+    "restore-policy": "a968eedb-30d0-5433-adf8-cca9307b946b"
+  },
+  "contractImmutable": true,
+  "contractHash": "fbd4417a37c8b2358490d477b208e59dfd59c29aa579e87ee5b23145951c2d56",
+  "itemId": "bc6beb7f-80d3-4070-ad8a-b4a61d28ab3c",
+  "attemptId": "c1a2c031-cea4-4925-951e-03867f98ee06",
+  "generation": 1,
+  "contractSnapshot": {
+    "Id": "mail.v1",
+    "Dialect": "http://json-schema.org/draft-07/schema#",
+    "Schema": {
+      "type": "object",
+      "required": [
+        "subject",
+        "senderAddress",
+        "bodyText"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "senderAddress": {
+          "type": "string",
+          "maxLength": 320
+        },
+        "bodyText": {
+          "type": "string",
+          "maxLength": 50000
+        }
+      }
+    },
+    "Hash": "fbd4417a37c8b2358490d477b208e59dfd59c29aa579e87ee5b23145951c2d56"
+  },
+  "effectivePolicyRevision": 2,
+  "snapshotPreserved": true,
+  "nativeState": 2,
+  "completionReplay": {
+    "Outcome": "Processed",
+    "ItemId": "bc6beb7f-80d3-4070-ad8a-b4a61d28ab3c"
+  },
+  "changedReplayRejected": true,
+  "outboxCount": 1,
+  "outboxState": "Pending",
+  "outboxKey": "b412eef8eccbb7feafaa8af8e9edd402f2de9b565f1d9e4e6a73bd1b42d706ba",
+  "completionReceiptCount": 1,
+  "responseDiscarded": true,
+  "policyRestored": true,
+  "storedReceiptMatchesReplay": true,
+  "releaseVersion": "0.1.0.0",
+  "localTests": {
+    "total": 211,
+    "mcp": 31,
+    "python": 49,
+    "plugins": 40,
+    "runtime": 91
+  },
+  "packageManifest": {
+    "tenantImport": "not-run",
+    "classification": "local-candidate",
+    "files": [
+      {
+        "sha256": "5c9d1faee5ea09af887732866e97280977b37547f7b3e89ff166f592dd2070e4",
+        "file": "WQCore_managed.zip"
+      },
+      {
+        "sha256": "409d4230787b1ba400b6cccba50deb822c2bbfd65980b4539245bd42834af31e",
+        "file": "WQCore.zip"
+      },
+      {
+        "sha256": "0002e18700189f73097d36cabd32af3e5c32545f5a0a6ddc5fa1f9ad81fc6958",
+        "file": "WQNotificationsEmail_managed.zip"
+      },
+      {
+        "sha256": "f6ef1f7491b9ae7d2e4073d50c29e68d3967a2b716803b59f99629139f3252ef",
+        "file": "WQNotificationsEmail.zip"
+      },
+      {
+        "sha256": "7f3de6bf9c9a26013643474f2bc235625782b82c30ab97505d86e1bd093d0b86",
+        "file": "WQReferenceSharedMailbox_managed.zip"
+      },
+      {
+        "sha256": "3e1e45507361ffdfde485c1f4f6cf5c9a0bb2c8c0cd2b57ef30a0fdffbe38812",
+        "file": "WQReferenceSharedMailbox.zip"
+      },
+      {
+        "sha256": "da7eed419137b9cfc42f42f3ce208574c7c5fc14f871f8b0e11ccc042c16e068",
+        "file": "WQTesting_managed.zip"
+      },
+      {
+        "sha256": "d676dfa7b798133c107fd20ae1457f40941306c5207d3d00e60b8021ca3f685e",
+        "file": "WQTesting.zip"
+      }
+    ],
+    "version": "0.1.0.0"
+  },
+  "limitations": [
+    "Successful Complete response was deliberately discarded; an actual network or connector outage was not induced.",
+    "All flows remained Draft and no notification was delivered.",
+    "Historical attempts keep Contract null; old snapshots are not fabricated."
+  ]
+}
