@@ -1,0 +1,44 @@
+{
+  "classification": "synthetic-tenant-proof",
+  "issueUrl": "",
+  "recordedAtUtc": "",
+  "outcome": "inconclusive",
+  "environment": {
+    "organizationId": "",
+    "environmentId": "",
+    "url": "",
+    "designation": "",
+    "platformVersion": null,
+    "identityAndRoles": []
+  },
+  "build": {
+    "commit": "",
+    "packageSha256": "",
+    "toolVersions": {}
+  },
+  "authorizationAndScope": "",
+  "accessGaps": [],
+  "fixtures": {
+    "source": "",
+    "ownedResourceIds": [],
+    "syntheticOnly": false
+  },
+  "commands": [],
+  "cases": [
+    {
+      "caseId": "",
+      "requestIds": [],
+      "expected": "",
+      "actual": null,
+      "evidenceReferences": [],
+      "outcome": "inconclusive"
+    }
+  ],
+  "cleanup": {
+    "expectedFinalState": "",
+    "observedFinalState": null,
+    "retainedResources": [],
+    "errors": []
+  },
+  "limitations": []
+}

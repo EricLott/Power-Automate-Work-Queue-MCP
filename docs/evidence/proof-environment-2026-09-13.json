@@ -1,0 +1,492 @@
+{
+  "classification": "read-only-proof-environment-inventory",
+  "recordedAtUtc": "2026-09-13T04:25:55.304322+00:00",
+  "commitInspected": "1c44908",
+  "environmentId": "7f4c5058-8003-e789-b5f5-e761953c8a0e",
+  "environmentDesignation": "User-supplied development environment; platform environment type not independently established",
+  "platformBuildReportedByUser": "0.0.20260827.1-2608.3-prod",
+  "tools": {
+    "pac": "2.12.2",
+    "dataverseCli": "1.0.77"
+  },
+  "metadata": {
+    "classification": "read-only-tenant-metadata-preflight",
+    "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+    "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+    "whoAmI": {
+      "organizationIdMatched": true
+    },
+    "solutions": [
+      {
+        "uniqueName": "WQCore",
+        "version": "0.1.0.0",
+        "friendlyName": "WQCore"
+      },
+      {
+        "uniqueName": "WQTesting",
+        "version": "0.1.0.0",
+        "friendlyName": "WQTesting"
+      },
+      {
+        "uniqueName": "WQNotificationsEmail",
+        "version": "0.1.0.0",
+        "friendlyName": "WQNotificationsEmail"
+      },
+      {
+        "uniqueName": "WQReferenceSharedMailbox",
+        "version": "0.1.0.0",
+        "friendlyName": "WQReferenceSharedMailbox"
+      }
+    ],
+    "apiBindings": {
+      "total": 24,
+      "boundPluginType": 24,
+      "unboundPluginType": 0
+    },
+    "flows": {
+      "expected": [
+        "ProcessOne",
+        "OnQueueChanged",
+        "SweepQueue",
+        "Intake",
+        "Watchdog",
+        "TestCoordinator",
+        "EmailSender"
+      ],
+      "found": [
+        {
+          "name": "ProcessOne",
+          "statecode": 0,
+          "statuscode": 1
+        },
+        {
+          "name": "OnQueueChanged",
+          "statecode": 0,
+          "statuscode": 1
+        },
+        {
+          "name": "SweepQueue",
+          "statecode": 0,
+          "statuscode": 1
+        },
+        {
+          "name": "Intake",
+          "statecode": 0,
+          "statuscode": 1
+        },
+        {
+          "name": "Watchdog",
+          "statecode": 0,
+          "statuscode": 1
+        },
+        {
+          "name": "TestCoordinator",
+          "statecode": 0,
+          "statuscode": 1
+        },
+        {
+          "name": "EmailSender",
+          "statecode": 0,
+          "statuscode": 1
+        }
+      ],
+      "draftCount": 7
+    },
+    "guardSteps": {
+      "count": 39
+    },
+    "writesPerformed": false,
+    "limitations": [
+      "Metadata reads are filtered public Web API queries and do not prove import, permissions, transactions, or connector activation.",
+      "Results are bounded by the requested query page size."
+    ]
+  },
+  "registeredQueueInputs": {
+    "queueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+    "items": [
+      {
+        "itemId": "3b36d575-eb08-44ce-a64e-01e41b2a8851",
+        "inputSha256": "20dd5136a6e4d6b178d2fa8e8aeac8bfbda80a759487d328042b044fe6b529bf",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "4d7dc4b9-4d46-4f31-82e9-0b76d288f689",
+        "inputSha256": "acce16248e405812499ae0dee88d8e805361ecbebadd3a6d95783dbc48cdda0b",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "0a5d55d5-40a7-43e4-abea-246e10ecdd84",
+        "inputSha256": "ea09c054a4a421e7a7514df59dff4cf1eaed187204bafed79fa7aa680a22b84f",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "a9f03b2c-0723-4d5d-b335-29de764c9fa5",
+        "inputSha256": "9dd1e8d16ba4c7cec60132bb846191037951cd8590d7b3165c41496f40d8cd8f",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "07d20a47-a62e-44ee-a438-29f67f103362",
+        "inputSha256": "3ac162ff33ad8ae41dcfca61cd38aea857058fb2b710cb236b4f4fd6b7282132",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "ecd097ff-3084-47df-88e8-35650228c603",
+        "inputSha256": "a178fa65c09845d693ff471deac685aa523a8a16422ddca0e6f4bbee57f181a7",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "9e54a96b-b3d9-4430-a882-447bf39e69bb",
+        "inputSha256": "1065a4f0d5d9cd74f5d20e8fc0d84d304ceec67ca5dcd643ff4a521fa64bc60b",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "04c08d74-9da0-4a84-9d81-469e745d646f",
+        "inputSha256": "7977f58b97a8d561d00ad39a9a389e63a3ab8046774de3bff5c7e37314345aca",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "483623e6-fe0a-49b7-8f4e-485eadd43940",
+        "inputSha256": "1547a42dc7d2b497dd2135dbef540a934324743a4c331f17c9d77df064494d33",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "46a15c38-e999-42bf-b67a-579bbfa92879",
+        "inputSha256": "96daac14f965b1c751312261f7b1a86869b7ff386f4772f57db22d73bb9c4ff4",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+        "inputSha256": "e3a54a1131a71975b674115018a5964efa90cb4d1043e0f6367eea8801ba7a17",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "d9e6610b-73ea-40be-ac71-60ac85941286",
+        "inputSha256": "7f3f7733178f840b8e143603c2d07491bddfe0d70181ed5f54941ba18074383a",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "cf01f207-cc41-403c-b023-60adac5552db",
+        "inputSha256": "830bf4a94a50eb64426beb3f37723bcf2977de3c23b67ac04768c6f5ea909ff6",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "87ee62ee-5eef-4507-97c3-64e6ee6f7e36",
+        "inputSha256": "77b8ccb02c2943bd10c4cb0f7e423dda50c4084c95f5a88401ff36e3e2060001",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "d22a667e-05d4-4e61-a258-651a76d4ba1c",
+        "inputSha256": "12c235bb8b741f19fa451842b1384e506e9cf83954b230dd740f979a0facf6a3",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "7de7c611-29a4-4248-bc59-6a65d1b2c73b",
+        "inputSha256": "547b785b202feedc9d5ff2f25dd2bbaeac17d01d61a5c883c45a8dd0a6d807bc",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "14192af4-22b8-4189-83ac-7f47adcc2530",
+        "inputSha256": "afda1f8a2c5ac126384024282b7ccbd948105415fefad965e19e1e7134163b6a",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "4851d47b-3979-4c80-be62-7f5d14107a62",
+        "inputSha256": "e89b3f15722753d64e65a004744c9dae10746dd3b1851a88bd770e8e8d2de5f0",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "e9c6cd8a-43f5-4031-a867-7ff3320f251f",
+        "inputSha256": "ed27315e441ad478fb8d0f728d24fe6c76663f416329cb99f37a5241fa25081b",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "310d005d-916b-4bb9-bb98-8e3684be99fd",
+        "inputSha256": "9eccfb20fc39ace6dd87cd358cb721194680fa4f09f90429a549b3f5481c5e74",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "9cc6b3d3-8843-47a8-a9d8-916bb0a4b93f",
+        "inputSha256": "ca8a0e15dff21cd84920b9c62b369e042e8da53b3dcfd9bf50c6ce946db84038",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "7b2f47f4-0c07-47c8-9977-95cb7662c153",
+        "inputSha256": "7b9c8013172dc50eb226a8550a095c67086afeb4cd033000acf92629d20aef1e",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "5e192e15-2b94-4e57-ac92-96b33f47d7e4",
+        "inputSha256": "bc027ddeca87076a6392a7ead3188d2fdf35a50b889c7ff3db37fdcab400db42",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "733a0049-6ebe-4156-92ad-9dd100063488",
+        "inputSha256": "88157de3d2ada6d051134eaca9a11f44ccab57ddd4e7f96ceef97ef65afd6373",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "bab9c482-068a-45be-9aff-a0d61468fac0",
+        "inputSha256": "54583bc28ef206d80fc41868c0799c8c69d11cef00d05d9ce1b7afb19d9e3461",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "6490cedc-37fd-4772-ba23-a29b4be75b75",
+        "inputSha256": "5c5d1d945af49f4ec3b41c1f95e543620809769323a597ccaa798fc6637f26e8",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "453ce201-5f95-4a88-a635-b2b05821e89d",
+        "inputSha256": "db6579b1c255612d3a1b5e944ae500262e7db1bf37c7c1431a6f4f8abb62763c",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "bc6beb7f-80d3-4070-ad8a-b4a61d28ab3c",
+        "inputSha256": "e82863d8e925fadb9b149527b0c50b3c893335b97596337fce7d03354bf86e53",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "5f79780f-682c-440f-bdc4-c6bb7d5f9c68",
+        "inputSha256": "c54028c67298b71dbaefbf8ba21a619b2bebbf8379a5fffaeba6dc6a14a63ae9",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "f64f4ea6-df4b-430e-93b1-c800f91d954d",
+        "inputSha256": "75efc754b95a68357a7430b17deaf927f99f155f4f485b023c744ac267b08034",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "93f42faf-e53a-4c67-8625-d376789875fc",
+        "inputSha256": "c0e12f2ef5537d37580e7b77cb418e518aff8aae71e77cc356a96f07b91647e1",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "d0bcad13-a7e0-4e3d-9956-dc836bc4043f",
+        "inputSha256": "ccc107a1035409a73f079eea92e1f18a018f3c9e66a50a3accc0b85ce16519d7",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "59ed6734-bc97-4bfe-806d-dddc1be5858b",
+        "inputSha256": "5ed800be4b29b312166b5642a08d1eb204c7c28ee00e113dec15c7c6dcc250e6",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "7675b879-2b85-43ae-af45-e0044b432e90",
+        "inputSha256": "d000479a3c6b606ada468b76e649cda30dbee79e2bfe9eb067cc2d689cbaabae",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "aeec0b6c-584b-41ce-80f6-ea553aeab6e3",
+        "inputSha256": "eeeeaa61c5e806321ecce4bd5759fef54b247fe09ec0c8441d2f464d2bc51afc",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "a0ddf096-b8d7-4a41-b482-f2bcc7b6c267",
+        "inputSha256": "81532bd339a61961b094b3932a35953278c4635f184be75692c9b135b067461f",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "8fdef255-7bf2-484a-9ea5-f814232f15b4",
+        "inputSha256": "e780cb0fecb139aad932785c11435c681c8c3b968d71181ef0f2f74a50b290af",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "a8347059-e972-4ab4-96f2-f8acdf04e4f5",
+        "inputSha256": "1f2f63f37ab19fb4f39bcd8c518afff7182943c2f5598384eefadd818f100a24",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "3e1708d7-3d41-4b51-a35d-f9962a9fd9c0",
+        "inputSha256": "53f10cdde3c5cefd9370a0aa34db0cd84f3b60a2eb3c777cd8ac8edfc72fcb6c",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      },
+      {
+        "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+        "inputSha256": "5ee14571af12d65e7f36a14d01f5be04cfc65cf5ac50865a7a6141821a016d67",
+        "sourceKind": "synthetic",
+        "emptyObject": false
+      }
+    ],
+    "count": 40,
+    "allTaggedSyntheticOrRedacted": true
+  },
+  "gateSnapshot": [
+    {
+      "number": 70,
+      "title": "[G01] Acceptance gate: Clean install",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 71,
+      "title": "[G02] Acceptance gate: Intake duplicate",
+      "state": "closed",
+      "closedAt": "2026-09-13T03:12:58Z"
+    },
+    {
+      "number": 72,
+      "title": "[G03] Acceptance gate: Intake conflict",
+      "state": "closed",
+      "closedAt": "2026-09-13T03:13:03Z"
+    },
+    {
+      "number": 73,
+      "title": "[G04] Acceptance gate: Acquisition concurrency",
+      "state": "closed",
+      "closedAt": "2026-09-13T03:34:27Z"
+    },
+    {
+      "number": 74,
+      "title": "[G05] Acceptance gate: Acquisition replay",
+      "state": "closed",
+      "closedAt": "2026-09-13T03:34:32Z"
+    },
+    {
+      "number": 75,
+      "title": "[G06] Acceptance gate: Completion replay",
+      "state": "closed",
+      "closedAt": "2026-09-13T03:23:16Z"
+    },
+    {
+      "number": 76,
+      "title": "[G07] Acceptance gate: Delayed work",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 77,
+      "title": "[G08] Acceptance gate: Missed wake-up",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 78,
+      "title": "[G09] Acceptance gate: Paused queue",
+      "state": "closed",
+      "closedAt": "2026-09-13T03:09:41Z"
+    },
+    {
+      "number": 79,
+      "title": "[G10] Acceptance gate: Unsupported payload",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 80,
+      "title": "[G11] Acceptance gate: Post-write failure",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 81,
+      "title": "[G12] Acceptance gate: Stale worker",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 82,
+      "title": "[G13] Acceptance gate: Unknown outcome",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 83,
+      "title": "[G14] Acceptance gate: Notification failure",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 84,
+      "title": "[G15] Acceptance gate: Test isolation",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 85,
+      "title": "[G16] Acceptance gate: Test evidence",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 86,
+      "title": "[G17] Acceptance gate: AI extraction",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 87,
+      "title": "[G18] Acceptance gate: Authorization",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 88,
+      "title": "[G19] Acceptance gate: Lifecycle bypass",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 89,
+      "title": "[G20] Acceptance gate: Agent disconnection",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 90,
+      "title": "[G21] Acceptance gate: Upgrade",
+      "state": "open",
+      "closedAt": null
+    },
+    {
+      "number": 91,
+      "title": "[G22] Acceptance gate: Capacity",
+      "state": "open",
+      "closedAt": null
+    }
+  ],
+  "writesPerformed": false,
+  "limitations": [
+    "Existing mixed tenant, not clean install or dedicated tenant isolation.",
+    "Synthetic source tags and hashes corroborate controlled fixtures, not an independent content provenance classifier.",
+    "One authenticated operator; separate-identity privilege matrix remains open.",
+    "No mailbox content or credentials included."
+  ]
+}
