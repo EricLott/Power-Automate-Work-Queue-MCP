@@ -1,0 +1,103 @@
+{
+  "classification": "all-companion-direct-create-guards",
+  "completed": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "recordedAtUtc": "2026-09-13T04:52:38.043634+00:00",
+  "fixtures": {
+    "qmcp_wqdefinition": "355e907d-4142-4300-99da-e814440cfb79",
+    "qmcp_wqqueuebinding": "c46858eb-c60c-45a6-9c66-9d41e99d5e73",
+    "qmcp_wqcontract": "3dbc1bd2-7eb0-4e76-8ab0-ff9754aa954b",
+    "qmcp_wqitemcontext": "dc065c4b-ffd6-4fe8-b5a3-66be8f99ee0a",
+    "qmcp_wqattempt": "dfe05992-b1db-4e67-a3a8-a375a8b4e9d2",
+    "qmcp_wqcommand": "78e2c3d2-48da-466e-9e2e-bf509f9fb5d5",
+    "qmcp_wqevent": "94dab47f-e409-41a3-9dd7-60e9263d21c2",
+    "qmcp_wqcursor": "fbe1e7c5-7a73-42f1-bd6a-2ea4efe3762b",
+    "qmcp_wqintakefailure": "69c2d6ca-e322-4319-8a77-1479b9f15f52",
+    "qmcp_wqtestcase": "9aead5c0-4085-4da5-b423-b310e3e842c7",
+    "qmcp_wqtestrun": "c10af46b-0e4d-4771-8987-f2c34bc33ba8",
+    "qmcp_wqtestresult": "3cbce0ce-f827-4d62-9755-09ee24f29ebb"
+  },
+  "cases": [
+    {
+      "table": "qmcp_wqdefinition",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqqueuebinding",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqcontract",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqitemcontext",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqattempt",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqcommand",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqevent",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqcursor",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqintakefailure",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqtestcase",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqtestrun",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    },
+    {
+      "table": "qmcp_wqtestresult",
+      "operation": "Create",
+      "error": "LIFECYCLE_BYPASS",
+      "newIdAbsent": true
+    }
+  ],
+  "limitations": [
+    "Only Create registration on all 12 companion tables; Update/Delete currently proven on item-context only.",
+    "Second identity retains System Administrator privileges; native least privilege unproved."
+  ],
+  "sourceCommit": "1f82f7f",
+  "toolVersion": "@microsoft/dataverse@1.0.77",
+  "deployedPluginPackageSha256": "9ad9e44fcd62a59331f39a675411248134d9c3ef4bc60a4b8d05ed7fc264a4fa",
+  "effectiveIdentityVerified": true,
+  "registrationSha256": "e1721e82f39b696c8fd2d736793ca0c944a4c65a2c7207322755d3324f6a3b12"
+}
