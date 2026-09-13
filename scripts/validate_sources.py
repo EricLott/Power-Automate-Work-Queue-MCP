@@ -100,7 +100,34 @@ def validate_flow(flow,name):
         assert actions['ResolveAcquire']['inputs']['parameters']['item/DataJson']=='{}'
         assert actions['Acquired']['inputs']=="@outputs('Resolved')"
         assert actions['HasWork']['expression']=={'equals':["@outputs('Acquired')?['Outcome']",'Acquired']}
+        branch=actions['HasWork']['actions']
+        assert branch['Business']['type']=='Scope'
+        assert branch['OutputRecordId']['runAfter']=={'Business':['Succeeded']}
+        assert branch['OutputRecordId']['inputs']=="@first(body('FindResult')?['value'])?['qmcp_emailrequestid']"
+        assert branch['Complete']['runAfter']=={'OutputRecordId':['Succeeded']}
+        assert branch['CompleteRetry']['runAfter']=={'Complete':['Failed','TimedOut']}
+        assert branch['CompletionUnknown']['runAfter']=={'CompleteRetry':['Failed','TimedOut']}
+        complete_id=branch['Complete']['inputs']['parameters']['item/RequestId']
+        assert branch['CompleteRetry']['inputs']['parameters']['item/RequestId']==complete_id
+        assert branch['CompleteRetry']['inputs']['parameters']==branch['Complete']['inputs']['parameters']
+        assert 'outputs(\'OutputRecordId\')' in branch['Complete']['inputs']['parameters']['item/DataJson']
         assert actions['HasWork']['actions']['ReportFailure']['runAfter']=={'Business':['Failed','TimedOut']}
+        make=branch['Business']['actions']['CreateIfAbsent']['actions']
+        prompt=make['Prompt']['inputs']['parameters']
+        assert prompt['entityName']=='msdyn_aimodels' and prompt['actionName']=='Microsoft.Dynamics.CRM.Predict'
+        assert prompt['recordId']=="@parameters('qmcp_PromptModelId')" and prompt['item/version']=='2.0'
+        assert prompt['item/requestv2']['@@odata.type']=='Microsoft.Dynamics.CRM.expando'
+        assert "outputs('Acquired')?['Envelope']?['payload']" in prompt['item/requestv2']['prompt']
+        assert make['NormalizeExtraction']['type']=='Compose'
+        normalized=make['NormalizeExtraction']['inputs']
+        assert "startsWith(trim(" in normalized and "endsWith(trim(" in normalized and "length(split(" in normalized
+        assert "concat('```json',decodeUriComponent('%0A'))" in normalized and "'```'" in normalized
+        assert "startsWith(@" not in normalized
+        assert make['ValidateExtraction']['inputs']['content']=="@outputs('NormalizeExtraction')"
+        assert make['ValidateExtraction']['runAfter']=={'NormalizeExtraction':['Succeeded']}
+        assert make['BusinessDocument']['runAfter']=={'ValidateSender':['Succeeded']}
+        assert make['ValidateSender']['else']['actions']['RejectSender']['type']=='ParseJson'
+        assert branch['Business']['actions']['Reconciled']['else']['actions']['Conflict']['type']=='ParseJson'
     if name=='OnQueueChanged':assert list(actions)==['ProcessOne'],'Event must be a wake-up only'
     return len(flat)
 

@@ -1,10 +1,10 @@
 """Power Automate workflow sources with bounded loops and explicit lifecycle ownership.
 
-The prompt action is a binding seam: the first tenant export supplies its environment-
-specific AI Builder action metadata. The default action fails closed. Local simulation
-uses a labeled fixture provider, never a pretend live prompt.
+The prompt uses the documented Dataverse Predict action. Its model ID is an explicit
+environment binding; local simulation remains a separately labeled fixture provider.
 """
 from generate_sources import ROOT, VERSION, uid, write_json, write_xml, element, ET
+import json
 
 API='/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps'
 def connector(operation,parameters,after=None,connection='qmcp_Dataverse',api=API):
@@ -26,6 +26,17 @@ def native_dequeue(after=None):
     }, after)
 def compose(value,after=None):return {'type':'Compose','inputs':value,'runAfter':{} if after is None else {after:['Succeeded']}}
 def request_ids(ops):return compose({op:'@guid()' for op in ops})
+def failure_data():
+    code="'WORKER_SCOPE_FAILED'"
+    for stage in ['Reconciled','FindResult','FindExisting','CreateRecord','ValidateSender','ValidateExtraction','NormalizeExtraction','Prompt']:
+        token=stage.upper()
+        code=f"if(equals(actions('{stage}')?['status'],'TimedOut'),'{token}_TIMED_OUT',if(equals(actions('{stage}')?['status'],'Failed'),'{token}_FAILED',{code}))"
+    return "@string(setProperty(setProperty(setProperty(json('{}'),'category','Unknown'),'code',"+code+"),'effect','Unknown'))"
+
+def validation_failure(code):
+    # A failed ParseJson action is catchable by the business Scope; Terminate
+    # would stop the entire workflow before its lifecycle failure handler runs.
+    return {'type':'ParseJson','inputs':{'content':{'code':code},'schema':{'type':'object','required':['validationPassed'],'properties':{'validationPassed':{'type':'boolean'}}}},'runAfter':{},'metadata':{'qmcpErrorCode':code}}
 def workflow(name,trigger,actions,connections=('qmcp_Dataverse',)):
     refs={}
     scope='core' if name=='Watchdog' else 'testing' if name=='TestCoordinator' else 'notifications' if name=='EmailSender' else 'reference'
@@ -54,31 +65,47 @@ def save(name,package,data):
 
 def generate():
     acquired="@outputs('Resolved')"
-    record_doc={'sourceKey':"@outputs('Acquired')?['SourceKey']",'contentHash':"@outputs('Acquired')?['ContentHash']",'testRun':"@outputs('Acquired')?['TestRun']",'fields':"@body('ValidateExtraction')",'promptVersion':'mail-extraction-v1'}
-    prompt={'type':'Terminate','inputs':{'runStatus':'Failed','runError':{'code':'PROMPT_BINDING_REQUIRED','message':'Bind the approved AI Builder prompt action before activation.'}},'runAfter':{},'metadata':{'qmcpBinding':'approved-prompt-action'}}
+    record_doc={'sourceKey':"@outputs('Acquired')?['SourceKey']",'contentHash':"@outputs('Acquired')?['ContentHash']",'testRun':"@outputs('Acquired')?['TestRun']",'fields':"@body('ValidateExtraction')",'promptVersion':'mail-extraction-v1.1'}
+    prompt=connector('PerformBoundAction',{'entityName':'msdyn_aimodels','actionName':'Microsoft.Dynamics.CRM.Predict','recordId':"@parameters('qmcp_PromptModelId')",'item/version':'2.0','item/requestv2':{'@@odata.type':'Microsoft.Dynamics.CRM.expando','prompt':"@concat('"+(ROOT/'templates/prompt.md').read_text(encoding='utf-8').replace("'","''")+"', decodeUriComponent('%0A%0A'), 'Input JSON:', string(outputs('Acquired')?['Envelope']?['payload']))"}})
+    prompt['metadata']={'qmcpBinding':'dataverse-predict-prompt','qmcpPromptVersion':'mail-extraction-v1.1'}
     output_schema={'type':'object','additionalProperties':False,'required':['contact','category','summary'],'properties':{'contact':{'type':'string','minLength':1,'maxLength':320},'category':{'type':'string','enum':['service','question']},'summary':{'type':'string','maxLength':4000}}}
-    make={'Prompt':prompt,'ValidateExtraction':{'type':'ParseJson','inputs':{'content':"@outputs('Prompt')?['body']",'schema':output_schema},'runAfter':{'Prompt':['Succeeded']}},'BusinessDocument':compose(record_doc,'ValidateExtraction'),
+    record_doc.update({'promptModelId':"@parameters('qmcp_PromptModelId')",'modelVersion':"@coalesce(body('Prompt')?['responsev2']?['predictionOutput']?['modelName'],'unreported')",'predictionId':"@body('Prompt')?['responsev2']?['predictionId']"})
+    raw_prompt="trim(string(body('Prompt')?['responsev2']?['predictionOutput']?['text']))"
+    normalized_prompt="@if(and(startsWith("+raw_prompt+",concat('```json',decodeUriComponent('%0A'))),endsWith("+raw_prompt+",'```'),equals(length(split("+raw_prompt+",'```')),3)),trim(substring("+raw_prompt+",7,sub(length("+raw_prompt+"),10))),"+raw_prompt+")"
+    make={'Prompt':prompt,'NormalizeExtraction':compose(normalized_prompt,'Prompt'),'ValidateExtraction':{'type':'ParseJson','inputs':{'content':"@outputs('NormalizeExtraction')",'schema':output_schema},'runAfter':{'NormalizeExtraction':['Succeeded']}},'ValidateSender':{'type':'If','expression':{'equals':["@body('ValidateExtraction')?['contact']","@outputs('Acquired')?['Envelope']?['payload']?['senderAddress']"]},'actions':{},'else':{'actions':{'RejectSender':validation_failure('EXTRACTION_SENDER_MISMATCH')}},'runAfter':{'ValidateExtraction':['Succeeded']}},'BusinessDocument':compose(record_doc,'ValidateSender'),
           'CreateRecord':connector('CreateRecord',{'entityName':'qmcp_emailrequests','item/qmcp_name':"@outputs('Acquired')?['BusinessKey']",'item/qmcp_key':"@outputs('Acquired')?['BusinessKey']",'item/qmcp_queuekey':"@parameters('qmcp_QueueKey')",'item/qmcp_document':"@string(outputs('BusinessDocument'))"},'BusinessDocument')}
     # Reconciliation reads by the protected source identity before any prompt or write.
     business={'FindExisting':connector('ListRecords',{'entityName':'qmcp_emailrequests','$filter':"@concat('qmcp_key eq ''', outputs('Acquired')?['BusinessKey'], '''')",'$top':2}),
       'CreateIfAbsent':{'type':'If','expression':{'equals':["@length(body('FindExisting')?['value'])",0]},'actions':make,'else':{'actions':{}},'runAfter':{'FindExisting':['Succeeded']}},
       'FindResult':connector('ListRecords',{'entityName':'qmcp_emailrequests','$filter':"@concat('qmcp_key eq ''', outputs('Acquired')?['BusinessKey'], '''')",'$top':2},'CreateIfAbsent'),
-      'Reconciled':{'type':'If','expression':{'and':[{'equals':["@length(body('FindResult')?['value'])",1]},{'equals':["@json(first(body('FindResult')?['value'])?['qmcp_document'])?['contentHash']","@outputs('Acquired')?['ContentHash']"]}]},'actions':{'Complete':action('Complete',"@string(setProperty(setProperty(json('{}'), 'table', 'qmcp_emailrequest'), 'recordId', first(body('FindResult')?['value'])?['qmcp_emailrequestid']))",owned=True)},'else':{'actions':{'Conflict':{'type':'Terminate','inputs':{'runStatus':'Failed','runError':{'code':'BUSINESS_CONTENT_CONFLICT','message':'Existing source identity failed reconciliation.'}},'runAfter':{}}}},'runAfter':{'FindResult':['Succeeded']}}}
+      'Reconciled':{'type':'If','expression':{'and':[{'equals':["@length(body('FindResult')?['value'])",1]},{'equals':["@json(first(body('FindResult')?['value'])?['qmcp_document'])?['contentHash']","@outputs('Acquired')?['ContentHash']"]}]},'actions':{},'else':{'actions':{'Conflict':{'type':'Terminate','inputs':{'runStatus':'Failed','runError':{'code':'BUSINESS_CONTENT_CONFLICT','message':'Existing source identity failed reconciliation.'}},'runAfter':{}}}},'runAfter':{'FindResult':['Succeeded']}}}
+    complete_data="@string(setProperty(setProperty(json('{}'), 'table', 'qmcp_emailrequest'), 'recordId', outputs('OutputRecordId')))"
+    business['Reconciled']['else']['actions']['Conflict']=validation_failure('BUSINESS_CONTENT_CONFLICT')
+    business['Reconciled']['expression']['and'].extend([
+        {'equals':["@json(first(body('FindResult')?['value'])?['qmcp_document'])?['sourceKey']","@outputs('Acquired')?['SourceKey']"]},
+        {'equals':["@first(body('FindResult')?['value'])?['qmcp_queuekey']","@parameters('qmcp_QueueKey')"]}])
+    sender_check=make['ValidateSender']['expression']
+    make['ValidateSender']['expression']={'and':[sender_check,{'equals':["@body('Prompt')?['responsev2']?['operationStatus']",'Success']}]}
     a={'RequestIds':request_ids(['PrepareAcquire','ResolveAcquire','Complete','Fail']),
-       'PrepareAcquire':action('PrepareAcquire',"@string(setProperty(setProperty(json('{}'), 'runId', workflow()?['run']?['name']), 'templateVersion', '0.1.0.0'))",'RequestIds'),
+       'PrepareAcquire':action('PrepareAcquire',"@string(setProperty(setProperty(setProperty(json('{}'), 'runId', workflow()?['run']?['name']), 'flowId', workflow()?['name']), 'templateVersion', '0.1.0.0'))",'RequestIds'),
        'Prepared':compose("@json(body('PrepareAcquire')?['ResultJson'])",'PrepareAcquire'),
        'HasPrepared':{'type':'If','expression':{'equals':["@outputs('Prepared')?['Outcome']",'Prepared']},'actions':{'Dequeue':native_dequeue()},'else':{'actions':{}},'runAfter':{'Prepared':['Succeeded']}},
        'ResolveAcquire':action('ResolveAcquire','{}','HasPrepared'),
        'Resolved':compose("@json(body('ResolveAcquire')?['ResultJson'])",'ResolveAcquire'),
        'Acquired':compose(acquired,'Resolved'),
-       'HasWork':{'type':'If','expression':{'equals':["@outputs('Acquired')?['Outcome']",'Acquired']},'actions':{'Business':{'type':'Scope','actions':business,'runAfter':{}},'ReportFailure':action('Fail','{"category":"Unknown","code":"WORKER_SCOPE_FAILED","effect":"Unknown"}',owned=True)},'else':{'actions':{}},'runAfter':{'Acquired':['Succeeded']}}}
+       'HasWork':{'type':'If','expression':{'equals':["@outputs('Acquired')?['Outcome']",'Acquired']},'actions':{'Business':{'type':'Scope','actions':business,'runAfter':{}},'OutputRecordId':compose("@first(body('FindResult')?['value'])?['qmcp_emailrequestid']",'Business'),'Complete':action('Complete',complete_data,'OutputRecordId',owned=True),'CompleteRetry':action('Complete',complete_data,'Complete',owned=True),'CompletionUnknown':{'type':'Terminate','inputs':{'runStatus':'Failed','runError':{'code':'OUTCOME_UNKNOWN','message':'Completion remained uncertain after an idempotent retry.'}},'runAfter':{'CompleteRetry':['Failed','TimedOut']}},'ReportFailure':action('Fail',failure_data(),owned=True)},'else':{'actions':{}},'runAfter':{'Acquired':['Succeeded']}}}
     # Resolve must replay the exact Prepare request identity after a lost or
     # failed native Dequeue response.
     a['ResolveAcquire']['inputs']['parameters']['item/RequestId']="@outputs('RequestIds')?['PrepareAcquire']"
+    a['HasWork']['actions']['OutputRecordId']['runAfter']={'Business':['Succeeded']}
+    a['HasWork']['actions']['Complete']['runAfter']={'OutputRecordId':['Succeeded']}
+    a['HasWork']['actions']['CompleteRetry']['runAfter']={'Complete':['Failed','TimedOut']}
     a['HasWork']['actions']['ReportFailure']['runAfter']={'Business':['Failed','TimedOut']}
     a['ResolveAcquire']['runAfter']={'HasPrepared':['Succeeded','Failed','TimedOut']}
     a['Respond']={'type':'Response','kind':'PowerApp','inputs':{'statusCode':200,'body':{'outcome':"@outputs('Acquired')?['Outcome']"}},'runAfter':{'HasWork':['Succeeded']}}
-    save('ProcessOne','WQReferenceSharedMailbox',workflow('ProcessOne',child(),a))
+    process=workflow('ProcessOne',child(),a)
+    process['properties']['definition']['parameters']['qmcp_PromptModelId']={'type':'String','defaultValue':''}
+    save('ProcessOne','WQReferenceSharedMailbox',process)
     trigger={'type':'OpenApiConnectionWebhook','inputs':{'host':{'apiId':API,'connectionName':'qmcp_Dataverse','operationId':'SubscribeWebhookTrigger'},'parameters':{'subscriptionRequest/message':4,'subscriptionRequest/entityname':'workqueueitem','subscriptionRequest/scope':4,'subscriptionRequest/filterexpression':"@concat('_workqueueid_value eq ', parameters('qmcp_NativeQueueId'), ' and statecode eq 0')"}},'runtimeConfiguration':{'concurrency':{'runs':1}}}
     save('OnQueueChanged','WQReferenceSharedMailbox',workflow('OnQueueChanged',trigger,{'ProcessOne':call_child()}))
     sweep={'BoundedSweep':{'type':'Foreach','foreach':'@range(0,10)','runtimeConfiguration':{'concurrency':{'repetitions':1}},'actions':{'ProcessOne':call_child()},'runAfter':{}}}
@@ -110,4 +137,4 @@ def generate():
     write_json(ROOT/'templates/catalog.json',{'version':VERSION,'customerFlows':['Intake.json','ProcessOne.json','OnQueueChanged.json','SweepQueue.json'],'frameworkFlows':['Watchdog.json','TestCoordinator.json','EmailSender.json'],'owner':'customer','activation':'disabled until tenant binding and validation','promptBinding':'ProcessOne/HasWork/Business/CreateIfAbsent/Prompt'})
     write_json(ROOT/'templates/extraction-output.schema.json',output_schema)
 
-if __name__=='__main__': generate();print('Generated seven disabled flow candidates with explicit prompt binding gate.')
+if __name__=='__main__': generate();print('Generated seven disabled flow candidates with explicit prompt model binding.')

@@ -116,3 +116,7 @@ The [installed proof](evidence/contract-completion-2026-09-12.json) rejected in-
 ## Native stale-worker fencing
 
 The [stale ownership proof](evidence/stale-worker-2026-09-12.json) replaced attempt generation 1 with generation 3 through review, explicit safe retry and native reacquisition. Concurrent old-ownership Complete, Fail and Checkpoint calls all returned STALE_ATTEMPT. Current attempt/context bodies and row versions remained unchanged, and the valid current worker completed to a verified Dataverse output. [Reproduction](stale-worker-proof.md) documents the initial proof request-ID correction and its regression test. This demonstrates native lifecycle fencing, not cancellation of an already-running external action or separate-user permissions.
+
+## Installed AI reference checkpoint
+
+The [reference prompt proof](reference-prompt-proof.md) records a real scheduled worker run through Dataverse Predict, protected business output and coordinator assertions. Generated flow clientdata was saved directly with temporary synthetic bindings; this was not a solution reimport. The first run failed safely, and a revised run passed with one record and one attempt. Both results remain in the evidence ledger. Repeated quality and mailbox integration gates remain open.

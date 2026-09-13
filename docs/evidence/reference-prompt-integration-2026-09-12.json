@@ -1,0 +1,99 @@
+{
+  "classification": "live-reference-prompt-integration-checkpoint",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "promptVersion": "mail-extraction-v1",
+  "modelId": "a1afa5d4-7a44-4c31-9cd2-e852a78431fa",
+  "installedRun": {
+    "runId": "fb7fe4d7-18c6-4b12-9b4b-96ecda1659f9",
+    "state": "Failed",
+    "itemId": "9cc6b3d3-8843-47a8-a9d8-916bb0a4b93f",
+    "nativeState": 4,
+    "attemptId": "a2b3177a-3f3c-4d43-9bc6-bfe93112f50d",
+    "errorCode": "WORKER_SCOPE_FAILED",
+    "flowRunId": "08584123445044110553549962061CU12",
+    "businessKeyChecked": "6786117e00e879d282b765e333629711de3f0a171e4162ec4951ad8ff436a8d0",
+    "businessRecordCount": 0,
+    "reviewRequired": true
+  },
+  "aiEvent": {
+    "id": "7666e091-d41f-4f21-9fdd-312e1a346345",
+    "createdOn": "2026-09-13T01:19:46Z",
+    "outputFormat": "single Markdown json fence",
+    "outputSha256": "07cc8224f500620751ab7c7a102b14f83032ad098f6c39559fafc5533f972546"
+  },
+  "inference": "Strict JSON parsing likely rejected fenced model output; original stage code was generic, so exact failed action is not independently proven.",
+  "restoration": {
+    "ProcessOne": "Draft",
+    "SweepQueue": "Draft",
+    "TestCoordinator": "Draft"
+  },
+  "limitations": [
+    "This failed run is retained and is not a passed extraction quality gate.",
+    "No mailbox intake or notification sender was activated.",
+    "CLI Predict succeeded separately; it does not prove the installed flow business path.",
+    "One revised happy-path run is not repeated AI-quality, real mailbox intake, or a lost connector response test.",
+    "The successful revised run does not prove the optional fenced-output normalization branch executed; prompt instructions also changed.",
+    "Published packages were rebuilt locally; this checkpoint changed tenant flow clientdata directly, not a full solution reimport."
+  ],
+  "revisedRun": {
+    "runId": "7310d600-2863-4605-90bc-4908e6fbf0d3",
+    "state": "Passed",
+    "promptVersion": "mail-extraction-v1.1",
+    "independentEvidence": {
+      "itemId": "8fdef255-7bf2-484a-9ea5-f814232f15b4",
+      "nativeState": 2,
+      "businessRecordCount": 1,
+      "recordId": "32c92103-13af-f111-aaac-3833c5e36f1f",
+      "document": {
+        "sourceKey": "addbde4e5a9764ddf210f9715433fefedf347bb9343c229f89712c9630a1e30c",
+        "contentHash": "c27b15d32e66a70e6e1f1f9958b83e52a4eb3f18fe2bf6d89db29b86bdc0e8d0",
+        "testRun": "7310d600-2863-4605-90bc-4908e6fbf0d3",
+        "fields": {
+          "contact": "synthetic@example.invalid",
+          "category": "service",
+          "summary": "The sender requests servicing of the broken printer located in room 12."
+        },
+        "promptVersion": "mail-extraction-v1.1",
+        "promptModelId": "a1afa5d4-7a44-4c31-9cd2-e852a78431fa",
+        "modelVersion": "gpt-41-mini-2025-04-14",
+        "predictionId": "c260c097-9465-4404-b698-cb49e7fc5d7c"
+      },
+      "attemptId": "2a6d33f3-9c90-4cb0-b137-f0d9e01bb2bb",
+      "caller": {
+        "flowId": "cfd43d48-6fe4-1611-0b39-c6753bdcbd67",
+        "runId": "08584123437233514172746993906CU16",
+        "templateVersion": "0.1.0.0"
+      },
+      "attemptCount": 1,
+      "reviewRequired": false
+    },
+    "flowSourceSha256": "e7c2bc53afe4f31b91e87f6df043b285718a32b658375c1d8887b65fd5a4872d",
+    "promptSha256": "5c619fdb4ffc8c8998eb6ede34dfd25e5eb5e1092cb2ae81af754df2474e2bcd",
+    "method": "Direct save of generated flow with synthetic queue/model bindings; installed SweepQueue invoked ProcessOne; installed TestCoordinator evaluated persisted output; no CLI acquire, complete or advance call.",
+    "restoration": [
+      {
+        "name": "SweepQueue",
+        "state": "Draft",
+        "generatedUnboundSourceVerified": true
+      },
+      {
+        "name": "TestCoordinator",
+        "state": "Draft",
+        "generatedUnboundSourceVerified": true
+      },
+      {
+        "name": "ProcessOne",
+        "state": "Draft",
+        "generatedUnboundSourceVerified": true
+      }
+    ]
+  },
+  "localValidation": {
+    "runtime": 91,
+    "plugins": 40,
+    "python": 61,
+    "mcp": 31,
+    "total": 223,
+    "packageBuildAndRoundTrips": "passed"
+  }
+}

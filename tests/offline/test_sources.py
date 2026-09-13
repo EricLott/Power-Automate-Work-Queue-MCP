@@ -44,6 +44,67 @@ class FlowInvariantTests(unittest.TestCase):
     def test_missing_dependency_rejected(self):
         flow=self.flow('ProcessOne');flow['properties']['definition']['actions']['PrepareAcquire']['runAfter']={'missing':['Succeeded']}
         with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
+    def test_completion_retry_reuses_request_and_output_id(self):
+        flow=self.flow('ProcessOne');branch=flow['properties']['definition']['actions']['HasWork']['actions']
+        self.assertEqual(branch['Complete']['runAfter'],{'OutputRecordId':['Succeeded']})
+        self.assertEqual(branch['CompleteRetry']['runAfter'],{'Complete':['Failed','TimedOut']})
+        self.assertEqual(branch['Complete']['inputs']['parameters']['item/RequestId'],branch['CompleteRetry']['inputs']['parameters']['item/RequestId'])
+        self.assertIn("outputs('OutputRecordId')",branch['Complete']['inputs']['parameters']['item/DataJson'])
+
+    def test_completion_failure_does_not_route_to_fail(self):
+        flow=self.flow('ProcessOne');branch=flow['properties']['definition']['actions']['HasWork']['actions']
+        self.assertEqual(branch['ReportFailure']['runAfter'],{'Business':['Failed','TimedOut']})
+        self.assertEqual(branch['CompletionUnknown']['runAfter'],{'CompleteRetry':['Failed','TimedOut']})
+        self.assertNotIn('Complete',branch['ReportFailure']['runAfter'])
+
+    def test_failure_diagnostics_use_bounded_stage_codes(self):
+        flow=self.flow('ProcessOne');data=flow['properties']['definition']['actions']['HasWork']['actions']['ReportFailure']['inputs']['parameters']['item/DataJson']
+        for stage in ('Prompt','NormalizeExtraction','ValidateExtraction','ValidateSender','CreateRecord','FindExisting','FindResult','Reconciled'):
+            self.assertIn("actions('%s')?['status']"%stage,data)
+            self.assertIn('%s_FAILED'%stage.upper(),data)
+            self.assertIn('%s_TIMED_OUT'%stage.upper(),data)
+        self.assertIn("'WORKER_SCOPE_FAILED'",data)
+        self.assertNotIn("['body']",data)
+        self.assertNotIn('message',data.lower())
+        self.assertIn("'category','Unknown'",data)
+        self.assertIn("'effect','Unknown'",data)
+
+    def test_extraction_accepts_only_one_json_markdown_fence(self):
+        flow=self.flow('ProcessOne');make=flow['properties']['definition']['actions']['HasWork']['actions']['Business']['actions']['CreateIfAbsent']['actions']
+        normalized=make['NormalizeExtraction']['inputs']
+        self.assertIn("startsWith(trim(string(body('Prompt')?['responsev2']?['predictionOutput']?['text'])),concat('```json',decodeUriComponent('%0A')))",normalized)
+        self.assertIn("endsWith(trim(string(body('Prompt')?['responsev2']?['predictionOutput']?['text'])),'```')",normalized)
+        self.assertIn("equals(length(split(",normalized)
+        self.assertIn(",'```')),3)",normalized)
+        self.assertIn("substring(",normalized)
+        self.assertNotIn("startsWith(@",normalized)
+        self.assertNotIn("'```json'),",normalized)
+        self.assertEqual(make['ValidateExtraction']['inputs']['content'],"@outputs('NormalizeExtraction')")
+
+    def test_prepare_captures_flow_provenance(self):
+        flow=self.flow('ProcessOne');data=flow['properties']['definition']['actions']['PrepareAcquire']['inputs']['parameters']['item/DataJson']
+        self.assertIn("'flowId', workflow()?['name']",data)
+
+    def test_completion_retry_changed_output_is_rejected(self):
+        flow=self.flow('ProcessOne');branch=flow['properties']['definition']['actions']['HasWork']['actions']
+        branch['CompleteRetry']['inputs']['parameters']['item/DataJson']='{}'
+        with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
+
+    def test_prompt_output_and_sender_validation_cannot_be_bypassed(self):
+        flow=self.flow('ProcessOne');make=flow['properties']['definition']['actions']['HasWork']['actions']['Business']['actions']['CreateIfAbsent']['actions']
+        make['BusinessDocument']['runAfter']={'Prompt':['Succeeded']}
+        with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
+
+    def test_expando_key_is_escaped_for_workflow_expression_parser(self):
+        flow=self.flow('ProcessOne');make=flow['properties']['definition']['actions']['HasWork']['actions']['Business']['actions']['CreateIfAbsent']['actions']
+        request=make['Prompt']['inputs']['parameters']['item/requestv2']
+        self.assertIn('@@odata.type',request)
+        self.assertNotIn('@odata.type',request)
+
+    def test_business_rejection_does_not_terminate_failure_handler(self):
+        flow=self.flow('ProcessOne');branch=flow['properties']['definition']['actions']['HasWork']['actions']
+        branch['Business']['actions']['Reconciled']['else']['actions']['Conflict']['type']='Terminate'
+        with self.assertRaises(AssertionError):validate_flow(flow,'ProcessOne')
 
 class XmlRoundTripTests(unittest.TestCase):
     def test_sharded_records_start_with_element_not_declaration(self):
