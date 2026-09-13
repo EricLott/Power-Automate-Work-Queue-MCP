@@ -19,6 +19,9 @@ function matches(record, c) {
   return record.organizationId?.toLowerCase() === c.binding.organizationId.toLowerCase()
     && record.environmentUrl === c.binding.environmentUrl;
 }
+function requestMatches(record, requestId) {
+  return typeof record.requestId === 'string' && record.requestId.toLowerCase() === requestId;
+}
 async function optional(file) { try { return JSON.parse(await readFile(file, 'utf8')); } catch (e) { if (e.code === 'ENOENT') return null; throw e; } }
 async function save(file, record) { const temp = file + '.tmp'; await writeFile(temp, JSON.stringify(record, null, 2)); await rename(temp, file); }
 function launchPython(args, root) {
@@ -37,7 +40,7 @@ export async function applyDeployment({ planHash, requestId }, opts = {}) {
   JSON.parse(await readFile(settingsPath, 'utf8'));
   const file = path.join(c.directory, requestId + '.launch.json');
   const compatible = old => {
-    if (old.planHash !== planHash || !matches(old, c) || old.settingsPath !== settingsPath || old.bindingPath !== c.bindingPath) throw new Error('REQUEST_CONFLICT');
+    if (!requestMatches(old, requestId) || old.planHash !== planHash || !matches(old, c) || old.settingsPath !== settingsPath || old.bindingPath !== c.bindingPath) throw new Error('REQUEST_CONFLICT');
     return old;
   };
   const old = await optional(file);
@@ -45,7 +48,7 @@ export async function applyDeployment({ planHash, requestId }, opts = {}) {
   // A CLI-started request is also durable; do not start it a second time.
   const existing = await optional(path.join(c.directory, requestId + '.json'));
   if (existing) {
-    if (existing.planHash !== planHash || !matches(existing, c)) throw new Error('REQUEST_CONFLICT');
+    if (!requestMatches(existing, requestId) || existing.planHash !== planHash || !matches(existing, c)) throw new Error('REQUEST_CONFLICT');
     return { requestId, status: existing.status, journal: existing, liveState: 'unknown' };
   }
   const record = { requestId, planHash, organizationId: c.binding.organizationId, environmentUrl: c.binding.environmentUrl,
@@ -70,7 +73,8 @@ export async function deploymentStatus({ requestId }, opts = {}) {
   const launch = await optional(path.join(c.directory, requestId + '.launch.json'));
   const journal = await optional(path.join(c.directory, requestId + '.json'));
   if (!launch && !journal) throw new Error('DEPLOYMENT_NOT_FOUND');
-  if ((launch && !matches(launch, c)) || (journal && !matches(journal, c))
+  if ((launch && (!requestMatches(launch, requestId) || !matches(launch, c)))
+      || (journal && (!requestMatches(journal, requestId) || !matches(journal, c)))
       || (launch && journal && launch.planHash !== journal.planHash)) throw new Error('DEPLOYMENT_RECORD_MISMATCH');
   return { requestId, source: 'local-deployment-journal', status: journal?.status || launch.status,
     liveState: 'unknown', ...(launch ? { launch } : {}), ...(journal ? { journal } : {}) };

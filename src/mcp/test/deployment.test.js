@@ -21,3 +21,51 @@ test('CLI journal is readable without launch record and rejects a different orga
   await writeFile(file, JSON.stringify({ ...journal, organizationId: 'cccccccc-cccc-cccc-cccc-cccccccccccc' }));
   await assert.rejects(deploymentStatus({ requestId }, { root, env }), /DEPLOYMENT_RECORD_MISMATCH/);
 });
+
+test('apply rejects a CLI journal whose request ID differs from its filename', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'dep-')); roots.push(root);
+  const bp = path.join(root, 'binding.json'), sp = path.join(root, 'settings.json');
+  await writeFile(bp, JSON.stringify(b)); await writeFile(sp, '{}');
+  const requestId = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+  const env = { QMCP_ENVIRONMENT_BINDING: bp, QMCP_DEPLOYMENT_SETTINGS: sp, QMCP_APPROVED_DEPLOYMENT_PLAN: '1'.repeat(64) };
+  const dir = path.join(root, 'artifacts/deployments'); await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, requestId + '.json'), JSON.stringify({
+    requestId: 'cccccccc-cccc-cccc-cccc-cccccccccccc', organizationId: b.organizationId,
+    environmentUrl: b.environmentUrl, planHash: env.QMCP_APPROVED_DEPLOYMENT_PLAN, status: 'Running'
+  }));
+  await assert.rejects(applyDeployment({ planHash: env.QMCP_APPROVED_DEPLOYMENT_PLAN, requestId }, { root, env, launch: () => { throw Error('respawn'); } }), /REQUEST_CONFLICT/);
+});
+
+test('apply rejects a launch journal whose request ID differs from its filename', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'dep-')); roots.push(root);
+  const bp = path.join(root, 'binding.json'), sp = path.join(root, 'settings.json');
+  await writeFile(bp, JSON.stringify(b)); await writeFile(sp, '{}');
+  const requestId = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+  const env = { QMCP_ENVIRONMENT_BINDING: bp, QMCP_DEPLOYMENT_SETTINGS: sp, QMCP_APPROVED_DEPLOYMENT_PLAN: '1'.repeat(64) };
+  const dir = path.join(root, 'artifacts/deployments'); await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, requestId + '.launch.json'), JSON.stringify({
+    requestId: 'cccccccc-cccc-cccc-cccc-cccccccccccc', organizationId: b.organizationId,
+    environmentUrl: b.environmentUrl, planHash: env.QMCP_APPROVED_DEPLOYMENT_PLAN,
+    settingsPath: path.resolve(sp), bindingPath: path.resolve(bp), status: 'AwaitingJournal'
+  }));
+  await assert.rejects(applyDeployment({ planHash: env.QMCP_APPROVED_DEPLOYMENT_PLAN, requestId }, { root, env, launch: () => { throw Error('respawn'); } }), /REQUEST_CONFLICT/);
+});
+
+test('status rejects launch and CLI journals whose request ID differs from filename', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'dep-')); roots.push(root);
+  const bp = path.join(root, 'binding.json'); await writeFile(bp, JSON.stringify(b));
+  const env = { QMCP_ENVIRONMENT_BINDING: bp };
+  const requestId = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+  const dir = path.join(root, 'artifacts/deployments'); await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, requestId + '.launch.json'), JSON.stringify({
+    requestId: 'cccccccc-cccc-cccc-cccc-cccccccccccc', organizationId: b.organizationId,
+    environmentUrl: b.environmentUrl, planHash: '1'.repeat(64), status: 'AwaitingJournal'
+  }));
+  await assert.rejects(deploymentStatus({ requestId }, { root, env }), /DEPLOYMENT_RECORD_MISMATCH/);
+  await rm(path.join(dir, requestId + '.launch.json'));
+  await writeFile(path.join(dir, requestId + '.json'), JSON.stringify({
+    requestId: 'cccccccc-cccc-cccc-cccc-cccccccccccc', organizationId: b.organizationId,
+    environmentUrl: b.environmentUrl, planHash: '1'.repeat(64), status: 'Running'
+  }));
+  await assert.rejects(deploymentStatus({ requestId }, { root, env }), /DEPLOYMENT_RECORD_MISMATCH/);
+});

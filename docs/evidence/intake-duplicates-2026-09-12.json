@@ -1,0 +1,36 @@
+{
+  "classification": "live-native-intake-duplicate-conflict",
+  "proofId": "006b592f-c769-4ee4-a8dd-159f128a1508",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "completed": true,
+  "startedAt": "2026-09-12T19:43:53.881397-05:00",
+  "cleanup": "Synthetic queued item retained; no business action or deletion.",
+  "verifiedOrganizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "requestIds": {
+    "first": "04f76c50-a976-582f-b928-35094df636f0",
+    "duplicate": "04aadf6a-6618-5c96-b1f4-eb6011844c88",
+    "conflict": "61893417-f90c-5053-a10a-4134590b3682"
+  },
+  "nativeUniqueKey": "23d3c955cb9476077cf6ac2b4fdf4de08ca838df9eb8fe9ba3bf56b126331376",
+  "first": {
+    "Outcome": "Enqueued",
+    "ItemId": "bc6beb7f-80d3-4070-ad8a-b4a61d28ab3c"
+  },
+  "duplicate": {
+    "Outcome": "Existing",
+    "ItemId": "bc6beb7f-80d3-4070-ad8a-b4a61d28ab3c"
+  },
+  "conflictCode": "KEY_CONTENT_CONFLICT",
+  "nativeCountBefore": 1,
+  "nativeCountAfter": 1,
+  "nativeState": 0,
+  "inputSha256Before": "e82863d8e925fadb9b149527b0c50b3c893335b97596337fce7d03354bf86e53",
+  "inputSha256After": "e82863d8e925fadb9b149527b0c50b3c893335b97596337fce7d03354bf86e53",
+  "releaseVersion": "0.1.0.0",
+  "runtimeEvidence": "cancellation-retention-2026-09-12.json",
+  "limitations": [
+    "Sequential submissions; simultaneous enqueue race remains a separate validation case.",
+    "Synthetic public API boundary; real mailbox trigger and AI extraction were not exercised."
+  ]
+}
