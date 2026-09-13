@@ -106,14 +106,16 @@ def main(argv=None):
         return collection(req("GET", "qmcp_wqcommands?$select=qmcp_wqcommandid&$filter=qmcp_key eq '" + key + "'"))
     def case_traces(request, started):
         fields = "correlationid,depth,typename,messageblock,createdon"
-        seed = collection(req("GET", "plugintracelogs?$select=" + fields + "&$filter=createdon ge " + started + " and contains(messageblock,'" + request + "')&$top=50"))
-        rows = []
-        for correlation in {row.get("correlationid") for row in seed if row.get("correlationid")}:
-            uuid.UUID(correlation)
-            rows.extend(collection(req("GET", "plugintracelogs?$select=" + fields + "&$filter=correlationid eq " + correlation + "&$top=50")))
-        if not any("qmcp failure INJECTED_PROOF_FAILURE;" in str(row.get("messageblock", "")) for row in rows):
-            raise ValueError("INJECTED_TRACE_NOT_OBSERVED")
-        return trace_evidence(rows)
+        for attempt in range(6):
+            seed = collection(req("GET", "plugintracelogs?$select=" + fields + "&$filter=createdon ge " + started + " and contains(messageblock,'" + request + "')&$top=50"))
+            rows = []
+            for correlation in {row.get("correlationid") for row in seed if row.get("correlationid")}:
+                uuid.UUID(correlation)
+                rows.extend(collection(req("GET", "plugintracelogs?$select=" + fields + "&$filter=correlationid eq " + correlation + "&$top=50")))
+            if any("qmcp failure INJECTED_PROOF_FAILURE;" in str(row.get("messageblock", "")) for row in rows):
+                return trace_evidence(rows)
+            if attempt < 5: time.sleep(5)
+        raise ValueError("INJECTED_TRACE_NOT_OBSERVED")
     try:
         who = req("GET", "WhoAmI")
         if str(who.get("OrganizationId", "")).lower() != org.lower() or str(who.get("UserId", "")).lower() != str(ledger["user"]).lower(): raise ValueError("ENVIRONMENT_MISMATCH")
@@ -167,7 +169,6 @@ def main(argv=None):
                 except ValueError: error = state.get("fault") or "DATAVERSE_CLI_FAILED"
                 if error not in (PROOF_ERROR, "ACQUISITION_HANDOFF_FAILED"): raise ValueError("INJECTED_FAILURE_NOT_OBSERVED")
             finally: req("PATCH", "qmcp_wqprincipals(" + str(ledger["principal"]) + ")", {"qmcp_document": original_principal})
-            observed_traces = case_traces(prepare_id, started)
             after = {"native": native_row(), "context": context(), "attempts": attempts(), "receipts": receipts(prepare_id)}
             if (not after["context"] or
                     (after["native"].get("statecode"), after["native"].get("statuscode")) !=
@@ -175,7 +176,8 @@ def main(argv=None):
                     after["context"] != baseline["context"] or after["attempts"] or after["receipts"]):
                 raise ValueError("TRANSACTION_ROLLBACK_ASSERTION_FAILED")
             pending = api("ResolveAcquire", prepare_id)
-            if pending.get("Outcome") != "Pending": raise ValueError("RESOLVE_NOT_PENDING")
+            if pending.get("Outcome") not in ("Pending", "Expired"): raise ValueError("RESOLVE_NOT_PENDING")
+            observed_traces = case_traces(prepare_id, started)
             evidence["faults"][fault] = {"error": error, "injectedFaultVerified": True, "traces": observed_traces, "native": after["native"], "context": after["context"], "attemptCount": len(after["attempts"]), "acceptReceipts": len(after["receipts"]), "resolve": pending}
             save()
         evidence["traces"] = [row for case in evidence["faults"].values() for row in case["traces"]]

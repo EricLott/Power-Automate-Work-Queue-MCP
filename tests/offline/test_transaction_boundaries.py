@@ -92,7 +92,7 @@ class TransactionBoundaryProofTests(unittest.TestCase):
             def run(*args, **kwargs):
                 return SimpleNamespace(returncode=1, stdout=json.dumps({"error": {"message": "INJECTED_PROOF_FAILURE"}}))
             args = ["--binding", str(b), "--fixture-ledger", str(l), "--output-dir", str(out), "--run-id", "mock", "--execute"]
-            with patch("prove_transaction_boundaries._cli_command", return_value=["cli"]), patch("prove_transaction_boundaries._cli_request", side_effect=cli_request), patch("prove_transaction_boundaries.subprocess.run", side_effect=run):
+            with patch("prove_transaction_boundaries._cli_command", return_value=["cli"]), patch("prove_transaction_boundaries._cli_request", side_effect=cli_request), patch("prove_transaction_boundaries.subprocess.run", side_effect=run), patch("prove_transaction_boundaries.time.sleep"):
                 main(args)
             evidence = json.loads((out / "evidence.json").read_text())
             self.assertTrue(evidence["completed"])
@@ -107,7 +107,7 @@ class TransactionBoundaryProofTests(unittest.TestCase):
             # still restore both temporary tenant settings.
             state["bad_trace"] = True; state["setting"] = 0; state["patches"] = []
             failed = base / "failed-proof"
-            with patch("prove_transaction_boundaries._cli_command", return_value=["cli"]), patch("prove_transaction_boundaries._cli_request", side_effect=cli_request), patch("prove_transaction_boundaries.subprocess.run", side_effect=run):
+            with patch("prove_transaction_boundaries._cli_command", return_value=["cli"]), patch("prove_transaction_boundaries._cli_request", side_effect=cli_request), patch("prove_transaction_boundaries.subprocess.run", side_effect=run), patch("prove_transaction_boundaries.time.sleep"):
                 with self.assertRaisesRegex(ValueError, "INJECTED_TRACE_NOT_OBSERVED"):
                     main(["--binding", str(b), "--fixture-ledger", str(l), "--output-dir", str(failed), "--run-id", "mock-failed", "--execute"])
             failed_evidence = json.loads((failed / "evidence.json").read_text())
