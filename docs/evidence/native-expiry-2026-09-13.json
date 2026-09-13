@@ -1,0 +1,63 @@
+{
+  "classification": "isolated-native-expiry",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "itemId": "15acd185-a46c-59ba-a0da-61047e214964",
+  "queueId": "d14ec06b-3109-57e6-b18e-43763044a876",
+  "completed": true,
+  "original": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,name,statecode,statuscode,expirydate,delayuntil,input,_workqueueid_value)/$entity",
+    "@odata.etag": "W/\"19066937\"",
+    "delayuntil": null,
+    "statecode": 0,
+    "input": "{}",
+    "name": "qmcp synthetic native probe",
+    "_workqueueid_value": "d14ec06b-3109-57e6-b18e-43763044a876",
+    "statuscode": 0,
+    "workqueueitemid": "15acd185-a46c-59ba-a0da-61047e214964",
+    "expirydate": null
+  },
+  "testExpiry": "2026-09-12T03:07:40Z",
+  "expired": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,name,statecode,statuscode,expirydate,delayuntil,input,_workqueueid_value)/$entity",
+    "@odata.etag": "W/\"19077947\"",
+    "delayuntil": null,
+    "statecode": 0,
+    "input": "{}",
+    "name": "qmcp synthetic native probe",
+    "_workqueueid_value": "d14ec06b-3109-57e6-b18e-43763044a876",
+    "statuscode": 0,
+    "workqueueitemid": "15acd185-a46c-59ba-a0da-61047e214964",
+    "expirydate": "2026-09-12T03:07:40Z"
+  },
+  "dequeue": {},
+  "after": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,name,statecode,statuscode,expirydate,delayuntil,input,_workqueueid_value)/$entity",
+    "@odata.etag": "W/\"19077947\"",
+    "delayuntil": null,
+    "statecode": 0,
+    "input": "{}",
+    "name": "qmcp synthetic native probe",
+    "_workqueueid_value": "d14ec06b-3109-57e6-b18e-43763044a876",
+    "statuscode": 0,
+    "workqueueitemid": "15acd185-a46c-59ba-a0da-61047e214964",
+    "expirydate": "2026-09-12T03:07:40Z"
+  },
+  "expiredItemNotClaimed": true,
+  "restored": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,name,statecode,statuscode,expirydate,delayuntil,input,_workqueueid_value)/$entity",
+    "@odata.etag": "W/\"19077950\"",
+    "delayuntil": null,
+    "statecode": 0,
+    "input": "{}",
+    "name": "qmcp synthetic native probe",
+    "_workqueueid_value": "d14ec06b-3109-57e6-b18e-43763044a876",
+    "statuscode": 0,
+    "workqueueitemid": "15acd185-a46c-59ba-a0da-61047e214964",
+    "expirydate": null
+  },
+  "restorationVerified": true,
+  "date": "2026-09-13",
+  "runtimeBaseline": "7c2bb88",
+  "solutionVersion": "0.1.0.0",
+  "scope": "Isolated unregistered native queue; no framework attempts or business flow; expiry alone was modified and restored."
+}
