@@ -1,0 +1,192 @@
+{
+  "acquisition": {
+    "AttemptId": "382e16f5-fcc0-4508-9483-89f7d263a4e5",
+    "BusinessKey": "04072c515a7fbf4bc87ff7b29cee4a483adc48840bbd6020d22d3ec57b416f2e",
+    "ContentHash": "fd4c2d5398fef7f654f2968315e2874ecfe9952b2a7ab94c3a3d65b3266be09a",
+    "Envelope": {
+      "contract": "mail.v1",
+      "correlationId": "identity-final-20260913-0",
+      "deduplicationKey": "identity-final-20260913-identity-0",
+      "envelopeVersion": "1.0",
+      "payload": {
+        "bodyText": "Please process this synthetic identity proof.",
+        "senderAddress": "synthetic@example.invalid",
+        "subject": "Synthetic acquisition identity proof"
+      },
+      "source": {
+        "kind": "synthetic"
+      }
+    },
+    "Generation": 1,
+    "ItemId": "733a0049-6ebe-4156-92ad-9dd100063488",
+    "LeaseExpires": "2026-09-13T03:30:39.0760754Z",
+    "Outcome": "Acquired",
+    "SourceKey": "98f66244290f7fdf14c8734f8b446af1ca78cd792fd39a20bb30d76d99525fd5",
+    "TestRun": ""
+  },
+  "attempts": {
+    "733a0049-6ebe-4156-92ad-9dd100063488": 1,
+    "e9c029c3-95e9-4e93-a07d-5d7688b31922": 0
+  },
+  "changedArguments": "REQUEST_CONFLICT",
+  "classification": "synthetic-acquisition-identity",
+  "completed": true,
+  "completedResult": {
+    "ItemId": "733a0049-6ebe-4156-92ad-9dd100063488",
+    "Outcome": "Processed"
+  },
+  "initialPrepareResponses": [
+    {
+      "fault": "ACQUIRE_BUSY",
+      "initial": true,
+      "outcome": null
+    },
+    {
+      "fault": null,
+      "initial": true,
+      "outcome": {
+        "Expires": "2026-09-13T03:30:28.1601434Z",
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "Outcome": "Prepared",
+        "RequestId": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642"
+      }
+    }
+  ],
+  "itemIds": [
+    "733a0049-6ebe-4156-92ad-9dd100063488",
+    "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+  ],
+  "loserRequestId": "03da5b64-d41b-580b-8155-c193eae70f48",
+  "nativeAfterDequeue": [
+    {
+      "@odata.etag": "W/\"19078004\"",
+      "statecode": 0,
+      "statuscode": 0,
+      "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+      "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+    },
+    {
+      "@odata.etag": "W/\"19078018\"",
+      "statecode": 1,
+      "statuscode": 1,
+      "uniqueidbyqueue": "04072c515a7fbf4bc87ff7b29cee4a483adc48840bbd6020d22d3ec57b416f2e",
+      "workqueueitemid": "733a0049-6ebe-4156-92ad-9dd100063488"
+    }
+  ],
+  "nativeAfterPrepare": [
+    {
+      "@odata.etag": "W/\"19078004\"",
+      "statecode": 0,
+      "statuscode": 0,
+      "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+      "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+    },
+    {
+      "@odata.etag": "W/\"19077995\"",
+      "statecode": 0,
+      "statuscode": 0,
+      "uniqueidbyqueue": "04072c515a7fbf4bc87ff7b29cee4a483adc48840bbd6020d22d3ec57b416f2e",
+      "workqueueitemid": "733a0049-6ebe-4156-92ad-9dd100063488"
+    }
+  ],
+  "nativeBeforePrepare": [
+    {
+      "@odata.etag": "W/\"19078004\"",
+      "statecode": 0,
+      "statuscode": 0,
+      "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+      "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+    },
+    {
+      "@odata.etag": "W/\"19077995\"",
+      "statecode": 0,
+      "statuscode": 0,
+      "uniqueidbyqueue": "04072c515a7fbf4bc87ff7b29cee4a483adc48840bbd6020d22d3ec57b416f2e",
+      "workqueueitemid": "733a0049-6ebe-4156-92ad-9dd100063488"
+    }
+  ],
+  "nativeFinal": {
+    "733a0049-6ebe-4156-92ad-9dd100063488": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+      "@odata.etag": "W/\"19078031\"",
+      "statecode": 2,
+      "statuscode": 2,
+      "uniqueidbyqueue": "04072c515a7fbf4bc87ff7b29cee4a483adc48840bbd6020d22d3ec57b416f2e",
+      "workqueueitemid": "733a0049-6ebe-4156-92ad-9dd100063488"
+    },
+    "e9c029c3-95e9-4e93-a07d-5d7688b31922": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+      "@odata.etag": "W/\"19078004\"",
+      "statecode": 0,
+      "statuscode": 0,
+      "uniqueidbyqueue": "e4295e66ee4d9eedd9ff853208459de1ec7e91d42b66e79a9f8e930965fcdb0d",
+      "workqueueitemid": "e9c029c3-95e9-4e93-a07d-5d7688b31922"
+    }
+  },
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "prepareReplay": [
+    {
+      "Expires": "2026-09-13T03:30:28.1601434Z",
+      "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+      "Outcome": "Prepared",
+      "RequestId": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642"
+    },
+    {
+      "Expires": "2026-09-13T03:30:28.1601434Z",
+      "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+      "Outcome": "Prepared",
+      "RequestId": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642"
+    }
+  ],
+  "prepareResponses": [
+    {
+      "fault": "ACQUIRE_BUSY",
+      "initial": true,
+      "outcome": null
+    },
+    {
+      "fault": null,
+      "initial": true,
+      "outcome": {
+        "Expires": "2026-09-13T03:30:28.1601434Z",
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "Outcome": "Prepared",
+        "RequestId": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642"
+      }
+    }
+  ],
+  "processingItemId": "733a0049-6ebe-4156-92ad-9dd100063488",
+  "queueKey": "qmcp-proof-20260912",
+  "queuedItemId": "e9c029c3-95e9-4e93-a07d-5d7688b31922",
+  "queuedItemLeft": true,
+  "recordId": "967117b5-90bd-5fe8-89d5-3c37a5c4e0ad",
+  "requests": {
+    "Complete": "d977bea5-9b98-5212-83fe-9ae48496ab8c",
+    "EnqueueA": "fb7cbb11-c442-50f4-8665-6bf699100254",
+    "EnqueueB": "6d363b27-f629-53ac-8990-85d9bbd95677",
+    "PrepareA": "03da5b64-d41b-580b-8155-c193eae70f48",
+    "PrepareB": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642",
+    "PrepareChanged": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642",
+    "ResolveAcquire": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642",
+    "ResolveAcquireReplay": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642"
+  },
+  "runId": "identity-final-20260913",
+  "tenantCalls": true,
+  "winnerRequestId": "f3ca6dec-c1c0-5f4d-9b76-6e6800016642",
+  "verificationMetadata": {
+    "dateUtc": "2026-09-13",
+    "environmentId": "7f4c5058-8003-e789-b5f5-e761953c8a0e",
+    "runtimeSourceCommit": "6d732e7",
+    "solutionVersion": "0.1.0.0",
+    "dataverseCliVersion": "1.0.77",
+    "actorScope": "Single authorized development actor; synthetic fixtures only",
+    "pythonTestsPassed": 105,
+    "previousFullRuntimePackageCheckpointTests": 266,
+    "initialFailedRun": "identity-20260913 stopped at QUEUE_NOT_IDLE before enqueue; terminal-history filter corrected",
+    "limitations": [
+      "Two concurrent callers, not load or separate-user security coverage",
+      "Native response deliberately discarded at client boundary, not a network outage",
+      "Exhaustive transaction-boundary proof remains issue 13"
+    ]
+  }
+}
