@@ -1,0 +1,139 @@
+{
+  "classification": "live-mcp-test-cancellation",
+  "proofId": "8d87005f-4908-430f-ad2d-0e61ee262b57",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "startedAt": "2026-09-12T23:51:53.497Z",
+  "completed": true,
+  "startRequestId": "456bf4ca-72d3-43fd-8fff-fbcd16fd32ce",
+  "runId": "29f8aa92-c55b-4648-a653-e2bce1993666",
+  "cancelRequestId": "d01693cf-de1e-4c16-9ca0-c6e16a8b93a7",
+  "previousErrors": [
+    "DATAVERSE_CLI_FAILED"
+  ],
+  "resumedAt": "2026-09-13T00:00:09.791Z",
+  "replayEqual": true,
+  "runState": "Cancelled",
+  "resultStates": [
+    "Cancelled"
+  ],
+  "item": {
+    "Outcome": "OnHold",
+    "ItemId": "ecd097ff-3084-47df-88e8-35650228c603",
+    "ActiveAttempt": "",
+    "Generation": 0,
+    "AttemptCount": 0,
+    "ReviewRequired": false,
+    "Version": 19066946,
+    "Output": {}
+  },
+  "localTests": {
+    "runtime": 84,
+    "plugins": 40,
+    "python": 34,
+    "mcp": 17,
+    "total": 175
+  },
+  "limitations": [
+    "Active-worker cancellation and native concurrency still require separate tenant evidence.",
+    "The existing development environment is not a clean managed installation.",
+    "No mailbox, AI prompt, or notification delivery was exercised."
+  ],
+  "initialFailures": [
+    "Reimport cleared four existing testing API bindings; all five bindings were subsequently repaired and verified.",
+    "Queued-to-Exception cancellation failed; Queued-to-OnHold succeeded with the same persisted run and cancellation request."
+  ],
+  "packageManifest": {
+    "classification": "local-candidate",
+    "files": [
+      {
+        "sha256": "732d29b8ab8026f88bca73052ef1818c7743fca6f2893b5bcbec6acc1ab128fe",
+        "file": "WQCore_managed.zip"
+      },
+      {
+        "sha256": "34fa4e7372fc11849d8ece95580368f5cc147f484ee07b9ac4894db9c92f77ab",
+        "file": "WQCore.zip"
+      },
+      {
+        "sha256": "ac379cd20f98cd6c4470cc87d2ed2af35ce5e1f0de30c94a8a07cb0e6dde478e",
+        "file": "WQNotificationsEmail_managed.zip"
+      },
+      {
+        "sha256": "304c3f2d3dac208ff097ff142f1245e9be393470971dd770ae91834ffba3a240",
+        "file": "WQNotificationsEmail.zip"
+      },
+      {
+        "sha256": "10cb31a39b09d9dbaa8e9a484cac7b9841ea1a79fd6d9c633e9a85a9c84fef81",
+        "file": "WQReferenceSharedMailbox_managed.zip"
+      },
+      {
+        "sha256": "610ffd766cff0936266f646627a04269074fbf7c21f252156fc854923ce5a933",
+        "file": "WQReferenceSharedMailbox.zip"
+      },
+      {
+        "sha256": "aeb8d4df1f3dababf6f0dcd5f8b494a0e83cc9de8c1645d439842d39be32e372",
+        "file": "WQTesting_managed.zip"
+      },
+      {
+        "sha256": "2882677ecd2e079798f0f192d6abfdc7711ab2747cce9e8f80fa885ac0fe5a6b",
+        "file": "WQTesting.zip"
+      }
+    ],
+    "version": "0.1.0.0",
+    "tenantImport": "not-run"
+  },
+  "readOnlyPreflight": {
+    "observableComplete": true,
+    "unknown": [],
+    "ready": false,
+    "manualPrerequisites": {
+      "licensesCapacity": "unknown",
+      "targetUserPrivileges": "unknown",
+      "connectionOwnership": "unknown"
+    },
+    "apiCount": 24,
+    "registrationCount": 41,
+    "flowStates": [
+      {
+        "name": "ProcessOne",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "OnQueueChanged",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "SweepQueue",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "Intake",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "Watchdog",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "TestCoordinator",
+        "statecode": 0,
+        "statuscode": 1
+      },
+      {
+        "name": "EmailSender",
+        "statecode": 0,
+        "statuscode": 1
+      }
+    ]
+  },
+  "postProofRestoration": {
+    "pluginTracing": 0,
+    "unregisteredProbeState": "Queued",
+    "flows": "all seven Draft"
+  }
+}

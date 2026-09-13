@@ -93,3 +93,10 @@ The adapter had treated a business record's source alternate key as its primary 
 After the corrected package was deployed, a synthetic Dataverse business record was created with distinct primary and source keys, then completed through the lifecycle API. The installed TestCoordinator read the real record and marked the test Passed after matching contact, category, summary and attempt count. No CLI advancement call was made. `CleanupTestRun` then deleted only that test-owned output, preserving five pre-existing synthetic outputs. A subsequent read confirmed the test evidence persisted with Cleanup Completed. [Redacted proof](evidence/positive-coordinator-2026-09-12.json) includes the final **152-test** regression and package hashes.
 
 The coordinator was returned to Draft and its temporary fixture binding removed. All seven generated flow definitions also passed Dataverse save validation after a second correction: `SubscribeWebhookTrigger` requires `OpenApiConnectionWebhook`. Both serialization defects are covered by local regressions. Draft saves were applied through the documented workflow API; this checkpoint does not claim a new clean or managed solution import.
+
+
+## MCP cancellation checkpoint
+
+The existing Dataverse CLI authentication now supports the MCP stdio server without exporting tokens. WQTesting was reimported, all five testing API bindings were repaired and verified, and the updated plug-in package was installed. Reimport had cleared four existing API bindings; post-import verification must include existing operations.
+
+A live MCP run initially failed when cancellation attempted Queued-to-Exception. The revised runtime uses OnHold for unstarted cancelled items. Retrying the same saved run/request passed: Cancelled run and result, native OnHold, zero attempts, and identical receipt replay. See [evidence](evidence/test-cancellation-2026-09-12.json) and [reproduction](test-cancellation.md). Active-worker cancellation and real concurrent cancellation remain unproven tenant cases.

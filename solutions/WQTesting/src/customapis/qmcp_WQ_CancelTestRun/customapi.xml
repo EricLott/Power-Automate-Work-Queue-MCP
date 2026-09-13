@@ -1,0 +1,18 @@
+<customapi uniquename="qmcp_WQ_CancelTestRun">
+  <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
+  <bindingtype>0</bindingtype>
+  <boundentitylogicalname />
+  <iscustomizable>0</iscustomizable>
+  <executeprivilegename>prvReadqmcp_wqprincipal</executeprivilegename>
+  <isfunction>0</isfunction>
+  <isprivate>0</isprivate>
+  <name>qmcp_WQ_CancelTestRun</name>
+  <workflowsdkstepenabled>0</workflowsdkstepenabled>
+  <description default="CancelTestRun">
+    <label description="CancelTestRun" languagecode="1033" />
+  </description>
+  <displayname default="CancelTestRun">
+    <label description="CancelTestRun" languagecode="1033" />
+  </displayname>
+  <plugintypeid />
+</customapi>

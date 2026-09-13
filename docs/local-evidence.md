@@ -41,3 +41,8 @@ The subsequent test-harness null-input correction passed **141 tests** (73 runti
 The connector-host serialization correction and read-only MCP installation planner passed **147 local tests** (73 runtime, 35 plug-in, 25 Python, 14 MCP) and eight archive round trips. The [installed autonomous runtime proof](evidence/autonomous-runtime-2026-09-12.json) separately demonstrates one synthetic scheduled recovery and assertion sequence.
 
 The final output-evidence adapter and webhook correction passed **152 local tests** (73 runtime, 39 plug-in adapter, 26 Python, 14 MCP) and eight archive round trips. The new installation tool is also called through the actual stdio MCP integration test. Live positive field assertions and scoped cleanup are [recorded separately](evidence/positive-coordinator-2026-09-12.json).
+
+
+## Cancellation and authenticated CLI transport
+
+The latest suites pass 175 tests: 84 runtime, 40 SDK adapter, 34 Python, and 17 MCP tests. Coverage includes cancellation receipt replay, active-attempt preservation, denied retry, injected version conflicts, authenticated CLI identity/queue boundaries, and conservative preflight reporting. See [the cancellation evidence](evidence/test-cancellation-2026-09-12.json) for the separate live result. Local conflict injection is not a native concurrency proof.

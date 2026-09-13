@@ -34,7 +34,14 @@ dotnet src/simulator/bin/Release/net8.0/QueueFramework.Simulator.dll --worker ma
 
 Available tools inspect the installation, plan/provision a local queue, scaffold customer flows, inspect template drift, query queue/item status, start tests, read evidence, and perform scoped cleanup. `plan_installation` is read-only: it checks the pinned local package manifest, artifact hashes, and development binding shape, then reports prerequisites; it never installs packages or performs live tenant verification. `start_test_run` requires a caller-generated UUID request ID; reuse it after an uncertain response. A test returns a run ID immediately; execution belongs to the separate runtime. Scaffolds have their own stable flow IDs and are never overwritten by scaffolding.
 
-An opt-in Dataverse client is implemented and tested with a fake HTTP transport. Later, `QMCP_ENVIRONMENT_BINDING` can name a development binding JSON with `environmentUrl`, `organizationId`, `environmentClass: "development"`, and `queueKeys`. The token comes from `QMCP_DATAVERSE_TOKEN` at execution time. This mode verifies `WhoAmI` before each operation, forbids redirects, and rejects production bindings. Local provisioning tools are disabled in that mode. No such binding was used for local validation.
+For live development, set `QMCP_ENVIRONMENT_BINDING` to a JSON file containing `environmentUrl`, `organizationId`, `environmentClass: "development"`, and a nonempty `queueKeys` allowlist. The default live transport uses the authenticated Microsoft Dataverse CLI profile through a bounded stdin bridge. It does not export access tokens. `WhoAmI` verifies the organization before each operation, and local queue provisioning is disabled in this mode. Existing authenticated CLI access was verified through a real MCP stdio session in the authorized development organization; this identity probe performs no mutations.
+
+```powershell
+$env:QMCP_ENVIRONMENT_BINDING = (Resolve-Path artifacts/live/mcp-binding.json).Path
+node scripts/probe_mcp_session.mjs
+```
+
+The optional HTTP transport requires `QMCP_DATAVERSE_TRANSPORT=token` and an execution-time `QMCP_DATAVERSE_TOKEN`. Both transports enforce the same operation and queue allowlists. Never commit binding files or credentials. Unset the binding variable to return to local simulation.
 
 ## Offline validator boundaries
 
@@ -50,3 +57,14 @@ An opt-in Dataverse client is implemented and tested with a fake HTTP transport.
 Microsoft also publishes [XML schemas](https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/edit-customizations-xml-file-schema-validation). Its linked archive contains the older **9.0.0.2090** schema set. `check_legacy_xsd.ps1` provides an advisory check after downloading that archive into `artifacts/schemas/`. It catches useful entity/view mistakes, but cannot validate modern cloud-flow JSON, connection references, Custom APIs, or plug-in packages. Its findings must be separated from genuine source errors; it is not a current import validator.
 
 [`pac solution check`](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/solution#pac-solution-check) uses the remote Checker service. It is deliberately not part of this credential-free offline test run. There is no local Dataverse import engine in this repository.
+
+
+Read-only live preflight is available separately from the local installation plan:
+
+```powershell
+python scripts/preflight_installation.py --binding artifacts/live/mcp-binding.json
+```
+
+It checks the pinned local artifacts and reads installed versions, API plug-in bindings, synchronous guard/image configuration, table keys/concurrency, connection mappings, and flow states. `observableComplete` describes those observed components; `ready` remains false while licensing, target privileges, and connection ownership need verification. It neither imports nor activates anything, and it excludes flow clientdata. The local `plan_installation` MCP tool does not yet incorporate this live preflight or apply a deployment.
+
+Use `cancel_test_run` with a stable request ID to cancel pending test results. See [cancellation behavior and tenant proof](test-cancellation.md).

@@ -122,6 +122,7 @@ public sealed class ItemContext
     public int Generation { get; set; }
     public int AttemptCount { get; set; }
     public bool ReviewRequired { get; set; }
+    public bool TestCancelled { get; set; }
     public string OutputJson { get; set; } = "{}";
     public string TestRun { get; set; } = "";
 }

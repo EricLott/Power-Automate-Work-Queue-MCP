@@ -20,7 +20,7 @@ test('MCP session ends; independent runtime finishes durable test; a new session
   const dir = await mkdtemp(path.join(tmpdir(), 'qmcp-')); const state = path.join(dir, 'state.json'); let client, worker;
   try {
     client = await connect(state);
-    const tools = await client.listTools(); assert.equal(tools.tools.length, 11);
+    const tools = await client.listTools(); assert.equal(tools.tools.length, 12);
     const installation = await call(client, 'plan_installation', {});
     assert.equal(installation.localArtifacts, 'verified');
     assert.equal(installation.liveVerification, 'not-run');
@@ -45,4 +45,20 @@ test('scaffolding rejects traversal and only exposes a local target', async () =
   await assert.rejects(scaffold('../outside'), /NAME_INVALID/);
   assert.equal((await inspect()).tenantConnected, false);
   assert.equal(config.contract.Id, 'mail.v1');
+});
+
+test('MCP cancellation persists and replays through the public tool', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'qmcp-cancel-')); let client;
+  try {
+    client = await connect(path.join(dir, 'state.json'));
+    const p = await call(client, 'plan_queue', { queueKey: 'mail' });
+    await call(client, 'provision_local_queue', { queueKey: 'mail', planHash: p.planHash });
+    const run = await call(client, 'start_test_run', { queueKey: 'mail', requestId: '22222222-2222-4222-a222-222222222222', cases: [{ Id: 'cancel', Input: envelope, Expected: {} }] });
+    const args = { queueKey: 'mail', runId: run.RunId, requestId: '33333333-3333-4333-a333-333333333333' };
+    const cancelled = await call(client, 'cancel_test_run', args);
+    assert.equal(cancelled.State, 'Cancelled');
+    assert.ok(cancelled.Results.every(r => r.State === 'Cancelled'));
+    assert.deepEqual(await call(client, 'cancel_test_run', args), cancelled);
+    assert.equal((await call(client, 'test_evidence', { queueKey: 'mail', runId: run.RunId })).State, 'Cancelled');
+  } finally { if (client) await client.close(); await rm(dir, { recursive: true, force: true }); }
 });

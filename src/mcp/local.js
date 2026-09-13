@@ -4,6 +4,7 @@ import { readFile, mkdir, writeFile, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DataverseClient } from './dataverse.js';
+import { DataverseCliClient } from './cli.js';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 export const state = path.resolve(process.env.QMCP_SIM_STATE || path.join(root, 'artifacts/local/state.json'));
@@ -12,11 +13,16 @@ export const hash = value => createHash('sha256').update(value).digest('hex');
 let liveClient;
 async function boundClient() {
   if (!process.env.QMCP_ENVIRONMENT_BINDING) return null;
-  if (!liveClient) liveClient = new DataverseClient(JSON.parse(await readFile(process.env.QMCP_ENVIRONMENT_BINDING, 'utf8')), () => process.env.QMCP_DATAVERSE_TOKEN);
+  if (!liveClient) {
+    const binding = JSON.parse(await readFile(process.env.QMCP_ENVIRONMENT_BINDING, 'utf8'));
+    const transport = process.env.QMCP_DATAVERSE_TRANSPORT || 'cli';
+    if (!['cli', 'token'].includes(transport)) throw new Error('DATAVERSE_TRANSPORT_INVALID');
+    liveClient = transport === 'cli' ? new DataverseCliClient(binding) : new DataverseClient(binding, () => process.env.QMCP_DATAVERSE_TOKEN);
+  }
   return liveClient;
 }
 export async function command(operation, queueKey, data = {}, fields = {}) {
-  const allowed = ['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','StartTestRun','GetTestRun','CleanupTestRun'];
+  const allowed = ['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','StartTestRun','CancelTestRun','GetTestRun','CleanupTestRun'];
   if (!allowed.includes(operation)) throw new Error('OPERATION_NOT_EXPOSED');
   if (!/^[a-z][a-z0-9_-]{0,63}$/.test(queueKey)) throw new Error('QUEUE_KEY_INVALID');
   const live = await boundClient();

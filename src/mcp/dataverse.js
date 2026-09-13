@@ -1,4 +1,4 @@
-const operations = new Set(['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','StartTestRun','GetTestRun','CleanupTestRun']);
+const operations = new Set(['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','StartTestRun','CancelTestRun','GetTestRun','CleanupTestRun']);
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 export class DataverseClient {
   constructor(binding, tokenProvider, fetchImpl = fetch) {

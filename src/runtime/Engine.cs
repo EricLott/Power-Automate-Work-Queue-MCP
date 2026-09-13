@@ -27,6 +27,7 @@ public sealed partial class Engine
         ["ClaimEvent"] = "sender",
         ["FinishEvent"] = "sender",
         ["StartTestRun"] = "tester",
+        ["CancelTestRun"] = "tester",
         ["GetTestRun"] = "tester",
         ["AdvanceTestRun"] = "coordinator",
         ["CleanupTestRun"] = "coordinator"
@@ -82,6 +83,7 @@ public sealed partial class Engine
             case "ClaimEvent": return ClaimEvent(c, a);
             case "FinishEvent": return FinishEvent(c, a, d);
             case "StartTestRun": return StartTest(c, a, d);
+            case "CancelTestRun": return CancelTest(c);
             case "GetTestRun": return GetTest(c);
             case "AdvanceTestRun": return AdvanceTest(c);
             case "CleanupTestRun": return CleanupTest(c);
@@ -90,7 +92,14 @@ public sealed partial class Engine
     }
     T? Get<T>(string kind, string key) where T : class { var r = store.Get(kind, key); return r == null ? null : Json.Read<T>(r.Body); }
     Row Add(string kind, string key, string queue, object body) => store.Add(new Row { Kind = kind, Key = key, Queue = queue, Body = Json.Write(body), Updated = clock() });
-    void Save<T>(string kind, string key, T body) { var r = store.Get(kind, key) ?? throw new Fault("NOT_FOUND"); long version = r.Version; r.Body = Json.Write(body!); r.Updated = clock(); store.Put(r, version); }
+    void Save<T>(string kind, string key, T body)
+    {
+        var r = store.Get(kind, key) ?? throw new Fault("NOT_FOUND");
+        // Cancellation is a durable safety bit. A stale worker snapshot must
+        // never clear it while persisting a later attempt outcome.
+        if (kind == "itemcontext" && body is ItemContext context && Json.Read<ItemContext>(r.Body).TestCancelled) context.TestCancelled = true;
+        long version = r.Version; r.Body = Json.Write(body!); r.Updated = clock(); store.Put(r, version);
+    }
     static string Required(JObject data, string name, int max = 200) { var t = data[name]; if (t?.Type != JTokenType.String || string.IsNullOrWhiteSpace((string?)t) || ((string)t!).Length > max) throw new Fault("INPUT_INVALID"); return (string)t!; }
     object RegisterQueue(Command c, JObject d)
     {
@@ -187,6 +196,7 @@ public sealed partial class Engine
         if (native.Expires <= clock()) throw new Fault("ITEM_EXPIRED");
         if (native.Available > clock()) throw new Fault("ITEM_NOT_AVAILABLE");
         var item = Item(c); JObject envelope = Json.Object(native.Input); var contract = ValidateEnvelope(c.QueueKey, envelope, policy);
+        if (item.context.TestCancelled) throw new Fault("TEST_CANCELLED");
         if (item.context.ActiveAttempt != "" || item.context.ReviewRequired || item.context.AttemptCount >= policy.MaxAttempts) throw new Fault("ITEM_INELIGIBLE");
         var now = clock(); int generation = item.context.Generation + 1;
         var attempt = new Attempt { Id = Guid.NewGuid().ToString(), ItemId = native.Id, Worker = actor.Id, Generation = generation, Started = now, LeaseExpires = now.AddSeconds(policy.LeaseSeconds), Deadline = now.AddSeconds(policy.DeadlineSeconds), Policy = policy, ContractHash = contract.Hash, Caller = (JObject?)intent.Caller?.DeepClone() ?? new JObject() };
@@ -229,6 +239,7 @@ public sealed partial class Engine
         try
         {
             item = Item(c); envelope = Json.Object(native.Input); contract = ValidateEnvelope(c.QueueKey, envelope, policy);
+            if (item.context.TestCancelled) { native.Status = "Exception"; store.NativeSet(native); return new { Outcome = "TestCancelled", ItemId = native.Id }; }
             if (item.context.ActiveAttempt != "" || item.context.ReviewRequired || item.context.AttemptCount >= policy.MaxAttempts) throw new Fault("ITEM_INELIGIBLE");
         }
         catch (Fault error) when (new[] { "ORPHAN_ITEM", "INPUT_INVALID", "INPUT_TOO_LARGE", "CONTRACT_UNSUPPORTED", "ITEM_INELIGIBLE" }.Contains(error.Code))
@@ -247,14 +258,14 @@ public sealed partial class Engine
         Save("itemcontext", native.UniqueKey, item.context);
         return new { Outcome = "Acquired", ItemId = native.Id, AttemptId = attempt.Id, Generation = generation, attempt.LeaseExpires, Envelope = envelope, SourceKey = item.context.SourceKey, BusinessKey = native.UniqueKey, ContentHash = item.context.ContentHash, TestRun = item.context.TestRun };
     }
-    (NativeItem native, ItemContext context, Attempt attempt) Owned(Command c, Actor actor)
+    (NativeItem native, Row row, ItemContext context, Attempt attempt) Owned(Command c, Actor actor)
     {
         var item = Item(c);
         if (item.native.Status != "Processing" || item.context.ActiveAttempt != c.AttemptId || item.context.Generation != c.Generation) throw new Fault("STALE_ATTEMPT");
         var attempt = Get<Attempt>("attempt", c.AttemptId) ?? throw new Fault("STALE_ATTEMPT");
         if (attempt.Worker != actor.Id) throw new Fault("FORBIDDEN");
         if (attempt.Outcome != "Processing" || clock() >= attempt.LeaseExpires || clock() >= attempt.Deadline) throw new Fault("STALE_ATTEMPT");
-        return (item.native, item.context, attempt);
+        return (item.native, item.row, item.context, attempt);
     }
     object Checkpoint(Command c, Actor a, JObject d)
     {
@@ -271,21 +282,22 @@ public sealed partial class Engine
         var item = Owned(c, actor); Required(d, "table", 100); if (!Guid.TryParse(Required(d, "recordId"), out _)) throw new Fault("OUTPUT_INVALID");
         if (d.ToString().Length > 8192) throw new Fault("OUTPUT_INVALID");
         item.context.OutputJson = Json.Write(d); item.context.ReviewRequired = false;
-        Close(item.native, item.context, item.attempt, "Processed", "");
+        Close(item.native, item.row, item.context, item.attempt, "Processed", "");
         Events(c.QueueKey, item.context.ItemId, item.attempt.Id, "Processed", item.attempt.Policy);
         return new { Outcome = "Processed", ItemId = item.native.Id };
     }
-    void Close(NativeItem native, ItemContext context, Attempt attempt, string status, string error, string? nativeStatus = null)
+    void Close(NativeItem native, Row contextRow, ItemContext context, Attempt attempt, string status, string error, string? nativeStatus = null)
     {
         native.Status = nativeStatus ?? status; store.NativeSet(native);
         attempt.Outcome = status; attempt.ErrorCode = error; context.LastAttempt = attempt.Id; context.ActiveAttempt = "";
-        Save("attempt", attempt.Id, attempt); Save("itemcontext", native.UniqueKey, context);
+        Save("attempt", attempt.Id, attempt); contextRow.Body = Json.Write(context); contextRow.Updated = clock(); store.Put(contextRow, contextRow.Version);
     }
     object Fail(Command c, Actor actor, JObject d)
     {
         var item = Owned(c, actor); string category = Required(d, "category", 40), code = Required(d, "code", 100);
         if (!new[] { "Technical", "Business", "Unknown" }.Contains(category)) throw new Fault("INPUT_INVALID");
-        bool safe = category == "Technical" && (string?)d["effect"] == "None" && item.attempt.Policy.SafeEffects && item.context.AttemptCount < item.attempt.Policy.MaxAttempts && clock() < item.attempt.Deadline;
+        bool cancelled = item.context.TestCancelled || Json.Read<ItemContext>((store.Get("itemcontext", item.native.UniqueKey) ?? throw new Fault("ORPHAN_ITEM")).Body).TestCancelled;
+        bool safe = !cancelled && category == "Technical" && (string?)d["effect"] == "None" && item.attempt.Policy.SafeEffects && item.context.AttemptCount < item.attempt.Policy.MaxAttempts && clock() < item.attempt.Deadline;
         if (safe)
         {
             var delay = Math.Min(item.attempt.Policy.RetryMaxSeconds, item.attempt.Policy.RetryBaseSeconds * Math.Pow(2, item.context.AttemptCount - 1));
@@ -294,7 +306,8 @@ public sealed partial class Engine
             if (item.native.Available >= item.attempt.Deadline) safe = false;
         }
         item.context.ReviewRequired = !safe;
-        Close(item.native, item.context, item.attempt, "Exception", code, safe ? "Queued" : null);
+        Close(item.native, item.row, item.context, item.attempt, "Exception", code, safe ? "Queued" : null);
+        safe = safe && item.native.Status == "Queued";
         Events(c.QueueKey, item.native.Id, item.attempt.Id, safe ? "RetryScheduled" : "ReviewRequired", item.attempt.Policy);
         return new { Outcome = safe ? "RetryScheduled" : "ReviewRequired", ItemId = item.native.Id };
     }
@@ -302,13 +315,14 @@ public sealed partial class Engine
     {
         Required(d, "reason", 500);
         var item = Item(c);
+        if (item.context.TestCancelled) throw new Fault("RETRY_UNSAFE");
         if (item.row.Version != c.ExpectedVersion) throw new Fault("VERSION_CONFLICT");
         if (item.native.Expires <= clock()) throw new Fault("ITEM_EXPIRED");
         if (item.native.Status != "Exception" || item.context.ActiveAttempt != "" || !policy.SafeEffects || item.context.AttemptCount >= policy.MaxAttempts || (string?)d["reconciliation"] != "VerifiedSafe") throw new Fault("RETRY_UNSAFE");
         item.context.ReviewRequired = false; item.context.Generation++;
         // The adapter resets an Error item to Queued without a delayed-requeue payload.
         item.native.Status = "Queued"; item.native.Available = clock(); store.NativeSet(item.native);
-        Save("itemcontext", item.native.UniqueKey, item.context);
+        item.row.Body = Json.Write(item.context); item.row.Updated = clock(); store.Put(item.row, item.row.Version);
         return new { Outcome = "RetryScheduled", ItemId = item.native.Id };
     }
     object Recover(Command c)
@@ -318,7 +332,7 @@ public sealed partial class Engine
         var attempt = Get<Attempt>("attempt", c.AttemptId) ?? throw new Fault("ORPHAN_ITEM");
         if (clock() < attempt.LeaseExpires && clock() < attempt.Deadline) throw new Fault("LEASE_ACTIVE");
         item.context.Generation++; item.context.ReviewRequired = true;
-        Close(item.native, item.context, attempt, "Exception", "OUTCOME_UNKNOWN");
+        Close(item.native, item.row, item.context, attempt, "Exception", "OUTCOME_UNKNOWN");
         Events(c.QueueKey, item.native.Id, attempt.Id, "ReviewRequired", attempt.Policy);
         return new { Outcome = "ReviewRequired" };
     }

@@ -72,16 +72,38 @@ public sealed partial class Engine
         Add("testrun", run.Id, c.QueueKey, run);
         return new { Outcome = "Started", RunId = run.Id, run.ManifestHash };
     }
-    TestRun Run(Command c)
+    (Row row, TestRun run) ReadRun(Command c)
     {
-        var row = store.Get("testrun", c.ItemId) ?? throw new Fault("NOT_FOUND");
-        if (row.Queue != c.QueueKey) throw new Fault("FORBIDDEN");
-        return Json.Read<TestRun>(row.Body);
+        var stored = store.Get("testrun", c.ItemId) ?? throw new Fault("NOT_FOUND");
+        if (stored.Queue != c.QueueKey) throw new Fault("FORBIDDEN");
+        return (stored, Json.Read<TestRun>(stored.Body));
     }
+    TestRun Run(Command c) => ReadRun(c).run;
     object GetTest(Command c) => Run(c);
+    object CancelTest(Command c)
+    {
+        var runRead = ReadRun(c); var run = runRead.run;
+        if (run.State != "Running") return run;
+        foreach (var result in run.Results.Where(r => r.State == "Pending"))
+        {
+            var item = Item(new Command { QueueKey = c.QueueKey, ItemId = result.ItemId });
+            // A queued fixture has no external action in flight and can be
+            // placed on hold. Leave Processing items untouched: cancellation
+            // records the test outcome without pretending to cancel a worker.
+            item.context.TestCancelled = true;
+            item.row.Body = Json.Write(item.context); item.row.Updated = clock();
+            store.Put(item.row, item.row.Version);
+            if (item.native.Status == "Queued") { item.native.Status = "OnHold"; store.NativeSet(item.native); }
+            result.State = "Cancelled";
+            Save("testresult", result.Id, result);
+        }
+        run.State = "Cancelled";
+        runRead.row.Body = Json.Write(run); runRead.row.Updated = clock(); store.Put(runRead.row, runRead.row.Version);
+        return run;
+    }
     object AdvanceTest(Command c)
     {
-        var run = Run(c); if (run.State != "Running") return run;
+        var runRead = ReadRun(c); var run = runRead.run; if (run.State != "Running") return run;
         foreach (var result in run.Results.Where(r => r.State == "Pending"))
         {
             var item = Item(new Command { QueueKey = c.QueueKey, ItemId = result.ItemId });
@@ -140,7 +162,7 @@ public sealed partial class Engine
             Save("testresult", result.Id, result);
         }
         if (run.Results.All(r => r.State != "Pending")) run.State = run.Results.Any(r => r.State == "Failed") ? "Failed" : run.Results.Any(r => r.State == "Inconclusive") ? "Inconclusive" : "Passed";
-        Save("testrun", run.Id, run); return run;
+        runRead.row.Body = Json.Write(run); runRead.row.Updated = clock(); store.Put(runRead.row, runRead.row.Version); return run;
     }
     object CleanupTest(Command c)
     {

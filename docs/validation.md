@@ -38,3 +38,8 @@ Every gate below remains **open**. Selected synthetic tenant evidence is recorde
 For a live run record the commit/package hash, environment and platform version, identity/role, case ID, request/run/item/attempt IDs, expected outcome, actual outcome, and an authorized evidence reference. Redact mailbox content and credentials. A failure, permission denial, missing output, or timeout cannot be turned into a pass. Preserve the original expected results when repeating AI evaluations.
 
 The first build intentionally retains tenant uncertainty: dequeue transaction boundaries and response shape; queue state transitions; role and team ownership behavior; first import metadata; prompt/connector binding; child flow deployment; and managed upgrade behavior. The [first import runbook](first-import.md) orders those experiments before production activation.
+
+
+## Cancellation checkpoint
+
+The current local suite passes 175 tests (84 runtime, 40 plug-in, 34 Python, 17 MCP). The [live MCP cancellation proof](evidence/test-cancellation-2026-09-12.json) establishes queued test cancellation, OnHold, zero attempts, and replay after correcting a native transition failure. It does not close active-worker/concurrent cancellation, clean managed install, AI quality, or other broader acceptance gates. All 22 gates remain open.
