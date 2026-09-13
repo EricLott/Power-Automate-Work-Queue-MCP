@@ -4,7 +4,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scripts'))
 from prove_intake_duplicates import safe_error, prove
 
 class IntakeProofTests(unittest.TestCase):
-    def run_proof(self, fault='KEY_CONTENT_CONFLICT', changed=False, extra=False):
+    def run_proof(self, fault='KEY_CONTENT_CONFLICT', changed=False, extra=False, concurrent=False):
         observed={}; reads=0; posts=0
         def call(method,path,body=None):
             nonlocal reads, posts
@@ -18,7 +18,7 @@ class IntakeProofTests(unittest.TestCase):
                 if fault: raise ValueError(fault)
                 return {'ResultJson':json.dumps({'Outcome':'Enqueued','ItemId':'other'})}
             return {'ResultJson':json.dumps({'Outcome':'Enqueued' if posts==1 else 'Existing','ItemId':'item'})}
-        prove(call,'qmcp-proof-test',str(uuid.uuid4()),lambda **values: observed.update(values))
+        prove(call,'qmcp-proof-test',str(uuid.uuid4()),lambda **values: observed.update(values),concurrent=concurrent)
         return observed
     def test_native_reads_confirm_conflict_and_unchanged_input(self):
         result=self.run_proof()
@@ -27,6 +27,9 @@ class IntakeProofTests(unittest.TestCase):
     def test_transport_failures_cannot_pass(self):
         for error in ('DATAVERSE_ACCESS_DENIED','DATAVERSE_CLI_TIMEOUT','DATAVERSE_CLI_FAILED'):
             with self.subTest(error=error),self.assertRaisesRegex(ValueError,error): self.run_proof(fault=error)
+    def test_concurrent_submissions_still_require_one_native_item(self):
+        self.assertTrue(self.run_proof(concurrent=True)['completed'])
+        with self.assertRaisesRegex(ValueError,'NATIVE_ITEM_CHANGED'): self.run_proof(concurrent=True,extra=True)
     def test_changed_native_input_cannot_pass(self):
         with self.assertRaisesRegex(ValueError,'NATIVE_INPUT_CHANGED'): self.run_proof(changed=True)
     def test_extra_native_item_cannot_pass(self):

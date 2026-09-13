@@ -1,5 +1,6 @@
 """Opt-in synthetic tenant intake proof; no customer business actions."""
 import argparse, datetime, hashlib, json, subprocess, uuid
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from bootstrap_tenant import _cli_command, _cli_request
 from probe_tenant_metadata import _validate_binding
@@ -14,7 +15,7 @@ def safe_error(stdout, returncode):
     return 'KEY_CONTENT_CONFLICT' if message == 'KEY_CONTENT_CONFLICT' else 'DATAVERSE_CLI_FAILED'
 
 
-def prove(call, queue, proof, note):
+def prove(call, queue, proof, note, concurrent=False):
     ids = {k: str(uuid.uuid5(uuid.UUID(proof), k)) for k in ('first','duplicate','conflict')}
     source = 'intake-proof-' + proof
     key = hashlib.sha256((queue + '|' + source).encode()).hexdigest()
@@ -29,12 +30,32 @@ def prove(call, queue, proof, note):
     def native():
         return call('GET',"workqueueitems?$select=workqueueitemid,input,statecode&$filter=uniqueidbyqueue eq '"+key+"'")['value']
     if native(): raise ValueError('PROOF_KEY_ALREADY_EXISTS')
-    first = api('first',envelope); note(first=first)
+    if concurrent:
+        def submit(label):
+            try: return api(label,envelope)
+            except ValueError as error:
+                if str(error) != 'DATAVERSE_CLI_FAILED': raise
+                return {'transportError':'DATAVERSE_CLI_FAILED'}
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            responses = dict(zip(('first','duplicate'),pool.map(submit,('first','duplicate'))))
+        note(concurrentResponses=responses)
+        # An ambiguous response is retried once with exactly its original ID.
+        for label in responses:
+            if 'transportError' in responses[label]: responses[label]=api(label,envelope)
+        if sorted(row.get('Outcome','') for row in responses.values()) != ['Enqueued','Existing']:
+            raise ValueError('CONCURRENT_ENQUEUE_NOT_CONVERGED')
+        first = next(row for row in responses.values() if row['Outcome']=='Enqueued')
+        duplicate = next(row for row in responses.values() if row['Outcome']=='Existing')
+        note(concurrentResolved=responses)
+    else:
+        first = api('first',envelope)
+    note(first=first)
     if first.get('Outcome') != 'Enqueued' or not first.get('ItemId'): raise ValueError('ENQUEUE_NOT_CONFIRMED')
     before = native()
     if len(before) != 1 or before[0]['workqueueitemid'] != first['ItemId']: raise ValueError('NATIVE_ITEM_COUNT_INVALID')
     before_hash = hashlib.sha256(before[0]['input'].encode()).hexdigest()
-    duplicate = api('duplicate',envelope); note(duplicate=duplicate)
+    if not concurrent: duplicate = api('duplicate',envelope)
+    note(duplicate=duplicate)
     if duplicate.get('Outcome') != 'Existing' or duplicate.get('ItemId') != first['ItemId']: raise ValueError('DUPLICATE_NOT_CONFIRMED')
     changed = {**envelope,'payload':{**envelope['payload'],'subject':'Synthetic changed content'}}
     try: api('conflict',changed)
@@ -53,7 +74,8 @@ def prove(call, queue, proof, note):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('binding','queue-key','output'): parser.add_argument('--'+name,required=True)
-    parser.add_argument('--execute',action='store_true'); args=parser.parse_args()
+    parser.add_argument('--execute',action='store_true')
+    parser.add_argument('--concurrent',action='store_true'); args=parser.parse_args()
     binding=json.loads(Path(args.binding).read_text(encoding='utf-8-sig')); origin,expected=_validate_binding(binding)
     if args.queue_key not in binding.get('queueKeys',[]) or not args.queue_key.startswith('qmcp-proof-'): raise ValueError('SYNTHETIC_QUEUE_NOT_BOUND')
     if not args.execute: print(json.dumps({'ready':True,'liveCalls':False})); return
@@ -74,7 +96,8 @@ def main():
     try:
         identity=call('GET','WhoAmI')
         if str(identity.get('OrganizationId','')).lower()!=expected.lower(): raise ValueError('ENVIRONMENT_MISMATCH')
-        note(verifiedOrganizationId=identity['OrganizationId']); prove(call,args.queue_key,evidence['proofId'],note)
+        note(verifiedOrganizationId=identity['OrganizationId'],concurrent=args.concurrent)
+        prove(call,args.queue_key,evidence['proofId'],note,concurrent=args.concurrent)
     except Exception as error:
         code=str(error) if isinstance(error,ValueError) and str(error).replace('_','').isalpha() and str(error).isupper() else 'PROOF_INCONCLUSIVE'
         note(error=code,completed=False); raise SystemExit(1)

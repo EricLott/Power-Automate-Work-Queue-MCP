@@ -1,0 +1,57 @@
+{
+  "classification": "live-native-intake-duplicate-conflict",
+  "proofId": "8d60b57e-2399-4120-a33a-ca47f1e85b8b",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "completed": true,
+  "startedAt": "2026-09-12T19:46:55.290237-05:00",
+  "cleanup": "Synthetic queued item retained; no business action or deletion.",
+  "verifiedOrganizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "concurrent": true,
+  "requestIds": {
+    "first": "98fde834-9d9e-5b85-a411-e076e3e605b9",
+    "duplicate": "fe0ecd59-dcb9-55f7-9234-ac71a04853b5",
+    "conflict": "c69f332c-b06d-5164-ba30-de0bfa1bea3c"
+  },
+  "nativeUniqueKey": "db1c7ceb59adab08911610c0e83a2adb9c3f73c15196d7d8f01d04d7d6b10429",
+  "concurrentResponses": {
+    "first": {
+      "Outcome": "Enqueued",
+      "ItemId": "cf01f207-cc41-403c-b023-60adac5552db"
+    },
+    "duplicate": {
+      "Outcome": "Existing",
+      "ItemId": "cf01f207-cc41-403c-b023-60adac5552db"
+    }
+  },
+  "concurrentResolved": {
+    "first": {
+      "Outcome": "Enqueued",
+      "ItemId": "cf01f207-cc41-403c-b023-60adac5552db"
+    },
+    "duplicate": {
+      "Outcome": "Existing",
+      "ItemId": "cf01f207-cc41-403c-b023-60adac5552db"
+    }
+  },
+  "first": {
+    "Outcome": "Enqueued",
+    "ItemId": "cf01f207-cc41-403c-b023-60adac5552db"
+  },
+  "duplicate": {
+    "Outcome": "Existing",
+    "ItemId": "cf01f207-cc41-403c-b023-60adac5552db"
+  },
+  "conflictCode": "KEY_CONTENT_CONFLICT",
+  "nativeCountBefore": 1,
+  "nativeCountAfter": 1,
+  "nativeState": 0,
+  "inputSha256Before": "830bf4a94a50eb64426beb3f37723bcf2977de3c23b67ac04768c6f5ea909ff6",
+  "inputSha256After": "830bf4a94a50eb64426beb3f37723bcf2977de3c23b67ac04768c6f5ea909ff6",
+  "releaseVersion": "0.1.0.0",
+  "runtimeEvidence": "cancellation-retention-2026-09-12.json",
+  "limitations": [
+    "Two concurrent client submissions returned Enqueued and Existing; no losing transaction or forced rollback occurred in this run.",
+    "Synthetic API boundary only; no real mailbox or extraction action."
+  ]
+}

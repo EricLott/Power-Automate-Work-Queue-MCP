@@ -2,7 +2,7 @@
 
 Local implementation is tracked in [LOCAL-01 / issue 106](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/106). The local suites test the implemented model, adapters, protocol, and package structure. They do not close tenant gates. Reproduction commands are in [local development](local-development.md); raw results are generated under `artifacts/test-results/` and `artifacts/validation/`.
 
-The [2026-09-12 local evidence record](local-evidence.md) includes historical test counts; the latest checkpoint has 152 passing tests and eight successful package round trips, with versions, hashes, and explicit limitations.
+The [2026-09-12 local evidence record](local-evidence.md) includes historical test counts. The cancellation-retention checkpoint records 198 passing local tests (88 runtime, 40 plug-in, 42 Python, and 28 MCP) plus eight package round trips. Later affected-suite checks report Python 48 and MCP 31; those are separate follow-up checks, not an additional combined-suite total. Versions, hashes, and limitations remain recorded with the evidence.
 
 ## Gate mapping
 
@@ -11,21 +11,21 @@ Every gate below remains **open**. Selected synthetic tenant evidence is recorde
 | Gate | Local coverage | Remaining live evidence |
 |---|---|---|
 | [G01 Clean install](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/70) | PAC pack/unpack, metadata/catalog checks, bootstrap plan | Import, key activation, API binding, app and connection checks |
-| [G02 Intake duplicate](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/71) | Stable deduplication and long mailbox identity tests | Native unique-key behavior with real intake |
-| [G03 Intake conflict](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/72) | Content mismatch rejected without another item | Actual native/companion conflict and diagnostics |
+| [G02 Intake duplicate](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/71) | Stable deduplication and long mailbox identity tests | Sequential synthetic native intake now has duplicate reuse and one-row evidence in [intake-duplicates](evidence/intake-duplicates-2026-09-12.json); simultaneous enqueue, real mailbox trigger, and broader isolation remain open |
+| [G03 Intake conflict](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/72) | Content mismatch rejected without another item | The same synthetic native intake run records `KEY_CONTENT_CONFLICT` and unchanged count; simultaneous conflict and real mailbox/connector diagnostics remain open |
 | [G04 Acquisition concurrency](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/73) | Concurrent local acquisition and SDK dequeue request tests | Real isolation and transaction composition |
 | [G05 Acquisition replay](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/74) | One persisted result for repeated request | Lost Dataverse response, rollback, retry |
 | [G06 Completion replay](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/75) | One completion/outbox intent | Connector timeout after server commit |
 | [G07 Delayed work](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/76) | Clock-controlled delay/retry test | Native delay eligibility plus scheduled discovery |
-| [G08 Missed wake-up](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/77) | Detached worker and sweep structure | Disable event parent and observe scheduled backlog recovery |
+| [G08 Missed wake-up](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/77) | Detached worker and sweep structure | Installed scheduled maintenance recovered one synthetic idle lease in [autonomous-runtime](evidence/autonomous-runtime-2026-09-12.json); disable-event parenting and broader scheduled backlog recovery remain open |
 | [G09 Paused queue](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/78) | Policy pause prevents acquisition | Native pause behavior and policy interaction |
 | [G10 Unsupported payload](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/79) | Schema, size, duplicate JSON, poison-item tests | Native draft-3 envelope and real connector mapping |
 | [G11 Post-write failure](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/80) | Existing output reused after a forced crash | Real Dataverse write followed by lost completion |
 | [G12 Stale worker](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/81) | Complete/fail/checkpoint generation and expiry tests | Parallel flow executions and connector side-effect boundary |
 | [G13 Unknown outcome](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/82) | Review hold and guarded operator retry | Recovery with real external uncertainty |
 | [G14 Notification failure](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/83) | Business state independence, delivery fencing, scan progress | Outlook failure/timeout/acceptance evidence |
-| [G15 Test isolation](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/84) | Production denial, scoped cleanup, rollback/hold tests | Separate identities, production destinations denied |
-| [G16 Test evidence](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/85) | Output read, expected fields, errors, attempts, notifications | Authorized reads through the installed coordinator |
+| [G15 Test isolation](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/84) | Production denial, scoped cleanup, rollback/hold tests | One synthetic coordinator record was scoped, deleted, and shown to preserve five prior outputs in [positive-coordinator](evidence/positive-coordinator-2026-09-12.json); separate identities and production-destination denial remain open |
+| [G16 Test evidence](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/85) | Output read, expected fields, errors, attempts, notifications | Installed coordinator read actual expected fields, outcome, attempt count, and retained assertion evidence in [positive-coordinator](evidence/positive-coordinator-2026-09-12.json); real mailbox/AI output evidence remains open |
 | [G17 AI extraction](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/86) | Output schema, versioned prompt, repeated fixture runs | Approved live AI Builder prompt and quality evaluation |
 | [G18 Authorization](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/87) | Role/queue denial, caller identity, environment binding tests | Native/table/team privileges under separate real identities |
 | [G19 Lifecycle bypass](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/88) | SDK guard tests and flow bypass lint | Direct writes and all registered pipeline paths |
@@ -42,4 +42,4 @@ The first build intentionally retains tenant uncertainty: dequeue transaction bo
 
 ## Cancellation checkpoint
 
-The current local suite passes 175 tests (84 runtime, 40 plug-in, 34 Python, 17 MCP). The [live MCP cancellation proof](evidence/test-cancellation-2026-09-12.json) establishes queued test cancellation, OnHold, zero attempts, and replay after correcting a native transition failure. It does not close active-worker/concurrent cancellation, clean managed install, AI quality, or other broader acceptance gates. All 22 gates remain open.
+The cancellation-retention checkpoint records 198 passing local tests (88 runtime, 40 plug-in, 42 Python, 28 MCP). Subsequent affected-suite checks report Python 48 and MCP 31; those counts are separate from the 198-test checkpoint. The [live MCP cancellation proof](evidence/test-cancellation-2026-09-12.json) establishes queued test cancellation, OnHold, zero attempts, and replay after correcting a native transition failure. The [cancellation-retention record](evidence/cancellation-retention-2026-09-12.json) records the local retention regression coverage, while its live portion remains limited to replay and does not prove aged native retention. Active-worker/concurrent cancellation, clean managed install, AI quality, and other broader acceptance gates remain open. All 22 gates remain open.
