@@ -1,0 +1,107 @@
+{
+  "classification": "isolated-native-connector",
+  "completed": true,
+  "matrixVerified": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueId": "d14ec06b-3109-57e6-b18e-43763044a876",
+  "itemId": "15acd185-a46c-59ba-a0da-61047e214964",
+  "flowId": "00085e4d-24c5-5087-937d-2e464d7d62f3",
+  "noteIds": {
+    "available": "70951032-cdcd-5ae7-899f-460bb951b939",
+    "empty": "483cb4e5-fa5b-5b8c-a04a-0b68a359f15f",
+    "paused": "d4e897b7-1aaf-59dd-a400-55bd2fdd4eb3"
+  },
+  "runId": "connector-v2-20260913",
+  "clientdataSha256": "0b64d8686eb762eb5ab44c76ea75a26624d5ace596941ee3881a11df33d24977",
+  "recordedAtUtc": "2026-09-13T04:13:51.526553+00:00",
+  "restorationErrors": [],
+  "sourceCommit": "aae738a",
+  "environmentId": "7f4c5058-8003-e789-b5f5-e761953c8a0e",
+  "solutionVersion": "0.1.0.0",
+  "dataverseCliVersion": "1.0.77",
+  "flowDefinitionVersion": "0.1.0.0",
+  "connector": "shared_commondataserviceforapps",
+  "localTests": {
+    "runtime": 93,
+    "plugins": 47,
+    "python": 118,
+    "mcp": 31
+  },
+  "finalReadback": {
+    "flow": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workflows(statecode,statuscode)/$entity",
+      "@odata.etag": "W/\"19078553\"",
+      "workflowid": "00085e4d-24c5-5087-937d-2e464d7d62f3",
+      "statecode": 0,
+      "statuscode": 1
+    },
+    "queue": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+      "@odata.etag": "W/\"19078560\"",
+      "workqueueid": "d14ec06b-3109-57e6-b18e-43763044a876",
+      "statecode": 0,
+      "statuscode": 1
+    },
+    "item": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(statecode,statuscode,input,expirydate)/$entity",
+      "@odata.etag": "W/\"19078570\"",
+      "statecode": 0,
+      "input": "{}",
+      "statuscode": 0,
+      "workqueueitemid": "15acd185-a46c-59ba-a0da-61047e214964",
+      "expirydate": null
+    }
+  },
+  "cases": {
+    "available": {
+      "runId": "connector-v2-20260913",
+      "case": "available",
+      "flowRunId": "08584123341033465057179173826CU04",
+      "actionStatus": "Succeeded",
+      "body": {
+        "@odata.type": "#Microsoft.Dynamics.CRM.workqueueitem",
+        "statecode": 1,
+        "statuscode": 1,
+        "workqueueitemid": "15acd185-a46c-59ba-a0da-61047e214964",
+        "input": "{}"
+      },
+      "error": null
+    },
+    "empty": {
+      "runId": "connector-v2-20260913",
+      "case": "empty",
+      "flowRunId": "08584123341033465057179173826CU04",
+      "actionStatus": "Succeeded",
+      "body": null,
+      "error": null
+    },
+    "paused": {
+      "runId": "connector-v2-20260913",
+      "case": "paused",
+      "flowRunId": "08584123341033465057179173826CU04",
+      "actionStatus": "Failed",
+      "body": {
+        "error": {
+          "code": "0x80048d0b",
+          "message": "{\"errorCode\":\"RecordNotActive\",\"message\":\"Work queue d14ec06b-3109-57e6-b18e-43763044a876 is not active. It is in Paused status.\",\"correlationId\":\"b5d4e506-65e5-4bee-858b-f733072ac5fe\"}"
+        }
+      },
+      "error": null
+    }
+  },
+  "priorAttempt": {
+    "runId": "connector-v1-20260913",
+    "matrixVerified": true,
+    "completed": false,
+    "reason": "Immediate native Processing -> Queued cleanup was rejected. Repaired via Exception -> Queued, then reran the corrected full proof."
+  },
+  "nativeImmediateResetRejection": {
+    "code": "0x80048d0b",
+    "message": "{\"errorCode\":\"InvalidArgument\",\"message\":\"Invalid workqueueitem Transition Status from 'Processing' to 'Queued'. https://go.microsoft.com/fwlink/?linkid=2265078\",\"correlationId\":\"f23c2ae4-31dc-4082-a325-a9057bd5b57d\"}"
+  },
+  "cleanupTransitions": [
+    "Processing -> Exception",
+    "Exception -> Queued"
+  ],
+  "scope": "Isolated unregistered native probe queue, not a customer worker. Only Dataverse connector and synthetic diagnostic Notes. Original seven runtime/reference flows remained Draft. No business processing or notification delivery."
+}

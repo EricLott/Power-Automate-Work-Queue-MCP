@@ -33,6 +33,8 @@ watchdog logic, separate identities, real connectors, load and release upgrades
 retain their own issue/gate requirements. Production rejects legacy AcquireNext;
 its local-only compatibility paths are not part of this native transition contract.
 
+The [native connector proof](native-connector-proof.md) adds an observed negative: an immediate Processing -> Queued update without future delayuntil is rejected as InvalidArgument. Its isolated probe cleanup used Processing -> Exception -> Queued, with final state read back. The framework's delayed technical-retry path and explicit operator reset from Exception remain distinct supported paths; do not treat every status pair as freely interchangeable.
+
 ## Reproducing the expiry boundary
 
 The expiry proof requires an isolated unregistered queue named `qmcp empty native
