@@ -29,3 +29,18 @@ python scripts/prove_prepared_pause.py --binding artifacts/live/mcp-binding.json
 ```
 
 The eight targeted prepared-pause tests passed. The combined pause tooling suite passed 17 tests, including restoration and exact-error parsing. Native queue status pause remains the next check under #78; this experiment uses the framework policy only. The synthetic item remains queued and all flows remain Draft.
+
+## Native queue pause
+
+The final native-status experiment passed on 2026-09-13. With the framework enabled and a fresh prepared acquisition, native Work Queue statecode 1/statuscode 3 rejected Dequeue with the queue-specific RecordNotActive / Paused error. Independent reads verified the item unchanged including its ETag, zero attempts, and Pending resolution. The queue was restored to statecode 0/statuscode 1 and read back. PATCH calls used the observed queue ETag through If-Match.
+
+[Native pause evidence](evidence/native-queue-pause-2026-09-13.json) includes the initial error-discovery run and a subsequent incomplete run whose replayed preparation had expired. Neither counts as a passing run. The final experiment used a fresh preparation request and passed every assertion. Operation IDs on native PATCHes are local evidence labels, not command receipts or replay guarantees.
+
+To reproduce, copy the fixture ledger and add itemId from the earlier queue-pause seed evidence. The script requires this to be the sole queued item in the bound synthetic queue, an enabled matching framework policy, an Active native queue and seven Draft flows.
+
+```powershell
+python scripts/prove_native_queue_pause.py --binding artifacts/live/mcp-binding.json --fixture-ledger artifacts/live/native-pause-fixture.json --output artifacts/live/native-pause-new.json
+# Add --execute for an authorized tenant run; allow previous acquisition intents to expire.
+```
+
+Default mode makes no tenant calls. The exact queue-specific native rejection or a successful empty dequeue response is required; generic failures do not pass. Any incomplete proof exits unsuccessfully. The native pause tests include generic-error restoration, empty-response handling, and exact queue-specific error parsing. Combined with the two framework-policy experiments, the pause scenario is now evidenced. Broader native-transition and acquisition prerequisite reviews remain in #15 and #29.

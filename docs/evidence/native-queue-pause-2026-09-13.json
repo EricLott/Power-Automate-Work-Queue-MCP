@@ -1,0 +1,202 @@
+{
+  "date": "2026-09-13",
+  "runtimeBaseline": "56b6ef5",
+  "solutionVersion": "0.1.0.0",
+  "classification": "synthetic-native-queue-pause",
+  "runs": {
+    "native-pause-proof": {
+      "classification": "synthetic-native-queue-pause",
+      "completed": false,
+      "currentQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077917\"",
+        "statecode": 1,
+        "statuscode": 3,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "itemBefore": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "lastError": {
+        "code": "0x80048d0b",
+        "message": "{\"errorCode\":\"RecordNotActive\",\"message\":\"Work queue 33fd4458-5922-5be7-85d1-07a9176c9957 is not active. It is in Paused status.\",\"correlationId\":\"de310660-c276-44aa-9e85-64f70a8cca75\"}"
+      },
+      "nativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "pauseOperationId": "e306eeb3-6b40-4d2e-9c3f-5c83f59586e8",
+      "pausedQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077917\"",
+        "statecode": 1,
+        "statuscode": 3,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "policyRestored": true,
+      "prepareRequestId": "5ea7b163-7fc3-4fcf-961b-79aeeec0e97d",
+      "queueBefore": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19052020\"",
+        "statecode": 0,
+        "statuscode": 1,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "queueKey": "qmcp-proof-20260912",
+      "restoreOperationId": "b10c68e5-55f4-4ae9-86c5-73660c4621b3",
+      "restoredQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077922\"",
+        "statecode": 0,
+        "statuscode": 1,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "tenantCalls": true
+    },
+    "native-pause-verified": {
+      "attemptCount": 0,
+      "classification": "synthetic-native-queue-pause",
+      "completed": false,
+      "currentQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077927\"",
+        "statecode": 1,
+        "statuscode": 3,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "dequeueRejection": "RecordNotActive:Paused",
+      "dequeueResult": {},
+      "itemBefore": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "lastError": {
+        "code": "0x80048d0b",
+        "message": "{\"errorCode\":\"RecordNotActive\",\"message\":\"Work queue 33fd4458-5922-5be7-85d1-07a9176c9957 is not active. It is in Paused status.\",\"correlationId\":\"540f01ec-efd0-406d-9d66-3cf70e913605\"}"
+      },
+      "nativeItemAfter": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "nativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "pauseOperationId": "ab191d9a-91c2-4e87-82ab-8e2f653b2eba",
+      "pausedQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077927\"",
+        "statecode": 1,
+        "statuscode": 3,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "policyRestored": true,
+      "prepareRequestId": "5ea7b163-7fc3-4fcf-961b-79aeeec0e97d",
+      "queueBefore": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077922\"",
+        "statecode": 0,
+        "statuscode": 1,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "queueKey": "qmcp-proof-20260912",
+      "resolveOutcome": {
+        "Outcome": "Expired"
+      },
+      "restoreOperationId": "7e0d65fb-c2ed-4a16-9df2-7f7bec84b196",
+      "restoredQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077932\"",
+        "statecode": 0,
+        "statuscode": 1,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "seededItemUnchanged": true,
+      "tenantCalls": true
+    },
+    "native-pause-final": {
+      "attemptCount": 0,
+      "classification": "synthetic-native-queue-pause",
+      "completed": true,
+      "currentQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077940\"",
+        "statecode": 1,
+        "statuscode": 3,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "dequeueRejection": "RecordNotActive:Paused",
+      "dequeueResult": {},
+      "itemBefore": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "lastError": {
+        "code": "0x80048d0b",
+        "message": "{\"errorCode\":\"RecordNotActive\",\"message\":\"Work queue 33fd4458-5922-5be7-85d1-07a9176c9957 is not active. It is in Paused status.\",\"correlationId\":\"e428934e-f778-4f07-a43b-9e3a7d4f9ff5\"}"
+      },
+      "nativeItemAfter": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "nativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "pauseOperationId": "5b7b3163-3a82-4b5f-9325-7ec2f3c9f0ab",
+      "pausedQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077940\"",
+        "statecode": 1,
+        "statuscode": 3,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "policyRestored": true,
+      "prepareRequestId": "b0fa2465-3b2d-44c5-8a8a-a59926b618a7",
+      "queueBefore": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077932\"",
+        "statecode": 0,
+        "statuscode": 1,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "queueKey": "qmcp-proof-20260912",
+      "resolveOutcome": {
+        "Outcome": "Pending"
+      },
+      "restoreOperationId": "4c7b518e-8c4a-47ad-8f79-81db3b7b2a79",
+      "restoredQueue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueues(statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077944\"",
+        "statecode": 0,
+        "statuscode": 1,
+        "workqueueid": "33fd4458-5922-5be7-85d1-07a9176c9957"
+      },
+      "seededItemUnchanged": true,
+      "tenantCalls": true
+    }
+  },
+  "limitations": [
+    "All flows Draft; no real mailbox or notification executed.",
+    "Initial exact error discovery remained incomplete.",
+    "Replayed old preparation had Expired resolution and remained incomplete; final proof used a fresh request."
+  ]
+}
