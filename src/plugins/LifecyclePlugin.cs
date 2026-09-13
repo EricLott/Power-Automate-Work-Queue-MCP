@@ -23,7 +23,7 @@ public sealed class LifecyclePlugin : IPlugin
             var proofFault = (string?)profile["proofFault"] ?? "";
             if (proofFault != "")
             {
-                if (actor.Production || !actor.Has("deployment") || !new[] { "before-receipt", "after-dequeue" }.Contains(proofFault)) throw new Fault("PROOF_FAULT_DENIED");
+                if (actor.Production || !actor.Has("deployment") || !new[] { "before-receipt", "after-dequeue", "after-attempt", "after-context", "after-intent", "after-receipt", "after-native-claim" }.Contains(proofFault)) throw new Fault("PROOF_FAULT_DENIED");
                 store.ProofFault = proofFault;
             }
             trace.Trace("qmcp operation {0}; correlation {1}; transaction {2}; depth {3}", context.MessageName, context.CorrelationId, context.IsInTransaction, context.Depth);
@@ -40,6 +40,7 @@ public sealed class LifecyclePlugin : IPlugin
                 DataJson = Text("DataJson") == "" ? "{}" : Text("DataJson")
             };
             context.SharedVariables["qmcp.runtime"] = true;
+            if (requestedOperation == "AcceptAcquire" && proofFault == "after-native-claim") throw new Fault("INJECTED_PROOF_FAILURE");
             context.OutputParameters["ResultJson"] = new Engine(store).Execute(c, actor);
         }
         catch (Fault e) { trace.Trace("qmcp failure {0}; correlation {1}", e.Code, context.CorrelationId); throw new InvalidPluginExecutionException(e.Code); }
@@ -122,6 +123,7 @@ public sealed class AcquisitionPostPlugin : IPlugin
         var factory = (IOrganizationServiceFactory)provider.GetService(typeof(IOrganizationServiceFactory));
         var service = factory.CreateOrganizationService(null);
         var caller = factory.CreateOrganizationService(context.InitiatingUserId);
+        var trace = (ITracingService)provider.GetService(typeof(ITracingService));
         try
         {
             if (!context.IsInTransaction || context.Stage != 40 || context.Mode != 0 || context.MessageName != "Update" || context.PrimaryEntityName != "workqueueitem")
@@ -141,8 +143,8 @@ public sealed class AcquisitionPostPlugin : IPlugin
                 throw new Fault("ACQUISITION_HANDOFF_REQUIRED");
             if (target.Attributes.Keys.Any(k => !Allowed.Contains(k)))
             {
-                var trace = (ITracingService)provider.GetService(typeof(ITracingService));
-                trace?.Trace("qmcp acquisition post target attributes: {0}", string.Join(",", target.Attributes.Keys.OrderBy(k => k, StringComparer.Ordinal)));
+                var targetTrace = (ITracingService)provider.GetService(typeof(ITracingService));
+                targetTrace?.Trace("qmcp acquisition post target attributes: {0}", string.Join(",", target.Attributes.Keys.OrderBy(k => k, StringComparer.Ordinal)));
                 throw new Fault("ACQUISITION_FIELDS_UNSUPPORTED");
             }
             var processingUser = native.GetAttributeValue<EntityReference>("processinguser");
@@ -156,6 +158,8 @@ public sealed class AcquisitionPostPlugin : IPlugin
             var acquisition = Json.Read<AcquisitionIntent>(intent ?? "");
             if (acquisition.Status != "Prepared" || acquisition.ActorId != context.InitiatingUserId.ToString() || acquisition.Expires <= DateTime.UtcNow)
                 throw new Fault("ACQUISITION_INTENT_INVALID");
+            var requestId = Guid.TryParse(acquisition.RequestId, out _) ? acquisition.RequestId : "";
+            trace?.Trace("qmcp acquisition claim validated; correlation {0}; depth {1}; transaction {2}; requestId {3}", context.CorrelationId, context.Depth, context.IsInTransaction, requestId);
             var request = new OrganizationRequest("qmcp_WQ_AcceptAcquire");
             request["RequestId"] = acquisition.RequestId;
             request["QueueKey"] = queueKey;
@@ -186,6 +190,7 @@ public sealed class AcquisitionPostPlugin : IPlugin
         if (rows.Count != 1) throw new Fault(rows.Count == 0 ? "NOT_FOUND" : "DUPLICATE_KEY");
         return rows[0];
     }
+
 }
 public sealed class LifecycleGuard : IPlugin
 {

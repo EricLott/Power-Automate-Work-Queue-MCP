@@ -75,7 +75,9 @@ public sealed class DataverseStore : IStore
         }
         Project(e, row.Body);
         if (row.Kind == "business") e.Id = Guid.Parse(row.Key);
-        service.Create(e); return Get(row.Kind, row.Key) ?? throw new Fault("WRITE_NOT_VISIBLE");
+        service.Create(e);
+        InjectAfterWrite(row.Kind);
+        return Get(row.Kind, row.Key) ?? throw new Fault("WRITE_NOT_VISIBLE");
     }
     public Row Put(Row row, long expectedVersion)
     {
@@ -83,7 +85,18 @@ public sealed class DataverseStore : IStore
         var update = new Entity(old.LogicalName, old.Id) { RowVersion = expectedVersion.ToString() }; update["qmcp_document"] = row.Body;
         Project(update, row.Body);
         service.Execute(new UpdateRequest { Target = update, ConcurrencyBehavior = ConcurrencyBehavior.IfRowVersionMatches });
+        InjectAfterWrite(row.Kind);
         return Get(row.Kind, row.Key)!;
+    }
+
+    void InjectAfterWrite(string kind)
+    {
+        if (context.MessageName != "qmcp_WQ_AcceptAcquire") return;
+        if ((kind == "attempt" && ProofFault == "after-attempt") ||
+            (kind == "itemcontext" && ProofFault == "after-context") ||
+            (kind == "cursor" && ProofFault == "after-intent") ||
+            (kind == "command" && ProofFault == "after-receipt"))
+            throw new Fault("INJECTED_PROOF_FAILURE");
     }
     public void Delete(string kind, string key, long expectedVersion)
     {

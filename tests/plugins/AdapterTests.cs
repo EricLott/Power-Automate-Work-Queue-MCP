@@ -38,6 +38,73 @@ public class AdapterTests {
         new DataverseStore(service.Object,context.Object).Put(new Row{Kind="attempt",Key="attempt",Queue="mail",Body="{}"},7);
         service.Verify(s=>s.Execute(It.Is<UpdateRequest>(r=>r.ConcurrencyBehavior==ConcurrencyBehavior.IfRowVersionMatches&&r.Target.RowVersion=="7")),Times.Once);
     }
+    [Theory]
+    [InlineData("attempt", "after-attempt", "Create")]
+    [InlineData("itemcontext", "after-context", "Update")]
+    [InlineData("cursor", "after-intent", "Update")]
+    [InlineData("command", "after-receipt", "Create")]
+    public void AcquisitionProofFaultsAfterEachDurableWrite(string kind, string fault, string operation)
+    {
+        var context = new Mock<IPluginExecutionContext>();
+        context.SetupGet(c => c.MessageName).Returns("qmcp_WQ_AcceptAcquire");
+        var service = new Mock<IOrganizationService>(MockBehavior.Strict);
+        var queue = new Entity("qmcp_wqdefinition") { RowVersion = "1" };
+        queue["qmcp_key"] = "mail"; queue["qmcp_document"] = Json.Write(new QueuePolicy { OwnerTeamId = Guid.NewGuid().ToString() });
+        service.Setup(s => s.RetrieveMultiple(It.Is<QueryBase>(q => ((QueryExpression)q).EntityName == "qmcp_wqdefinition"))).Returns(new EntityCollection(new List<Entity> { queue }));
+        var store = new DataverseStore(service.Object, context.Object) { ProofFault = fault };
+        if (operation == "Create")
+        {
+            service.Setup(s => s.Create(It.IsAny<Entity>())).Returns(Guid.NewGuid());
+            Assert.Equal("INJECTED_PROOF_FAILURE", Assert.Throws<Fault>(() => store.Add(new Row { Kind = kind, Key = "k", Queue = "mail", Body = "{}" })).Code);
+            service.Verify(s => s.Create(It.IsAny<Entity>()), Times.Once);
+        }
+        else
+        {
+            var existing = new Entity(DataverseStore.Tables[kind], Guid.NewGuid()) { RowVersion = "1" };
+            existing["qmcp_key"] = "k"; existing["qmcp_queuekey"] = "mail"; existing["qmcp_document"] = "{}";
+            service.Setup(s => s.RetrieveMultiple(It.Is<QueryBase>(q => ((QueryExpression)q).EntityName == DataverseStore.Tables[kind]))).Returns(new EntityCollection(new List<Entity> { existing }));
+            service.Setup(s => s.Execute(It.IsAny<UpdateRequest>())).Returns(new OrganizationResponse());
+            Assert.Equal("INJECTED_PROOF_FAILURE", Assert.Throws<Fault>(() => store.Put(new Row { Kind = kind, Key = "k", Queue = "mail", Body = "{}" }, 1)).Code);
+            service.Verify(s => s.Execute(It.IsAny<UpdateRequest>()), Times.Once);
+        }
+    }
+    [Theory]
+    [InlineData(true, "deployment")]
+    [InlineData(false, "worker")]
+    public void ProofFaultRequiresNonProductionDeploymentPrincipal(bool production, string role)
+    {
+        var user = Guid.NewGuid();
+        var context = new Mock<IPluginExecutionContext>();
+        context.SetupGet(c => c.MessageName).Returns("qmcp_WQ_GetQueueHealth");
+        context.SetupGet(c => c.InitiatingUserId).Returns(user);
+        context.SetupGet(c => c.InputParameters).Returns(new ParameterCollection { { "QueueKey", "mail" } });
+        var principal = new Entity("qmcp_wqprincipal") { RowVersion = "1" };
+        principal["qmcp_key"] = user.ToString();
+        principal["qmcp_document"] = Json.Write(new { production, roles = new[] { role }, proofFault = "after-context" });
+        var service = new Mock<IOrganizationService>(MockBehavior.Strict);
+        service.Setup(s => s.RetrieveMultiple(It.Is<QueryBase>(q => ((QueryExpression)q).EntityName == "qmcp_wqprincipal"))).Returns(new EntityCollection(new List<Entity> { principal }));
+        var factory = new Mock<IOrganizationServiceFactory>();
+        factory.Setup(f => f.CreateOrganizationService(user)).Returns(service.Object);
+        var provider = new Mock<IServiceProvider>();
+        provider.Setup(p => p.GetService(typeof(IPluginExecutionContext))).Returns(context.Object);
+        provider.Setup(p => p.GetService(typeof(IOrganizationServiceFactory))).Returns(factory.Object);
+        provider.Setup(p => p.GetService(typeof(ITracingService))).Returns(Mock.Of<ITracingService>());
+        Assert.Equal("PROOF_FAULT_DENIED", Assert.Throws<InvalidPluginExecutionException>(() => new LifecyclePlugin().Execute(provider.Object)).Message);
+    }
+    [Fact]
+    public void AcquisitionProofHooksIgnoreNonAcceptAcquireWrites()
+    {
+        var context = new Mock<IPluginExecutionContext>();
+        context.SetupGet(c => c.MessageName).Returns("qmcp_WQ_Complete");
+        var service = new Mock<IOrganizationService>(MockBehavior.Strict);
+        var existing = new Entity(DataverseStore.Tables["itemcontext"], Guid.NewGuid()) { RowVersion = "1" };
+        existing["qmcp_key"] = "k"; existing["qmcp_queuekey"] = "mail"; existing["qmcp_document"] = "{}";
+        service.Setup(s => s.RetrieveMultiple(It.Is<QueryBase>(q => ((QueryExpression)q).EntityName == DataverseStore.Tables["itemcontext"]))).Returns(new EntityCollection(new List<Entity> { existing }));
+        service.Setup(s => s.Execute(It.IsAny<UpdateRequest>())).Returns(new OrganizationResponse());
+        var store = new DataverseStore(service.Object, context.Object) { ProofFault = "after-context" };
+        store.Put(new Row { Kind = "itemcontext", Key = "k", Queue = "mail", Body = "{}" }, 1);
+        service.Verify(s => s.Execute(It.IsAny<UpdateRequest>()), Times.Once);
+    }
     [Fact] public void CompanionRawMutationDenied(){
         var context=new Mock<IPluginExecutionContext>();context.SetupGet(c=>c.PrimaryEntityName).Returns("qmcp_wqattempt");var provider=new Mock<IServiceProvider>();provider.Setup(p=>p.GetService(typeof(IPluginExecutionContext))).Returns(context.Object);
         Assert.Equal("LIFECYCLE_BYPASS",Assert.Throws<InvalidPluginExecutionException>(()=>new LifecycleGuard().Execute(provider.Object)).Message);
