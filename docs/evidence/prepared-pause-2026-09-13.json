@@ -1,0 +1,386 @@
+{
+  "date": "2026-09-13",
+  "runtimeBaseline": "00ce8bc",
+  "installedSolutionVersion": "0.1.0.0",
+  "classification": "synthetic-framework-prepared-pause",
+  "runs": {
+    "prepared-pause-proof": {
+      "classification": "synthetic-prepared-pause",
+      "completed": false,
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "originalPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 6,
+        "SafeEffects": true
+      },
+      "originalVersion": 19077877,
+      "pauseRequestId": "618e9161-5e2a-4849-bf28-3048706e1c74",
+      "pauseResult": {
+        "Outcome": "Registered",
+        "Revision": 7,
+        "Version": 19077886
+      },
+      "policyRestored": true,
+      "queueKey": "qmcp-proof-20260912",
+      "requests": {
+        "PrepareAcquire": "4529b2b3-ad16-4e1c-95c4-de02aa0bd44c",
+        "RegisterQueuePause": "618e9161-5e2a-4849-bf28-3048706e1c74",
+        "RegisterQueueRestore": "bae45253-f032-4217-9972-992007f90ee4"
+      },
+      "restoreRequestId": "bae45253-f032-4217-9972-992007f90ee4",
+      "restoredPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 8,
+        "SafeEffects": true
+      },
+      "restoredVersion": 19077889,
+      "tenantCalls": true
+    },
+    "prepared-pause-diagnostic": {
+      "classification": "synthetic-prepared-pause",
+      "completed": false,
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "originalPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 8,
+        "SafeEffects": true
+      },
+      "originalVersion": 19077889,
+      "queueKey": "qmcp-proof-20260912",
+      "requests": {
+        "PrepareAcquire": "5caf127f-5166-4f7c-8e33-ab970df0a0f3"
+      },
+      "tenantCalls": true
+    },
+    "prepared-pause-diagnostic-2": {
+      "classification": "synthetic-prepared-pause",
+      "completed": false,
+      "dequeueDiagnostic": {
+        "errorCode": "0x80048d0a",
+        "errorMessage": "{\"errorCode\":\"InternalServerError\",\"message\":\"Fail to update work queue item cb4515b4-6312-40ff-b23e-fae5c9278cce to Processing because: LIFECYCLE_BYPASS. Fault ErrorCode: -2147220891\",\"correlationId\":\"2743b8fd-b009-4ee2-9a21-faac09b7284e\"}",
+        "value": false
+      },
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "lastError": {
+        "code": "0x80048d0a",
+        "message": "{\"errorCode\":\"InternalServerError\",\"message\":\"Fail to update work queue item cb4515b4-6312-40ff-b23e-fae5c9278cce to Processing because: LIFECYCLE_BYPASS. Fault ErrorCode: -2147220891\",\"correlationId\":\"2743b8fd-b009-4ee2-9a21-faac09b7284e\"}"
+      },
+      "lastFailedOperation": "workqueues(33fd4458-5922-5be7-85d1-07a9176c9957)/Microsoft.Dynamics.CRM.Dequeue",
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "originalPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 8,
+        "SafeEffects": true
+      },
+      "originalVersion": 19077889,
+      "pauseRequestId": "600efc22-c2e0-4336-9bd4-27e037db059d",
+      "pauseResult": {
+        "Outcome": "Registered",
+        "Revision": 9,
+        "Version": 19077895
+      },
+      "policyRestored": true,
+      "queueKey": "qmcp-proof-20260912",
+      "requests": {
+        "PrepareAcquire": "70213964-4d7c-4372-af86-aca61ca9b7a9",
+        "RegisterQueuePause": "600efc22-c2e0-4336-9bd4-27e037db059d",
+        "RegisterQueueRestore": "ad779ca5-f00c-46ae-b0fe-b5d3bc9fdf3e"
+      },
+      "restoreRequestId": "ad779ca5-f00c-46ae-b0fe-b5d3bc9fdf3e",
+      "restoredPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 10,
+        "SafeEffects": true
+      },
+      "restoredVersion": 19077897,
+      "tenantCalls": true
+    },
+    "prepared-pause-final": {
+      "classification": "synthetic-prepared-pause",
+      "completed": false,
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "lastError": {
+        "code": "0x80040265",
+        "message": "ACQUIRE_BUSY"
+      },
+      "lastFailedOperation": "qmcp_WQ_PrepareAcquire",
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "originalPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 10,
+        "SafeEffects": true
+      },
+      "originalVersion": 19077897,
+      "queueKey": "qmcp-proof-20260912",
+      "requests": {
+        "PrepareAcquire": "f02af40e-d8f7-4023-be36-71b4267243d6"
+      },
+      "tenantCalls": true
+    },
+    "prepared-pause-verified": {
+      "attempts": 0,
+      "classification": "synthetic-prepared-pause",
+      "completed": true,
+      "dequeueOutcome": "LIFECYCLE_BYPASS",
+      "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+      "lastError": {
+        "code": "0x80048d0a",
+        "message": "{\"errorCode\":\"InternalServerError\",\"message\":\"Fail to update work queue item cb4515b4-6312-40ff-b23e-fae5c9278cce to Processing because: LIFECYCLE_BYPASS. Fault ErrorCode: -2147220891\",\"correlationId\":\"3f8b52af-cb20-4793-849e-7e583de2149d\"}"
+      },
+      "lastFailedOperation": "workqueues(33fd4458-5922-5be7-85d1-07a9176c9957)/Microsoft.Dynamics.CRM.Dequeue",
+      "nativeAfterDequeue": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "nativeAfterPause": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "nativeBefore": {
+        "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+        "@odata.etag": "W/\"19077864\"",
+        "statecode": 0,
+        "statuscode": 0,
+        "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+        "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+      },
+      "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+      "originalPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 10,
+        "SafeEffects": true
+      },
+      "originalVersion": 19077897,
+      "pauseRequestId": "affce6f0-10d9-40eb-ae09-77f95698739d",
+      "pauseResult": {
+        "Outcome": "Registered",
+        "Revision": 11,
+        "Version": 19077906
+      },
+      "policyRestored": true,
+      "prepareOutcome": {
+        "Expires": "2026-09-13T02:53:54.543902Z",
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "Outcome": "Prepared",
+        "RequestId": "e3463272-57d4-4f6c-ac8e-3b67b8f50946"
+      },
+      "queueKey": "qmcp-proof-20260912",
+      "requests": {
+        "PrepareAcquire": "e3463272-57d4-4f6c-ac8e-3b67b8f50946",
+        "RegisterQueuePause": "affce6f0-10d9-40eb-ae09-77f95698739d",
+        "RegisterQueueRestore": "d53ea24c-beaf-4c6e-b547-6066ab297733",
+        "ResolveAcquire": "e3463272-57d4-4f6c-ac8e-3b67b8f50946"
+      },
+      "resolveOutcome": {
+        "Outcome": "Pending"
+      },
+      "restoreRequestId": "d53ea24c-beaf-4c6e-b547-6066ab297733",
+      "restoredPolicy": {
+        "Contracts": [
+          "mail.v1"
+        ],
+        "DeadlineSeconds": 1800,
+        "Destinations": [],
+        "Enabled": true,
+        "Grants": {
+          "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+            "producer",
+            "worker",
+            "reader",
+            "tester",
+            "coordinator",
+            "watchdog",
+            "sender",
+            "retry"
+          ]
+        },
+        "LeaseSeconds": 120,
+        "MaxAttempts": 3,
+        "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+        "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+        "RetryBaseSeconds": 30,
+        "RetryMaxSeconds": 600,
+        "Revision": 12,
+        "SafeEffects": true
+      },
+      "restoredVersion": 19077908,
+      "tenantCalls": true
+    }
+  },
+  "limitations": [
+    "Native queue status pause remains separate.",
+    "No business flows activated.",
+    "Pre-operation guard rejected the native transition; post-operation AcceptAcquire was not reached."
+  ]
+}
