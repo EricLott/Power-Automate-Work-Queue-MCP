@@ -1,0 +1,111 @@
+{
+  "acquireOutcome": {
+    "Outcome": "QueuePaused"
+  },
+  "acquireRequestId": "7652074f-4c0c-4c92-a9da-2ec50737dfdd",
+  "classification": "synthetic-native-queue-pause",
+  "completed": true,
+  "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+  "nativeAfter": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+    "@odata.etag": "W/\"19077864\"",
+    "statecode": 0,
+    "statuscode": 0,
+    "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+    "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+  },
+  "nativeBefore": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode)/$entity",
+    "@odata.etag": "W/\"19077864\"",
+    "statecode": 0,
+    "statuscode": 0,
+    "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+    "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+  },
+  "nativeRowUnchanged": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "originalPolicy": {
+    "Contracts": [
+      "mail.v1"
+    ],
+    "DeadlineSeconds": 1800,
+    "Destinations": [],
+    "Enabled": true,
+    "Grants": {
+      "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+        "producer",
+        "worker",
+        "reader",
+        "tester",
+        "coordinator",
+        "watchdog",
+        "sender",
+        "retry"
+      ]
+    },
+    "LeaseSeconds": 120,
+    "MaxAttempts": 3,
+    "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+    "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+    "RetryBaseSeconds": 30,
+    "RetryMaxSeconds": 600,
+    "Revision": 4,
+    "SafeEffects": true
+  },
+  "originalVersion": 19072861,
+  "pauseRequestId": "9caff444-183e-4391-9d68-8f16b10ed62a",
+  "pauseResult": {
+    "Outcome": "Registered",
+    "Revision": 5,
+    "Version": 19077873
+  },
+  "policyRestored": true,
+  "queueKey": "qmcp-proof-20260912",
+  "restoreRequestId": "edd158d5-d66c-437a-809a-91c1cd752ff4",
+  "restoredPolicy": {
+    "Contracts": [
+      "mail.v1"
+    ],
+    "DeadlineSeconds": 1800,
+    "Destinations": [],
+    "Enabled": true,
+    "Grants": {
+      "c81ea07e-b825-ed11-9db1-000d3a8fed55": [
+        "producer",
+        "worker",
+        "reader",
+        "tester",
+        "coordinator",
+        "watchdog",
+        "sender",
+        "retry"
+      ]
+    },
+    "LeaseSeconds": 120,
+    "MaxAttempts": 3,
+    "NativeQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+    "OwnerTeamId": "3220a0c3-e520-5927-a39f-aa7bd8dfcdd1",
+    "RetryBaseSeconds": 30,
+    "RetryMaxSeconds": 600,
+    "Revision": 6,
+    "SafeEffects": true
+  },
+  "restoredVersion": 19077877,
+  "seedEnvelope": {
+    "contract": "mail.v1",
+    "correlationId": "cacd8b39-de04-4251-b5c7-8928b02ef1f5",
+    "deduplicationKey": "queue-pause-proof-78ef67f6-6c25-4971-bf5a-f925640ef6fa",
+    "envelopeVersion": "1.0",
+    "payload": {
+      "bodyText": "Please restore the office printer.",
+      "senderAddress": "guard@example.invalid",
+      "subject": "Synthetic queue pause proof"
+    },
+    "source": {
+      "kind": "synthetic"
+    }
+  },
+  "seedRequestId": "df78c0a6-b937-4645-a46a-2663c12778f9",
+  "seededItemLeftQueued": true,
+  "tenantCalls": true
+}
