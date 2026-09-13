@@ -154,6 +154,7 @@ def main(argv=None):
     prompt_version = manifest.get("promptVersion", "mail-extraction-v1.1") if isinstance(manifest, dict) else "mail-extraction-v1.1"
     origin, organization, queue, queue_id = validate(binding, ledger, cases)
     fixture_hash = digest(canonical(cases))
+    classification = "installed-validator-fault-injection-not-ai-quality" if isinstance(manifest, dict) and manifest.get("classification") == "installed-validator-fault-injection-not-ai-quality" else "synthetic-reference-quality"
     output = Path(args.output)
     if not args.execute and not args.observe:
         print(json.dumps({"ready": True, "writes": False, "tenantCalls": False, "queueKey": queue}))
@@ -168,11 +169,12 @@ def main(argv=None):
         if output.exists():
             raise ValueError("EVIDENCE_EXISTS")
         proof = str(uuid.uuid4())
-        evidence = {"classification": "synthetic-reference-quality", "organizationId": organization, "queueKey": queue, "fixtureHash": fixture_hash, "promptVersion": prompt_version, "proofId": proof, "startRequestId": str(uuid.uuid5(uuid.UUID(proof), "StartTestRun")), "complete": False, "tenantCalls": True}
+        evidence = {"classification": classification, "organizationId": organization, "queueKey": queue, "fixtureHash": fixture_hash, "promptVersion": prompt_version, "proofId": proof, "startRequestId": str(uuid.uuid5(uuid.UUID(proof), "StartTestRun")), "complete": False, "tenantCalls": True}
         write(output, evidence)
     command = _cli_command()
     def call(method, relative, body=None):
         return _cli_request(command, origin, method, relative, body, runner=subprocess.run)
+    evidence["classification"] = classification
     evidence["complete"] = False
     write(output, evidence)
     who = call("GET", "WhoAmI")

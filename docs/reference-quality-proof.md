@@ -27,3 +27,7 @@ The [follow-up evidence](evidence/reference-quality-repeat-2026-09-12.json) reco
 The ambiguous expectation was not relaxed. The implementation now requires a source quote and explicit intent signal before creating a record. The neutral messages abstained through schema validation in these runs; they do not by themselves exercise the later `ValidateIntent` rejection branch. The instruction-bearing fixture was reviewed against [Microsoft's input restrictions](https://learn.microsoft.com/en-us/ai-builder/add-inputs-prompt) and now expects safe rejection, with no output record. Its original failed Processed expectation remains in the first evidence document. These changed expectations were versioned before the new runs and are not directly comparable to the old aggregate pass count.
 
 All 235 local tests and fresh package round trips passed. The English intent grammar deliberately holds unsupported wording for review. This evidence supports review of the AI-quality work; it is not a general model reliability guarantee, a real mailbox test, or completion of all reference/release gates.
+
+## Direct intent rejection branch
+
+A separate [installed fault-injection test](intent-validator-proof.md) now exercises the `ValidateIntent` rejection branch with a schema-valid fabricated quote. It recorded `VALIDATEINTENT_FAILED`, one attempt, no business row and no Complete receipt, followed by verified restoration. It does not add an AI-quality sample because the prediction was deliberately replaced for this test.

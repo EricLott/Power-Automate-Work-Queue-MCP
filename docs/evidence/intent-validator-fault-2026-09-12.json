@@ -1,0 +1,116 @@
+{
+  "classification": "installed-validator-fault-injection-not-ai-quality",
+  "recordedAtUtc": "2026-09-13T02:28:10.329198+00:00",
+  "baseCommit": "a787bbe",
+  "proof": {
+    "checks": [
+      {
+        "assertionEvidence": {
+          "attemptCount": 1,
+          "errorCode": "VALIDATEINTENT_FAILED",
+          "nativeOutcome": "Exception",
+          "reviewRequired": true
+        },
+        "businessAbsent": true,
+        "businessRecordCount": 0,
+        "caseId": "fabricated-intent-quote",
+        "errorCodeMatch": true,
+        "itemId": "d9e6610b-73ea-40be-ac71-60ac85941286",
+        "nativeKeyMatch": true,
+        "nativeOutcomeMatch": true,
+        "nativeQueueMatch": true,
+        "nativeState": 4,
+        "nativeUniqueId": "eab2f4ec57e59c8d58f0c708f5806b64e63dfeee3110352b7bf721398d322d53",
+        "resultState": "Passed",
+        "unexpectedBusinessRecordIds": []
+      }
+    ],
+    "classification": "installed-validator-fault-injection-not-ai-quality",
+    "complete": true,
+    "fixtureHash": "28265a1d1a3683f1b89c43edd521ad67195c0bf4b7bb3022773e4d9e075207d5",
+    "observedAtUtc": "2026-09-13T02:19:47.709205+00:00",
+    "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+    "promptVersion": "mail-extraction-v1.2",
+    "proofId": "7974d9f3-d9b6-4767-8bbf-b8bd7fcb1081",
+    "queueKey": "qmcp-proof-20260912",
+    "run": {
+      "resultCount": 1,
+      "state": "Passed"
+    },
+    "runId": "78554eef-566c-448d-a255-89a1af12aa6a",
+    "startRequestId": "7a33d081-3640-5d99-8923-69cb9a19c661",
+    "tenantCalls": true,
+    "terminal": true
+  },
+  "runtimeEvidence": {
+    "context": {
+      "LastAttempt": "590a38e1-c86f-40f6-a1b1-565fe3bb8ff9",
+      "ItemId": "d9e6610b-73ea-40be-ac71-60ac85941286",
+      "ContentHash": "535974553880a591a5ead1c79270fd062f8fad563b0da4238bcb4b436c9fffc5",
+      "SourceKey": "013e8c80d0686458698472673accf7c58177aa84f6b3c7be8f49743cc002d0cb",
+      "CorrelationId": "intent-guard-fault",
+      "ActiveAttempt": "",
+      "Generation": 1,
+      "AttemptCount": 1,
+      "ReviewRequired": true,
+      "TestCancelled": false,
+      "OutputJson": "{}",
+      "TestRun": "78554eef-566c-448d-a255-89a1af12aa6a"
+    },
+    "attempt": {
+      "Id": "590a38e1-c86f-40f6-a1b1-565fe3bb8ff9",
+      "Outcome": "Exception",
+      "ErrorCode": "VALIDATEINTENT_FAILED",
+      "Caller": {
+        "flowId": "cfd43d48-6fe4-1611-0b39-c6753bdcbd67",
+        "runId": "08584123409571253573031233643CU16",
+        "templateVersion": "0.1.0.0"
+      }
+    },
+    "matchingCommandOperations": [
+      "AdvanceTestRun",
+      "AdvanceTestRun",
+      "AcceptAcquire",
+      "Fail"
+    ],
+    "completeReceiptCount": 0
+  },
+  "mutation": {
+    "path": "properties.definition.actions.HasWork.actions.Business.actions.CreateIfAbsent.actions.NormalizeExtraction.inputs",
+    "injectedOutput": {
+      "contact": "guard@example.invalid",
+      "category": "service",
+      "summary": "Synthetic deliberately fabricated extraction for validator testing.",
+      "intentEvidence": "Please repair the spaceship.",
+      "intentSignal": "explicit-request"
+    },
+    "generatedCandidateMatchesInstalledAfterRemovingTemporaryBindings": true,
+    "candidateSha256": "39e7261345b1fa4053de4b8fff5bbcead698abba9a8b8704c3cdcef2895a23ba"
+  },
+  "localValidation": {
+    "pythonTests": 75,
+    "result": "passed",
+    "unchangedRuntimeAndMcpBaseline": "235-test checkpoint at a787bbe; no runtime or MCP source changed here."
+  },
+  "limitations": [
+    "Predict executed but its result was deliberately replaced. This proves installed validation rejection, not model extraction quality.",
+    "The test covers an absent source quote; other invalid forms retain local regression coverage and separate future tests."
+  ],
+  "restoration": [
+    {
+      "name": "SweepQueue",
+      "state": "Draft",
+      "generatedUnboundSourceVerified": true
+    },
+    {
+      "name": "TestCoordinator",
+      "state": "Draft",
+      "generatedUnboundSourceVerified": true
+    },
+    {
+      "name": "ProcessOne",
+      "state": "Draft",
+      "generatedUnboundSourceVerified": true
+    }
+  ]
+}
