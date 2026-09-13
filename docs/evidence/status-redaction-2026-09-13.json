@@ -1,0 +1,76 @@
+{
+  "completed": true,
+  "classification": "installed-status-redaction",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+  "recordId": "dc9e3940-1ad4-4bc3-ac59-396756a33433",
+  "requests": {
+    "acquire": "252e3066-5b10-421c-bc5f-15c4d9afa5d6",
+    "complete": "4962fcb5-64f6-4a89-b52b-56af6a5e2e3c",
+    "status": "4f593023-7130-45f1-b84d-0c7819135bf0"
+  },
+  "acquisition": {
+    "Outcome": "Acquired",
+    "ItemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+    "AttemptId": "374e6afe-fbed-4f4f-aa49-7b7753009419",
+    "Generation": 1,
+    "LeaseExpires": "2026-09-13T03:20:49.4456178Z",
+    "Envelope": {
+      "envelopeVersion": "1.0",
+      "contract": "mail.v1",
+      "correlationId": "cacd8b39-de04-4251-b5c7-8928b02ef1f5",
+      "deduplicationKey": "queue-pause-proof-78ef67f6-6c25-4971-bf5a-f925640ef6fa",
+      "source": {
+        "kind": "synthetic"
+      },
+      "payload": {
+        "subject": "Synthetic queue pause proof",
+        "senderAddress": "guard@example.invalid",
+        "bodyText": "Please restore the office printer."
+      }
+    },
+    "SourceKey": "33584d610d98a7965263a231f4f89a6bee2f9283e13bd7cae1501d38e90e2637",
+    "BusinessKey": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+    "ContentHash": "87cdefcc492c74cc9da3af59f3aeb08aeea6c651eac6d3bf39fbc2602b176d19",
+    "TestRun": ""
+  },
+  "completionInput": {
+    "table": "qmcp_emailrequest",
+    "recordId": "dc9e3940-1ad4-4bc3-ac59-396756a33433",
+    "privateNote": "SYNTHETIC_PRIVATE_SENTINEL",
+    "nested": {
+      "value": "SYNTHETIC_NESTED_SENTINEL"
+    }
+  },
+  "status": {
+    "Outcome": "Processed",
+    "ItemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+    "ActiveAttempt": "",
+    "LastAttempt": "374e6afe-fbed-4f4f-aa49-7b7753009419",
+    "Generation": 1,
+    "AttemptCount": 1,
+    "ReviewRequired": false,
+    "Version": 19077980,
+    "Output": {
+      "table": "qmcp_emailrequest",
+      "recordId": "dc9e3940-1ad4-4bc3-ac59-396756a33433"
+    }
+  },
+  "internalEvidencePreserved": true,
+  "outputVerified": true,
+  "date": "2026-09-13",
+  "buildBaseline": "661f330 plus reviewed status patch",
+  "solutionVersion": "0.1.0.0",
+  "tests": {
+    "runtime": 93,
+    "plugins": 40,
+    "python": 102,
+    "mcp": 31,
+    "total": 266
+  },
+  "limitations": [
+    "Single authorized development actor; separate identity/security gate remains separate.",
+    "Synthetic CLI worker; no native cloud FlowRun record was required."
+  ]
+}

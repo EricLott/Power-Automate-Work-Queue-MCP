@@ -346,7 +346,15 @@ public sealed partial class Engine
     object Status(Command c)
     {
         var i = Item(c);
-        return new { Outcome = i.native.Status, ItemId = i.native.Id, i.context.ActiveAttempt, i.context.Generation, i.context.AttemptCount, i.context.ReviewRequired, Version = i.row.Version, Output = Json.Object(i.context.OutputJson, 8192) };
+        var storedOutput = Json.Object(i.context.OutputJson, 8192);
+        // Status is a reader-facing diagnostic view. Complete accepts a bounded
+        // result object, but arbitrary caller fields must not become a payload
+        // disclosure through a reader. Preserve only the stable business-record
+        // reference fields and expose the last framework attempt separately.
+        var output = new JObject();
+        if (storedOutput["table"]?.Type == JTokenType.String) output["table"] = (string?)storedOutput["table"];
+        if (storedOutput["recordId"]?.Type == JTokenType.String) output["recordId"] = (string?)storedOutput["recordId"];
+        return new { Outcome = i.native.Status, ItemId = i.native.Id, i.context.ActiveAttempt, LastAttempt = i.context.LastAttempt, i.context.Generation, i.context.AttemptCount, i.context.ReviewRequired, Version = i.row.Version, Output = output };
     }
     object Health(Command c, QueuePolicy policy)
     {
