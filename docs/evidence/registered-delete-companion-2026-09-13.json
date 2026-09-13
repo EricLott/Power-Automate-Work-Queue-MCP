@@ -1,0 +1,126 @@
+{
+  "classification": "synthetic-registered-delete-companion-guards",
+  "completed": true,
+  "recordedAtUtc": "2026-09-13T04:45:30.027244+00:00",
+  "requestId": "2bbc0d8e-ce01-4cb8-bdae-ea34e18fe445",
+  "cases": [
+    {
+      "case": "registered-delete",
+      "error": "LIFECYCLE_BYPASS",
+      "after": {
+        "native": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,_workqueueid_value)/$entity",
+          "@odata.etag": "W/\"19078605\"",
+          "statecode": 0,
+          "_workqueueid_value": "33fd4458-5922-5be7-85d1-07a9176c9957",
+          "statuscode": 0,
+          "workqueueitemid": "1bc206cc-7988-4351-9da7-c08ee7069294"
+        },
+        "companion": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#qmcp_wqitemcontexts(qmcp_wqitemcontextid,qmcp_itemid,qmcp_document)/$entity",
+          "@odata.etag": "W/\"19078608\"",
+          "qmcp_itemid": "1bc206cc-7988-4351-9da7-c08ee7069294",
+          "qmcp_wqitemcontextid": "b79b62a7-2daf-f111-aaac-3833c5e36f1f",
+          "documentSha256": "2a31a0c5e53b233a91620110664cb90c9374fc3c082ef765b65359e9e9b3610b"
+        }
+      }
+    },
+    {
+      "case": "companion-update",
+      "error": "LIFECYCLE_BYPASS",
+      "after": {
+        "native": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,_workqueueid_value)/$entity",
+          "@odata.etag": "W/\"19078605\"",
+          "statecode": 0,
+          "_workqueueid_value": "33fd4458-5922-5be7-85d1-07a9176c9957",
+          "statuscode": 0,
+          "workqueueitemid": "1bc206cc-7988-4351-9da7-c08ee7069294"
+        },
+        "companion": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#qmcp_wqitemcontexts(qmcp_wqitemcontextid,qmcp_itemid,qmcp_document)/$entity",
+          "@odata.etag": "W/\"19078608\"",
+          "qmcp_itemid": "1bc206cc-7988-4351-9da7-c08ee7069294",
+          "qmcp_wqitemcontextid": "b79b62a7-2daf-f111-aaac-3833c5e36f1f",
+          "documentSha256": "2a31a0c5e53b233a91620110664cb90c9374fc3c082ef765b65359e9e9b3610b"
+        }
+      }
+    },
+    {
+      "case": "companion-delete",
+      "error": "LIFECYCLE_BYPASS",
+      "after": {
+        "native": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,_workqueueid_value)/$entity",
+          "@odata.etag": "W/\"19078605\"",
+          "statecode": 0,
+          "_workqueueid_value": "33fd4458-5922-5be7-85d1-07a9176c9957",
+          "statuscode": 0,
+          "workqueueitemid": "1bc206cc-7988-4351-9da7-c08ee7069294"
+        },
+        "companion": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#qmcp_wqitemcontexts(qmcp_wqitemcontextid,qmcp_itemid,qmcp_document)/$entity",
+          "@odata.etag": "W/\"19078608\"",
+          "qmcp_itemid": "1bc206cc-7988-4351-9da7-c08ee7069294",
+          "qmcp_wqitemcontextid": "b79b62a7-2daf-f111-aaac-3833c5e36f1f",
+          "documentSha256": "2a31a0c5e53b233a91620110664cb90c9374fc3c082ef765b65359e9e9b3610b"
+        }
+      }
+    },
+    {
+      "case": "companion-create",
+      "error": "LIFECYCLE_BYPASS",
+      "after": {
+        "native": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,_workqueueid_value)/$entity",
+          "@odata.etag": "W/\"19078605\"",
+          "statecode": 0,
+          "_workqueueid_value": "33fd4458-5922-5be7-85d1-07a9176c9957",
+          "statuscode": 0,
+          "workqueueitemid": "1bc206cc-7988-4351-9da7-c08ee7069294"
+        },
+        "companion": {
+          "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#qmcp_wqitemcontexts(qmcp_wqitemcontextid,qmcp_itemid,qmcp_document)/$entity",
+          "@odata.etag": "W/\"19078608\"",
+          "qmcp_itemid": "1bc206cc-7988-4351-9da7-c08ee7069294",
+          "qmcp_wqitemcontextid": "b79b62a7-2daf-f111-aaac-3833c5e36f1f",
+          "documentSha256": "2a31a0c5e53b233a91620110664cb90c9374fc3c082ef765b65359e9e9b3610b"
+        }
+      }
+    }
+  ],
+  "itemId": "1bc206cc-7988-4351-9da7-c08ee7069294",
+  "companionId": "b79b62a7-2daf-f111-aaac-3833c5e36f1f",
+  "retainedResources": [
+    "1bc206cc-7988-4351-9da7-c08ee7069294",
+    "b79b62a7-2daf-f111-aaac-3833c5e36f1f"
+  ],
+  "limitations": [
+    "Second identity has administrator privileges; restricted-role coverage remains open.",
+    "Synthetic Queued item and companion retained for subsequent guard proofs; no history deleted."
+  ],
+  "directCreateId": "bc3357c7-f284-4c67-afd7-8426fd643a9e",
+  "before": {
+    "native": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,statecode,statuscode,_workqueueid_value)/$entity",
+      "@odata.etag": "W/\"19078605\"",
+      "statecode": 0,
+      "_workqueueid_value": "33fd4458-5922-5be7-85d1-07a9176c9957",
+      "statuscode": 0,
+      "workqueueitemid": "1bc206cc-7988-4351-9da7-c08ee7069294"
+    },
+    "companion": {
+      "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#qmcp_wqitemcontexts(qmcp_wqitemcontextid,qmcp_itemid,qmcp_document)/$entity",
+      "@odata.etag": "W/\"19078608\"",
+      "qmcp_itemid": "1bc206cc-7988-4351-9da7-c08ee7069294",
+      "qmcp_wqitemcontextid": "b79b62a7-2daf-f111-aaac-3833c5e36f1f",
+      "documentSha256": "2a31a0c5e53b233a91620110664cb90c9374fc3c082ef765b65359e9e9b3610b"
+    }
+  },
+  "deniedCreateAbsent": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "sourceCommit": "efc52f2",
+  "deployedPluginPackageSha256": "9ad9e44fcd62a59331f39a675411248134d9c3ef4bc60a4b8d05ed7fc264a4fa",
+  "toolVersion": "@microsoft/dataverse@1.0.77",
+  "effectiveIdentityProbeCompleted": true
+}

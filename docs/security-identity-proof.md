@@ -34,4 +34,13 @@ Run `python scripts/prove_queue_write_guards.py --binding artifacts/live/mcp-bin
 
 The first attempt used `{}` input and was rejected by native envelope validation before guard execution; that did not pass a guard case. The successful run supplied the complete synthetic `mail.v1` envelope. The offline orchestration test checks this prerequisite and exercises the five-case sequence through the CLI response parser; separate tests reject generic failures and false successful denials.
 
-This comparison completes the registered-Create and unrelated-queue CRUD/move portion of the matrix. Registered Delete, companion writes, restricted-role identities and broader legitimate acquisition authorization remain outstanding in #16. No runtime code or user role assignment changed for these experiments.
+This comparison completes the registered-Create and unrelated-queue CRUD/move portion of the matrix. At that checkpoint, registered Delete, companion writes, restricted-role identities and broader legitimate acquisition authorization remained outstanding in #16. The next section records the subsequent results. No runtime code or user role assignment changed for these experiments.
+
+
+## Registered deletion and companion writes
+
+The [registered-delete/companion proof](evidence/registered-delete-companion-2026-09-13.json) uses a fresh framework-enqueued synthetic item, never an earlier business or proof item. The Enqueue request ID, native item ID and companion ID are retained. The second identity was verified again with the effective-identity probe before mutations.
+
+Reproduction uses `qmcp_WQ_Enqueue` with QueueKey `qmcp-proof-20260912`, a new RequestId and a complete synthetic `mail.v1` envelope in DataJson. Record the returned ItemId and read its single `qmcp_wqitemcontext` by `qmcp_itemid`. Under the verified second identity, attempt native item DELETE, companion PATCH with the existing `qmcp_document`, companion DELETE, and companion POST with a fresh UUID/key, a synthetic name and `{}` document. Require exactly `LIFECYCLE_BYPASS` for each; generic transport errors cannot pass. Independently reread both retained rows after every rejection and verify native state, companion document hash and both ETags match their before snapshots. Finally query the attempted new companion UUID and require its absence.
+
+The report retains the explicit before and per-case after snapshots, hashing the companion document instead of publishing its contents. The fresh Queued item and companion remain intentionally retained; the denied Create must leave no row. This establishes the tested companion table's direct Create/Update/Delete boundary and registered native Delete under a second administrator identity. Restricted-role behavior, other companion table registrations and the complete legitimate acquisition comparison remain outstanding; #16 stays open.
