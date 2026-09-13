@@ -1,0 +1,29 @@
+{
+  "completed": true,
+  "classification": "installed-direct-acquisition-rejection",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "itemId": "cb4515b4-6312-40ff-b23e-fae5c9278cce",
+  "requestId": "e6e6a9a7-5d43-47fb-83e7-16cbef44e8a0",
+  "nativeBefore": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode,_workqueueid_value)/$entity",
+    "@odata.etag": "W/\"19077864\"",
+    "statecode": 0,
+    "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+    "_workqueueid_value": "33fd4458-5922-5be7-85d1-07a9176c9957",
+    "statuscode": 0,
+    "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+  },
+  "nativeAfter": {
+    "@odata.context": "https://org3a8592f7.crm.dynamics.com/api/data/v9.2/$metadata#workqueueitems(workqueueitemid,uniqueidbyqueue,statecode,statuscode,_workqueueid_value)/$entity",
+    "@odata.etag": "W/\"19077864\"",
+    "statecode": 0,
+    "uniqueidbyqueue": "73ab2b389b2bef8e4673aa997051bf32a84b759938be70ce9259c9fb27fd3960",
+    "_workqueueid_value": "33fd4458-5922-5be7-85d1-07a9176c9957",
+    "statuscode": 0,
+    "workqueueitemid": "cb4515b4-6312-40ff-b23e-fae5c9278cce"
+  },
+  "attemptCount": 0,
+  "receiptCount": 0,
+  "error": "ACQUISITION_HANDOFF_REQUIRED"
+}
