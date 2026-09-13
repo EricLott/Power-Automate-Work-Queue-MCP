@@ -1,0 +1,52 @@
+{
+  "classification": "live-stale-worker-ownership",
+  "proofId": "d28efdf7-fc7c-4c1a-aa24-9a0f8246e194",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "requests": {
+    "prepare-old": "0b32a8e8-df7d-5205-b73f-988dc7553803",
+    "resolve-old": "0b32a8e8-df7d-5205-b73f-988dc7553803",
+    "fail-old": "1d760562-935c-5ef3-bb7d-f7d6b31c2bc8",
+    "status-old": "2f55c0a1-8733-5d9f-8064-7c16da2636b2",
+    "retry": "932bfc71-2340-58a2-ae69-ac024370da95",
+    "prepare-new": "8c807e08-844e-5588-a1e9-bb073ab575e4",
+    "resolve-new": "8c807e08-844e-5588-a1e9-bb073ab575e4",
+    "stale-complete": "00234cb7-d196-5109-8e82-2f13ab24df69",
+    "stale-fail": "384bff71-c34a-5486-8548-0c89dfb9a1e5",
+    "stale-checkpoint": "bbe8606d-a3e8-5775-9b3e-2a5c07b918e7",
+    "complete-new": "5e2910d2-9179-576d-a88f-dc2dd89ed560"
+  },
+  "businessRecordId": "f084cbec-e70d-5306-9ee1-bc00e8ef1687",
+  "completed": true,
+  "previousError": "ACQUIRE_NOT_RESOLVED",
+  "resumedAcquisition": true,
+  "itemId": "cf01f207-cc41-403c-b023-60adac5552db",
+  "oldAttemptId": "3be7b159-1c57-4e07-b823-7b99e7aaa349",
+  "oldGeneration": 1,
+  "newAttemptId": "d6877490-f587-4678-b1a2-ab7e7ff239c3",
+  "newGeneration": 3,
+  "staleCalls": [
+    {
+      "operation": "Complete",
+      "error": "STALE_ATTEMPT"
+    },
+    {
+      "operation": "Fail",
+      "error": "STALE_ATTEMPT"
+    },
+    {
+      "operation": "Checkpoint",
+      "error": "STALE_ATTEMPT"
+    }
+  ],
+  "currentAttemptAndContextUnchanged": true,
+  "nativeState": 2,
+  "currentWorkerCompleted": true,
+  "releaseVersion": "0.1.0.0",
+  "runtimeEvidence": "contract-completion-2026-09-12.json",
+  "limitations": [
+    "Concurrent public API calls use one authenticated actor carrying old ownership; separate connection identities remain a security test.",
+    "No external connector action was cancelled or executed.",
+    "Initial proof script used an incorrect resolution request ID; the recorded acquisition was resumed after correction."
+  ]
+}
