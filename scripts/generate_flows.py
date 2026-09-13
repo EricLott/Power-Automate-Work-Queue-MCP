@@ -4,7 +4,6 @@ The prompt uses the documented Dataverse Predict action. Its model ID is an expl
 environment binding; local simulation remains a separately labeled fixture provider.
 """
 from generate_sources import ROOT, VERSION, uid, write_json, write_xml, element, ET
-import json
 
 API='/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps'
 def connector(operation,parameters,after=None,connection='qmcp_Dataverse',api=API):
@@ -28,7 +27,7 @@ def compose(value,after=None):return {'type':'Compose','inputs':value,'runAfter'
 def request_ids(ops):return compose({op:'@guid()' for op in ops})
 def failure_data():
     code="'WORKER_SCOPE_FAILED'"
-    for stage in ['Reconciled','FindResult','FindExisting','CreateRecord','ValidateSender','ValidateExtraction','NormalizeExtraction','Prompt']:
+    for stage in ['Reconciled','FindResult','FindExisting','CreateRecord','ValidateIntent','ValidateSender','ValidateExtraction','NormalizeExtraction','Prompt']:
         token=stage.upper()
         code=f"if(equals(actions('{stage}')?['status'],'TimedOut'),'{token}_TIMED_OUT',if(equals(actions('{stage}')?['status'],'Failed'),'{token}_FAILED',{code}))"
     return "@string(setProperty(setProperty(setProperty(json('{}'),'category','Unknown'),'code',"+code+"),'effect','Unknown'))"
@@ -71,14 +70,23 @@ def save(name,package,data):
 
 def generate():
     acquired="@outputs('Resolved')"
-    record_doc={'sourceKey':"@outputs('Acquired')?['SourceKey']",'contentHash':"@outputs('Acquired')?['ContentHash']",'testRun':"@outputs('Acquired')?['TestRun']",'fields':"@body('ValidateExtraction')",'promptVersion':'mail-extraction-v1.1'}
+    record_doc={'sourceKey':"@outputs('Acquired')?['SourceKey']",'contentHash':"@outputs('Acquired')?['ContentHash']",'testRun':"@outputs('Acquired')?['TestRun']",'fields':"@body('ValidateExtraction')",'promptVersion':'mail-extraction-v1.2'}
     prompt=connector('PerformBoundAction',{'entityName':'msdyn_aimodels','actionName':'Microsoft.Dynamics.CRM.Predict','recordId':"@parameters('qmcp_PromptModelId')",'item/version':'2.0','item/requestv2':{'@@odata.type':'Microsoft.Dynamics.CRM.expando','prompt':"@concat('"+(ROOT/'templates/prompt.md').read_text(encoding='utf-8').replace("'","''")+"', decodeUriComponent('%0A%0A'), 'Input JSON:', string(outputs('Acquired')?['Envelope']?['payload']))"}})
-    prompt['metadata']={'qmcpBinding':'dataverse-predict-prompt','qmcpPromptVersion':'mail-extraction-v1.1'}
-    output_schema={'type':'object','additionalProperties':False,'required':['contact','category','summary'],'properties':{'contact':{'type':'string','minLength':1,'maxLength':320},'category':{'type':'string','enum':['service','question']},'summary':{'type':'string','maxLength':4000}}}
+    prompt['metadata']={'qmcpBinding':'dataverse-predict-prompt','qmcpPromptVersion':'mail-extraction-v1.2'}
+    output_schema={'type':'object','additionalProperties':False,'required':['contact','category','summary','intentEvidence','intentSignal'],'properties':{'contact':{'type':'string','minLength':1,'maxLength':320},'category':{'type':'string','enum':['service','question']},'summary':{'type':'string','maxLength':4000},'intentEvidence':{'type':'string','minLength':1,'maxLength':500},'intentSignal':{'type':'string','enum':['explicit-request','explicit-question']}}}
     record_doc.update({'promptModelId':"@parameters('qmcp_PromptModelId')",'modelVersion':"@coalesce(body('Prompt')?['responsev2']?['predictionOutput']?['modelName'],'unreported')",'predictionId':"@body('Prompt')?['responsev2']?['predictionId']"})
+    request_forms=['please ','i request ','we request ','i need ','we need ','can you ','could you ','would you ']
+    question_forms=['what ','when ','where ','why ','how ','which ','who ','is ','are ','do ','does ','can ','could ']
+    evidence="trim(string(body('ValidateExtraction')?['intentEvidence']))"
+    signal="body('ValidateExtraction')?['intentSignal']"
+    category="body('ValidateExtraction')?['category']"
+    body_text="string(outputs('Acquired')?['Envelope']?['payload']?['bodyText'])"
+    request_check="or("+','.join("startsWith(toLower("+evidence+ "),'"+form+"')" for form in request_forms)+")"
+    question_check="and(endsWith("+evidence+",'?'),or("+','.join("startsWith(toLower("+evidence+"),'"+form+"')" for form in question_forms)+"))"
+    intent_expression="@and(contains("+body_text+","+evidence+"),or(and(equals("+signal+",'explicit-request'),equals("+category+",'service'),"+request_check+"),and(equals("+signal+",'explicit-question'),equals("+category+",'question'),"+question_check+")))"
     raw_prompt="trim(string(body('Prompt')?['responsev2']?['predictionOutput']?['text']))"
     normalized_prompt="@if(and(startsWith("+raw_prompt+",concat('```json',decodeUriComponent('%0A'))),endsWith("+raw_prompt+",'```'),equals(length(split("+raw_prompt+",'```')),3)),trim(substring("+raw_prompt+",7,sub(length("+raw_prompt+"),10))),"+raw_prompt+")"
-    make={'Prompt':prompt,'NormalizeExtraction':compose(normalized_prompt,'Prompt'),'ValidateExtraction':{'type':'ParseJson','inputs':{'content':"@outputs('NormalizeExtraction')",'schema':output_schema},'runAfter':{'NormalizeExtraction':['Succeeded']}},'ValidateSender':{'type':'If','expression':{'equals':["@body('ValidateExtraction')?['contact']","@outputs('Acquired')?['Envelope']?['payload']?['senderAddress']"]},'actions':{},'else':{'actions':{'RejectSender':validation_failure('EXTRACTION_SENDER_MISMATCH')}},'runAfter':{'ValidateExtraction':['Succeeded']}},'BusinessDocument':compose(record_doc,'ValidateSender'),
+    make={'Prompt':prompt,'NormalizeExtraction':compose(normalized_prompt,'Prompt'),'ValidateExtraction':{'type':'ParseJson','inputs':{'content':"@outputs('NormalizeExtraction')",'schema':output_schema},'runAfter':{'NormalizeExtraction':['Succeeded']}},'ValidateSender':{'type':'If','expression':{'equals':["@body('ValidateExtraction')?['contact']","@outputs('Acquired')?['Envelope']?['payload']?['senderAddress']"]},'actions':{},'else':{'actions':{'RejectSender':validation_failure('EXTRACTION_SENDER_MISMATCH')}},'runAfter':{'ValidateExtraction':['Succeeded']}},'ValidateIntent':{'type':'If','expression':intent_expression,'actions':{},'else':{'actions':{'RejectIntent':validation_failure('EXTRACTION_INTENT_UNSUPPORTED')}},'runAfter':{'ValidateSender':['Succeeded']}},'BusinessDocument':compose(record_doc,'ValidateIntent'),
           'CreateRecord':connector('CreateRecord',{'entityName':'qmcp_emailrequests','item/qmcp_name':"@outputs('Acquired')?['BusinessKey']",'item/qmcp_key':"@outputs('Acquired')?['BusinessKey']",'item/qmcp_queuekey':"@parameters('qmcp_QueueKey')",'item/qmcp_document':"@string(outputs('BusinessDocument'))"},'BusinessDocument')}
     # Reconciliation reads by the protected source identity before any prompt or write.
     business={'FindExisting':connector('ListRecords',{'entityName':'qmcp_emailrequests','$filter':"@concat('qmcp_key eq ''', outputs('Acquired')?['BusinessKey'], '''')",'$top':2}),

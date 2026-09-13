@@ -10,6 +10,7 @@ import json
 import re
 import subprocess
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from bootstrap_tenant import _cli_command, _cli_request
@@ -22,6 +23,16 @@ def digest(value):
 
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def intent_matches(fields, body):
+    quote = fields.get("intentEvidence")
+    if not isinstance(quote, str) or not 1 <= len(quote) <= 500 or quote.strip() not in body:
+        return False
+    normalized = quote.strip().lower()
+    if fields.get("intentSignal") == "explicit-request" and fields.get("category") == "service":
+        return normalized.startswith(("please ", "i request ", "we request ", "i need ", "we need ", "can you ", "could you ", "would you "))
+    return fields.get("intentSignal") == "explicit-question" and fields.get("category") == "question" and normalized.endswith("?") and normalized.startswith(tuple(word + " " for word in ("what", "when", "where", "why", "how", "which", "who", "is", "are", "do", "does", "can", "could")))
 
 
 def validate(binding, ledger, cases):
@@ -62,6 +73,7 @@ def write(path, evidence):
 
 def observe(call, evidence, cases, run_id, queue, queue_id):
     evidence["complete"] = False
+    evidence["observedAtUtc"] = datetime.now(timezone.utc).isoformat()
     response = call("POST", "qmcp_WQ_GetTestRun", {"QueueKey": queue, "ItemId": run_id, "RequestId": str(uuid.uuid4()), "DataJson": "{}"})
     run = json.loads(response.get("ResultJson", "{}"))
     results = run.get("Results")
@@ -118,11 +130,11 @@ def observe(call, evidence, cases, run_id, queue, queue_id):
                 fields = document["fields"]
             except (KeyError, TypeError, ValueError):
                 raise ValueError("BUSINESS_DOCUMENT_INVALID")
-            check.update({"businessRecordId": row.get("qmcp_emailrequestid"), "fields": fields, "promptVersion": document.get("promptVersion"), "modelVersion": document.get("modelVersion"), "predictionId": document.get("predictionId"), "promptModelId": document.get("promptModelId"), "runMatch": document.get("testRun") == run_id, "contentHashMatch": document.get("contentHash") == content_hash, "sourceKeyMatch": document.get("sourceKey") == digest(dedup), "expectedFieldsMatch": all(fields.get(k) == v for k, v in case.get("Expected", {}).items()), "promptProvenancePresent": bool(document.get("promptVersion") == evidence.get("promptVersion", "mail-extraction-v1.1") and document.get("promptModelId")), "summaryReviewRequired": True})
+            check.update({"businessRecordId": row.get("qmcp_emailrequestid"), "fields": fields, "promptVersion": document.get("promptVersion"), "modelVersion": document.get("modelVersion"), "predictionId": document.get("predictionId"), "promptModelId": document.get("promptModelId"), "runMatch": document.get("testRun") == run_id, "contentHashMatch": document.get("contentHash") == content_hash, "sourceKeyMatch": document.get("sourceKey") == digest(dedup), "expectedFieldsMatch": all(fields.get(k) == v for k, v in case.get("Expected", {}).items()), "promptProvenancePresent": bool(document.get("promptVersion") == evidence.get("promptVersion", "mail-extraction-v1.1") and document.get("promptModelId")), "intentEvidenceMatch": evidence.get("promptVersion", "mail-extraction-v1.1") in {"mail-extraction-v1", "mail-extraction-v1.1"} or intent_matches(fields, payload["bodyText"]), "summaryReviewRequired": True})
         checks.append(check)
     evidence["checks"] = checks
     evidence["terminal"] = run.get("State") in {"Passed", "Failed", "Inconclusive", "Cancelled"}
-    evidence["complete"] = run.get("State") == "Passed" and all(c.get("resultState") == "Passed" and c.get("errorCodeMatch") and c.get("nativeQueueMatch") and c.get("nativeKeyMatch") and c.get("nativeOutcomeMatch") and (c.get("businessAbsent") is True if by_case[c["caseId"]].get("ExpectedOutcome") == "Exception" else c.get("runMatch") and c.get("contentHashMatch") and c.get("sourceKeyMatch") and c.get("expectedFieldsMatch") and c.get("promptProvenancePresent")) for c in checks)
+    evidence["complete"] = run.get("State") == "Passed" and all(c.get("resultState") == "Passed" and c.get("errorCodeMatch") and c.get("nativeQueueMatch") and c.get("nativeKeyMatch") and c.get("nativeOutcomeMatch") and (c.get("businessAbsent") is True if by_case[c["caseId"]].get("ExpectedOutcome") == "Exception" else c.get("runMatch") and c.get("contentHashMatch") and c.get("sourceKeyMatch") and c.get("expectedFieldsMatch") and c.get("intentEvidenceMatch") and c.get("promptProvenancePresent")) for c in checks)
     return evidence
 
 

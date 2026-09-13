@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from prove_reference_quality import digest, observe, validate
+from prove_reference_quality import digest, intent_matches, observe, validate
 
 
 class ReferenceQualityProofTests(unittest.TestCase):
@@ -22,6 +22,14 @@ class ReferenceQualityProofTests(unittest.TestCase):
         binding = {"environmentUrl": "https://synthetic.crm.dynamics.com", "organizationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", "environmentClass": "development", "queueKeys": ["mail"]}
         with self.assertRaisesRegex(ValueError, "SYNTHETIC_QUEUE_REQUIRED"):
             validate(binding, {"queueKey": "mail"}, [self.case()])
+
+    def test_intent_evidence_requires_source_grounded_quote_and_signal(self):
+        body = "Please restore the printer in the west office."
+        self.assertTrue(intent_matches({"intentEvidence": "Please restore the printer", "intentSignal": "explicit-request", "category": "service"}, body))
+        self.assertTrue(intent_matches({"intentEvidence": "What support hours are available?", "intentSignal": "explicit-question", "category": "question"}, "What support hours are available?"))
+        self.assertFalse(intent_matches({"intentEvidence": "Please restore the printer", "intentSignal": "explicit-request", "category": "service"}, "The printer is offline."))
+        self.assertFalse(intent_matches({"intentEvidence": "The printer is offline", "intentSignal": "explicit-request", "category": "service"}, "Please restore the printer. The printer is offline."))
+        self.assertFalse(intent_matches({"intentEvidence": "Please restore the printer", "intentSignal": "explicit-request", "category": "question"}, body))
 
     def test_validate_rejects_non_synthetic_input_and_unsupported_outcome(self):
         binding = {"environmentUrl": "https://synthetic.crm.dynamics.com", "organizationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", "environmentClass": "development", "queueKeys": ["qmcp-proof-test"]}
@@ -151,5 +159,3 @@ class ReferenceQualityProofTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-

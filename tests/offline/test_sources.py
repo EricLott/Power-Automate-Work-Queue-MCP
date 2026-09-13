@@ -70,7 +70,7 @@ class FlowInvariantTests(unittest.TestCase):
 
     def test_failure_diagnostics_use_bounded_stage_codes(self):
         flow=self.flow('ProcessOne');data=flow['properties']['definition']['actions']['HasWork']['actions']['ReportFailure']['inputs']['parameters']['item/DataJson']
-        for stage in ('Prompt','NormalizeExtraction','ValidateExtraction','ValidateSender','CreateRecord','FindExisting','FindResult','Reconciled'):
+        for stage in ('Prompt','NormalizeExtraction','ValidateExtraction','ValidateSender','ValidateIntent','CreateRecord','FindExisting','FindResult','Reconciled'):
             self.assertIn("actions('%s')?['status']"%stage,data)
             self.assertIn('%s_FAILED'%stage.upper(),data)
             self.assertIn('%s_TIMED_OUT'%stage.upper(),data)
@@ -95,6 +95,12 @@ class FlowInvariantTests(unittest.TestCase):
     def test_prepare_captures_flow_provenance(self):
         flow=self.flow('ProcessOne');data=flow['properties']['definition']['actions']['PrepareAcquire']['inputs']['parameters']['item/DataJson']
         self.assertIn("'flowId', workflow()?['name']",data)
+
+    def test_intent_evidence_is_source_bound_and_narrow(self):
+        flow=self.flow('ProcessOne');make=flow['properties']['definition']['actions']['HasWork']['actions']['Business']['actions']['CreateIfAbsent']['actions'];schema=make['ValidateExtraction']['inputs']['schema'];intent=make['ValidateIntent']['expression']
+        self.assertIn('intentEvidence',schema['required']);self.assertIn('intentSignal',schema['required']);self.assertEqual(schema['properties']['intentSignal']['enum'],['explicit-request','explicit-question']);self.assertEqual(schema['properties']['intentEvidence']['maxLength'],500)
+        self.assertIn("contains(string(outputs('Acquired')?['Envelope']?['payload']?['bodyText'])",intent);self.assertIn("'please '",intent);self.assertIn("'what '",intent);self.assertIn("'explicit-request'",intent);self.assertIn("'explicit-question'",intent)
+        self.assertEqual(make['ValidateIntent']['else']['actions']['RejectIntent']['metadata']['qmcpErrorCode'],'EXTRACTION_INTENT_UNSUPPORTED')
 
     def test_completion_retry_changed_output_is_rejected(self):
         flow=self.flow('ProcessOne');branch=flow['properties']['definition']['actions']['HasWork']['actions']

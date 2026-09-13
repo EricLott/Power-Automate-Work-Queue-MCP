@@ -132,7 +132,14 @@ def validate_flow(flow,name):
         assert "startsWith(@" not in normalized
         assert make['ValidateExtraction']['inputs']['content']=="@outputs('NormalizeExtraction')"
         assert make['ValidateExtraction']['runAfter']=={'NormalizeExtraction':['Succeeded']}
-        assert make['BusinessDocument']['runAfter']=={'ValidateSender':['Succeeded']}
+        assert make['ValidateIntent']['runAfter']=={'ValidateSender':['Succeeded']}
+        intent=make['ValidateIntent']['expression']
+        assert "contains(string(outputs('Acquired')?['Envelope']?['payload']?['bodyText'])" in intent
+        assert "intentEvidence" in intent and "intentSignal" in intent
+        assert "explicit-request" in intent and "explicit-question" in intent
+        assert "please " in intent and "what " in intent and "endsWith(trim(string(body('ValidateExtraction')?['intentEvidence'])),'?')" in intent
+        assert make['ValidateIntent']['else']['actions']['RejectIntent']['type']=='ParseJson'
+        assert make['BusinessDocument']['runAfter']=={'ValidateIntent':['Succeeded']}
         assert make['ValidateSender']['else']['actions']['RejectSender']['type']=='ParseJson'
         assert branch['Business']['actions']['Reconciled']['else']['actions']['Conflict']['type']=='ParseJson'
     if name=='OnQueueChanged':assert list(actions)==['ProcessOne'],'Event must be a wake-up only'

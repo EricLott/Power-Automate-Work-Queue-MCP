@@ -58,3 +58,7 @@ A subsequent retention fix permits expired cancelled OnHold inputs to be redacte
 The generated reference worker now uses an explicitly bound Dataverse Predict model, validates extracted JSON and sender identity, reconciles output, and retries uncertain completion with identical command parameters. The fresh build and eight package round trips passed; 223 local tests passed (91 runtime, 40 SDK adapter, 61 Python, 31 MCP). These counts precede the separately developed repeated-quality proof script.
 
 [The installed reference test](reference-prompt-proof.md) passed one synthetic scheduled run with independent native/business evidence. The original failed run is preserved. Repeated AI-quality cases, actual mailbox intake, and flow-specific lost-response injection remain unproven.
+
+## Grounded intent and repeated quality checkpoint
+
+Prompt v1.2 adds source-bound intent evidence before business writes. All 235 local tests passed (91 runtime, 40 SDK adapter, 73 Python, 31 MCP), alongside the fresh package build and round trips. [Three installed quality runs](evidence/reference-quality-repeat-2026-09-12.json) separately passed 18 assertions with nine independently verified outputs and nine verified output absences. The earlier failed run remains recorded; this does not close mailbox, failure-window or release gates.

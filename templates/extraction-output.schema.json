@@ -4,7 +4,9 @@
   "required": [
     "contact",
     "category",
-    "summary"
+    "summary",
+    "intentEvidence",
+    "intentSignal"
   ],
   "properties": {
     "contact": {
@@ -22,6 +24,18 @@
     "summary": {
       "type": "string",
       "maxLength": 4000
+    },
+    "intentEvidence": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "intentSignal": {
+      "type": "string",
+      "enum": [
+        "explicit-request",
+        "explicit-question"
+      ]
     }
   }
 }

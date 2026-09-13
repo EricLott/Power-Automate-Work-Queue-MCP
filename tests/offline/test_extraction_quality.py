@@ -14,9 +14,10 @@ class MailExtractionQualityFixtureTests(unittest.TestCase):
 
     def test_fixture_has_reviewed_unique_cases_and_valid_envelopes(self):
         fixture = self.fixture
-        self.assertEqual("mail-extraction-quality-v1.1", fixture["fixtureVersion"])
-        self.assertEqual("mail-extraction-v1.1", fixture["promptVersion"])
+        self.assertEqual("mail-extraction-quality-v1.2", fixture["fixtureVersion"])
+        self.assertEqual("mail-extraction-v1.2", fixture["promptVersion"])
         self.assertEqual("not-run", fixture["tenantExecution"])
+        self.assertEqual("https://learn.microsoft.com/en-us/ai-builder/add-inputs-prompt", fixture["providerInputPolicy"])
         self.assertEqual(["contact", "category"], fixture["expectedFields"])
         cases = fixture["cases"]
         self.assertEqual(6, len(cases))
@@ -54,6 +55,10 @@ class MailExtractionQualityFixtureTests(unittest.TestCase):
             self.assertEqual({}, case["Expected"])
             self.assertEqual("VALIDATEEXTRACTION_FAILED", case["ExpectedErrorCode"])
         self.assertEqual("", by_id["missing-sender"]["Input"]["payload"]["senderAddress"])
+        adversarial = by_id["embedded-instruction-is-data"]
+        self.assertEqual("Exception", adversarial["ExpectedOutcome"])
+        self.assertEqual("PROMPT_FAILED", adversarial["ExpectedErrorCode"])
+        self.assertEqual({}, adversarial["Expected"])
 
 
 if __name__ == "__main__":

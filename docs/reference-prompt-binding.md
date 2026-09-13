@@ -11,7 +11,7 @@ The action targets the `msdyn_aimodels` row selected by
 `qmcp_PromptModelId`, calls `Microsoft.Dynamics.CRM.Predict`, and sends a
 `requestv2` object with `@@odata.type` in the flow template (escaped so the actual request contains `@odata.type`) set to
 `Microsoft.Dynamics.CRM.expando`. The Predict request uses version
-`2.0` and a string in `requestv2.prompt` containing the v1.1 extraction prompt
+`2.0` and a string in `requestv2.prompt` containing the v1.2 extraction prompt
 followed by the acquired payload. Confirm that the selected tenant model
 actually accepts this action, schema version, and request shape. A builtin
 model is tenant-discovered configuration, not a globally portable hardcoded
@@ -22,11 +22,13 @@ The generated flow reads the prediction text from
 text and optionally removes one exact lowercase Markdown JSON fence with an LF
 after `json` and a closing fence. Multiple fences, prose, other fence labels,
 and malformed content remain subject to strict Parse JSON failure. The schema
-requires exactly `contact`, `category`, and `summary`; contact is a non-empty
+requires exactly `contact`, `category`, `summary`, `intentEvidence`, and `intentSignal`; contact is a non-empty
 string of at most 320 characters, category is `service` or `question`, and
 summary is at most 4000 characters. `ValidateSender` also requires contact to
 match the normalized sender address and the prediction operation status to be
 `Success`.
+
+`ValidateIntent` requires a verbatim quote from normalized `bodyText`, a compatible category/signal pair, and a supported English request/question form. Quotes are limited to 500 characters. Requests must start with please, i request, we request, i need, we need, can you, could you, or would you followed by a space. Questions must end in `?` and begin with an allowlisted question word from the versioned prompt. Unsupported wording is rejected for review. This bounded reference grammar is not universal intent detection or proof that every summary fact is grounded.
 
 The worker first looks for an existing record by protected business key. If absent, it extracts and creates the record. It then rereads and reconciles the single result against the source key, content hash and queue before completion. It calls `Complete` with the current attempt identity and one stable
 record ID. A failed or timed-out completion retries the identical command once;
