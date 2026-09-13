@@ -1,0 +1,21 @@
+{
+  "classification": "read-only-impersonation-preflight",
+  "recordedAtUtc": "2026-09-13T04:28:51.672904+00:00",
+  "organizationMatched": true,
+  "effectiveUserMatched": false,
+  "writesPerformed": false,
+  "limitations": [
+    "WhoAmI establishes effective identity only, not lifecycle authorization or separate login.",
+    "No roles were changed; no business data or queue operations were requested."
+  ],
+  "outcome": "inconclusive",
+  "legacyHeaderCheck": {
+    "classification": "read-only-legacy-impersonation-preflight",
+    "organizationMatched": true,
+    "effectiveUserMatched": false,
+    "remainedOperator": true,
+    "writesPerformed": false
+  },
+  "nextAction": "Inspect CLI request transport and establish a verified second effective identity before lifecycle mutations.",
+  "documentation": "https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/impersonate-another-user-web-api"
+}
