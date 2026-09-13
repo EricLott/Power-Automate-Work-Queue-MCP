@@ -1,0 +1,49 @@
+{
+  "classification": "synthetic-native-direct-write-comparison",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "completed": true,
+  "registeredQueueId": "33fd4458-5922-5be7-85d1-07a9176c9957",
+  "unregisteredQueueId": "d14ec06b-3109-57e6-b18e-43763044a876",
+  "newItemIds": [
+    "136bfd92-3974-42b9-8d3b-a7d6826e99fc",
+    "523a0709-bc9f-4dc3-b48f-dcffa7fbcac7"
+  ],
+  "cases": [
+    {
+      "case": "registered-create",
+      "error": "LIFECYCLE_BYPASS"
+    },
+    {
+      "case": "unregistered-create",
+      "verified": true
+    },
+    {
+      "case": "unregistered-update",
+      "verified": true
+    },
+    {
+      "case": "move-into-registered",
+      "error": "LIFECYCLE_BYPASS"
+    },
+    {
+      "case": "unregistered-delete",
+      "verified": true
+    }
+  ],
+  "cleanup": {
+    "completed": true
+  },
+  "limitations": [
+    "Second effective identity has existing administrator privileges; not least-privilege proof.",
+    "Registered Delete and companion-table matrix are outside this run."
+  ],
+  "effectiveIdentityVerified": true,
+  "recordedAtUtc": "2026-09-13T04:41:12.542150+00:00",
+  "deployedPluginPackageSha256": "9ad9e44fcd62a59331f39a675411248134d9c3ef4bc60a4b8d05ed7fc264a4fa",
+  "toolVersion": "@microsoft/dataverse@1.0.77",
+  "previousRun": {
+    "completed": false,
+    "reason": "Empty object input failed native schema validation before guard; corrected to valid synthetic envelope.",
+    "cleanupVerified": true
+  }
+}
