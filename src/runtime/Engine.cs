@@ -421,18 +421,59 @@ public sealed partial class Engine
         return new { Outcome = "Swept", Changed = changed, NextCursor = next };
     }
     string Cursor(string queue, string purpose) => (string?)Get<JObject>("cursor", Json.Hash(queue + "|" + purpose))?["value"] ?? "";
+    bool HasActiveDelivery(string queue, string itemId, string attemptId, string kind, QueuePolicy policy)
+    {
+        foreach (var destination in policy.Destinations)
+        {
+            var key = Json.Hash(queue + "|" + itemId + "|" + attemptId + "|" + kind + "|" + destination);
+            var row = store.Get("event", key);
+            if (row == null) continue;
+            var delivery = Json.Read<Delivery>(row.Body);
+            if (delivery.State == "Pending" || delivery.State == "Sending") return true;
+        }
+        return false;
+    }
+    bool AttemptCanBePurged(string queue, Attempt attempt, QueuePolicy policy)
+    {
+        if (attempt.Outcome == "Processing") return false;
+        var native = store.NativeGet(attempt.ItemId);
+        if (native == null) return false;
+        var context = Get<ItemContext>("itemcontext", native.UniqueKey);
+        if (context == null || context.ActiveAttempt != "" || context.ReviewRequired || context.LastAttempt == attempt.Id) return false;
+        if (native.Status != "Processed" && native.Status != "Exception") return false;
+        return !new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, policy));
+    }
+    bool TestRunCanBePurged(TestRun run)
+    {
+        if (run.State == "Running" || run.Results.Any(result => result.State == "Pending")) return false;
+        foreach (var result in run.Results)
+        {
+            if (store.Get("testresult", result.Id) == null) return false;
+            var native = store.NativeGet(result.ItemId);
+            if (native == null || native.Status == "Queued" || native.Status == "Processing") return false;
+            var context = Get<ItemContext>("itemcontext", native.UniqueKey);
+            if (context == null || context.ActiveAttempt != "" || context.ReviewRequired) return false;
+        }
+        foreach (var caseId in run.Results.Select(result => result.CaseId).Distinct(StringComparer.Ordinal))
+            if (store.Get("testcase", Json.Hash(run.Id + "|" + caseId)) == null) return false;
+        return true;
+    }
     object Retention(Command c, QueuePolicy policy)
     {
-        int inputs = 0, receipts = 0;
+        int inputs = 0, receipts = 0, attempts = 0, evidence = 0, errors = 0, protectedRows = 0;
         var retention = policy.Retention;
         var payloadCutoff = clock().AddDays(-retention.PayloadDays);
         var receiptCutoff = clock().AddDays(-retention.ReceiptDays);
+        var attemptCutoff = clock().AddDays(-retention.AttemptDays);
+        var evidenceCutoff = clock().AddDays(-retention.EvidenceDays);
+        var errorCutoff = clock().AddDays(-retention.ErrorDays);
         var items = store.NativePage(c.QueueKey, Cursor(c.QueueKey, "input-retention"), 50);
         foreach (var item in items)
         {
             var context = Get<ItemContext>("itemcontext", item.UniqueKey);
             bool terminalForRetention = item.Status == "Processed" || (item.Status == "OnHold" && context?.TestCancelled == true);
             if (terminalForRetention && item.Created < payloadCutoff && context != null && !context.ReviewRequired && context.ActiveAttempt == "" && item.Input != "{}") { store.NativeRedactInput(item.Id); inputs++; }
+            else if (item.Created < payloadCutoff && item.Input != "{}") protectedRows++;
         }
         SetCursor(c.QueueKey, "input-retention", items.Count == 50 ? items.Last().Id : "");
         var commands = store.Page("command", c.QueueKey, Cursor(c.QueueKey, "receipt-retention"), 100);
@@ -445,9 +486,43 @@ public sealed partial class Engine
             receipt.Result = Json.Write(new { Outcome = "ReplayExpired" }); receipt.Reason = ""; Save("command", row.Key, receipt); receipts++;
         }
         SetCursor(c.QueueKey, "receipt-retention", commands.Count == 100 ? commands.Last().Key : "");
-        return new { Outcome = "RetentionApplied", InputsRedacted = inputs, ReceiptsRedacted = receipts, ReplayWindowDays = retention.ReceiptDays,
+        var attemptRows = store.Page("attempt", c.QueueKey, Cursor(c.QueueKey, "attempt-retention"), 50);
+        foreach (var row in attemptRows)
+        {
+            var attempt = Json.Read<Attempt>(row.Body);
+            if (row.Updated < attemptCutoff && AttemptCanBePurged(c.QueueKey, attempt, policy)) { store.Delete("attempt", row.Key, row.Version); attempts++; }
+            else if (row.Updated < attemptCutoff) protectedRows++;
+        }
+        SetCursor(c.QueueKey, "attempt-retention", attemptRows.Count == 50 ? attemptRows.Last().Key : "");
+        var errorRows = store.Page("intakefailure", c.QueueKey, Cursor(c.QueueKey, "error-retention"), 50);
+        foreach (var row in errorRows)
+        {
+            if (row.Updated < errorCutoff && !HasActiveDelivery(c.QueueKey, "", row.Key, "IntakeFailure", policy)) { store.Delete("intakefailure", row.Key, row.Version); errors++; }
+            else if (row.Updated < errorCutoff) protectedRows++;
+        }
+        SetCursor(c.QueueKey, "error-retention", errorRows.Count == 50 ? errorRows.Last().Key : "");
+        var testRuns = store.Page("testrun", c.QueueKey, Cursor(c.QueueKey, "evidence-retention"), 50);
+        foreach (var row in testRuns)
+        {
+            var run = Json.Read<TestRun>(row.Body);
+            if (row.Updated >= evidenceCutoff) continue;
+            if (!TestRunCanBePurged(run)) { protectedRows++; continue; }
+            foreach (var result in run.Results)
+            {
+                var resultRow = store.Get("testresult", result.Id);
+                if (resultRow != null) { store.Delete("testresult", resultRow.Key, resultRow.Version); evidence++; }
+            }
+            foreach (var caseId in run.Results.Select(result => result.CaseId).Distinct(StringComparer.Ordinal))
+            {
+                var caseRow = store.Get("testcase", Json.Hash(run.Id + "|" + caseId));
+                if (caseRow != null) { store.Delete("testcase", caseRow.Key, caseRow.Version); evidence++; }
+            }
+            store.Delete("testrun", row.Key, row.Version); evidence++;
+        }
+        SetCursor(c.QueueKey, "evidence-retention", testRuns.Count == 50 ? testRuns.Last().Key : "");
+        return new { Outcome = "RetentionApplied", InputsRedacted = inputs, ReceiptsRedacted = receipts, AttemptsPurged = attempts, ErrorsPurged = errors, EvidenceRowsPurged = evidence, ProtectedRows = protectedRows, ReplayWindowDays = retention.ReceiptDays,
             Retention = new { PayloadDays = retention.PayloadDays, ReceiptDays = retention.ReceiptDays, AttemptDays = retention.AttemptDays, EvidenceDays = retention.EvidenceDays, ErrorDays = retention.ErrorDays },
-            ProtectedArtifacts = new[] { "active-attempts", "review-held-item-evidence", "test-evidence", "attempt-history", "error-history" } };
+            ProtectedArtifacts = new[] { "active-attempts", "queued-or-processing-items", "review-held-item-evidence", "current-attempt-snapshot", "active-notification-deliveries" } };
     }
     void SetCursor(string queue, string purpose, string value)
     {

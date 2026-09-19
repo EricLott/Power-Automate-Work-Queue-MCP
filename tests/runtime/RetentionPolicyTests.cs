@@ -37,4 +37,88 @@ public class RetentionPolicyTests
         policy.Retention.PayloadDays = 0;
         Assert.Equal("POLICY_INVALID", Assert.Throws<Fault>(() => f.Run(f.Cmd("RegisterQueue", policy, version: 1))).Code);
     }
+
+    [Fact]
+    public void RetentionPurgesOldNonCurrentAttemptsAndErrors()
+    {
+        var f = new Fixture();
+        var policy = f.Policy();
+        policy.Destinations = Array.Empty<string>();
+        policy.Retention.AttemptDays = 90;
+        policy.Retention.ErrorDays = 30;
+        f.Run(f.Cmd("RegisterQueue", policy, version: 1));
+
+        var itemId = f.Enqueue();
+        var first = f.Acquire();
+        f.Run(f.Owned("Fail", first, new { category = "Technical", code = "TRANSIENT", effect = "None" }));
+        f.Now = f.Now.AddSeconds(10);
+        var second = f.Acquire();
+        f.Run(f.Owned("Complete", second, new { table = "qmcp_emailrequest", recordId = Guid.NewGuid().ToString() }));
+
+        var oldAttempt = f.Store.Get("attempt", (string)first["AttemptId"]!)!;
+        oldAttempt.Updated = f.Now.AddDays(-91);
+        f.Store.Put(oldAttempt, oldAttempt.Version);
+        f.Run(f.Cmd("ReportIntakeFailure", new { source = "synthetic", correlationId = "old", code = "INVALID" }));
+        var oldError = f.Store.Page("intakefailure", "mail", "", 50).Single();
+        oldError.Updated = f.Now.AddDays(-31);
+        f.Store.Put(oldError, oldError.Version);
+
+        var result = f.Run(f.Cmd("ApplyRetention"));
+        Assert.Equal(1, (int)result["AttemptsPurged"]!);
+        Assert.Equal(1, (int)result["ErrorsPurged"]!);
+        Assert.Null(f.Store.Get("attempt", oldAttempt.Key));
+        Assert.Null(f.Store.Get("intakefailure", oldError.Key));
+        Assert.NotNull(f.Store.Get("attempt", (string)second["AttemptId"]!));
+        Assert.Equal("Processed", (string)f.Status(itemId)["Outcome"]!);
+    }
+
+    [Fact]
+    public void RetentionPreservesAttemptsWithActiveDelivery()
+    {
+        var f = new Fixture();
+        var itemId = f.Enqueue();
+        var first = f.Acquire();
+        f.Run(f.Owned("Fail", first, new { category = "Technical", code = "TRANSIENT", effect = "None" }));
+        f.Now = f.Now.AddSeconds(10);
+        var second = f.Acquire();
+        f.Run(f.Owned("Complete", second, new { table = "qmcp_emailrequest", recordId = Guid.NewGuid().ToString() }));
+        var oldAttempt = f.Store.Get("attempt", (string)first["AttemptId"]!)!;
+        oldAttempt.Updated = f.Now.AddDays(-91);
+        f.Store.Put(oldAttempt, oldAttempt.Version);
+
+        var result = f.Run(f.Cmd("ApplyRetention"));
+        Assert.Equal(0, (int)result["AttemptsPurged"]!);
+        Assert.True((int)result["ProtectedRows"]! > 0);
+        Assert.NotNull(f.Store.Get("attempt", oldAttempt.Key));
+        Assert.Equal("Processed", (string)f.Status(itemId)["Outcome"]!);
+    }
+
+    [Fact]
+    public void RetentionPurgesTerminalEvidenceButPreservesRunningEvidence()
+    {
+        var f = new Fixture();
+        var policy = f.Policy();
+        policy.Destinations = Array.Empty<string>();
+        policy.Retention.EvidenceDays = 30;
+        f.Run(f.Cmd("RegisterQueue", policy, version: 1));
+
+        var completedRun = (string)f.Run(f.Cmd("StartTestRun", new { cases = new[] { new TestCase { Id = "old", Input = f.Envelope() } } }))["RunId"]!;
+        f.Worker().Process("mail");
+        Assert.Equal("Passed", (string)f.Run(f.Cmd("AdvanceTestRun", item: completedRun))["State"]!);
+        var completedRow = f.Store.Get("testrun", completedRun)!;
+        completedRow.Updated = f.Now.AddDays(-31);
+        f.Store.Put(completedRow, completedRow.Version);
+
+        var runningRun = (string)f.Run(f.Cmd("StartTestRun", new { cases = new[] { new TestCase { Id = "current", Input = f.Envelope("current") } } }))["RunId"]!;
+        var runningRow = f.Store.Get("testrun", runningRun)!;
+        runningRow.Updated = f.Now.AddDays(-31);
+        f.Store.Put(runningRow, runningRow.Version);
+
+        var result = f.Run(f.Cmd("ApplyRetention"));
+        Assert.Equal(3, (int)result["EvidenceRowsPurged"]!);
+        Assert.Null(f.Store.Get("testrun", completedRun));
+        Assert.NotNull(f.Store.Get("testrun", runningRun));
+        Assert.Single(f.Store.Page("testresult", "mail", "", 100));
+        Assert.Single(f.Store.Page("testcase", "mail", "", 100));
+    }
 }
