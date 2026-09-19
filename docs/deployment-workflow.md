@@ -4,6 +4,8 @@
 
 The planner verifies package checksums, dependency order, exact connection-reference mappings, the development organization, installed versions, and Draft framework flow states. It binds these observations, settings-file hashes, and registration metadata to `planHash`. It rejects a managed target or a different installed version pending compatibility review.
 
+The read-only [live preflight checkpoint](evidence/live-preflight-2026-09-19.json) recorded on 2026-09-19 found all eight local package hashes verified, all four unmanaged 0.1.0.0 solutions present, 24 of 24 Custom APIs bound, and all seven framework flows Draft. It returned `ready: false` because licensing/capacity, target-user privileges, and connection ownership remain manual prerequisites. The checkpoint performed no writes and is not clean-install or managed-release evidence.
+
 Create a JSON map with one settings file per package:
 
 ```json
