@@ -303,15 +303,15 @@ public sealed partial class Engine
     }
     object Fail(Command c, Actor actor, JObject d)
     {
-        var item = Owned(c, actor); string category = Required(d, "category", 40), code = Required(d, "code", 100);
+        var item = Owned(c, actor); var now = clock(); string category = Required(d, "category", 40), code = Required(d, "code", 100);
         if (!new[] { "Technical", "Business", "Unknown" }.Contains(category)) throw new Fault("INPUT_INVALID");
         bool cancelled = item.context.TestCancelled || Json.Read<ItemContext>((store.Get("itemcontext", item.native.UniqueKey) ?? throw new Fault("ORPHAN_ITEM")).Body).TestCancelled;
-        bool safe = !cancelled && category == "Technical" && (string?)d["effect"] == "None" && item.attempt.Policy.SafeEffects && item.context.AttemptCount < item.attempt.Policy.MaxAttempts && clock() < item.attempt.Deadline;
+        bool safe = !cancelled && category == "Technical" && (string?)d["effect"] == "None" && item.attempt.Policy.SafeEffects && item.context.AttemptCount < item.attempt.Policy.MaxAttempts && now < item.attempt.Deadline;
         if (safe)
         {
             var delay = Math.Min(item.attempt.Policy.RetryMaxSeconds, item.attempt.Policy.RetryBaseSeconds * Math.Pow(2, item.context.AttemptCount - 1));
             var jitter = Convert.ToInt32(Json.Hash(item.attempt.Id).Substring(0, 2), 16) % Math.Max(1, item.attempt.Policy.RetryBaseSeconds / 4);
-            item.native.Available = clock().AddSeconds(Math.Min(item.attempt.Policy.RetryMaxSeconds, delay + jitter));
+            item.native.Available = now.AddSeconds(Math.Min(item.attempt.Policy.RetryMaxSeconds, delay + jitter));
             if (item.native.Available >= item.attempt.Deadline) safe = false;
         }
         item.context.ReviewRequired = !safe;

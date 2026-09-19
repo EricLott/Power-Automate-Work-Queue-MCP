@@ -24,6 +24,11 @@ public sealed class DataverseStore : IStore
         ["business"] = "qmcp_emailrequest",
         ["principal"] = "qmcp_wqprincipal"
     };
+    // Keep reads narrow: qmcp_document can contain large snapshots and is the
+    // only payload column the adapter needs. versionnumber is mapped to the
+    // SDK Entity.RowVersion used by optimistic concurrency.
+    static readonly string[] RowColumns = { "qmcp_key", "qmcp_queuekey", "qmcp_document", "modifiedon", "versionnumber" };
+    static readonly string[] NativeColumns = { "workqueueid", "uniqueidbyqueue", "input", "statecode", "delayuntil", "expirydate", "createdon", "versionnumber" };
     public T Atomic<T>(Func<T> operation)
     {
         // Fail closed until the Custom API transaction composition is observed during live import testing.
@@ -32,7 +37,7 @@ public sealed class DataverseStore : IStore
     }
     Entity? Find(string kind, string key)
     {
-        var query = new QueryExpression(Tables[kind]) { ColumnSet = new ColumnSet(true), TopCount = 2 };
+        var query = new QueryExpression(Tables[kind]) { ColumnSet = new ColumnSet(RowColumns), TopCount = 2 };
         if (kind == "business")
         {
             if (!Guid.TryParse(key, out var id)) throw new Fault("INPUT_INVALID");
@@ -47,7 +52,7 @@ public sealed class DataverseStore : IStore
     public Row? Get(string kind, string key) { var e = Find(kind, key); return e == null ? null : Row(kind, e); }
     public IReadOnlyList<Row> Page(string kind, string queue, string after, int limit)
     {
-        var query = new QueryExpression(Tables[kind]) { ColumnSet = new ColumnSet(true), TopCount = Math.Min(100, limit) };
+        var query = new QueryExpression(Tables[kind]) { ColumnSet = new ColumnSet(RowColumns), TopCount = Math.Min(100, limit) };
         query.Criteria.AddCondition("qmcp_queuekey", ConditionOperator.Equal, queue);
         if (kind == "business")
         {
@@ -133,7 +138,7 @@ public sealed class DataverseStore : IStore
     public NativeItem? NativeGet(string id)
     {
         if (!Guid.TryParse(id, out var guid)) throw new Fault("INPUT_INVALID");
-        var q = new QueryExpression("workqueueitem") { ColumnSet = new ColumnSet(true), TopCount = 1 }; q.Criteria.AddCondition("workqueueitemid", ConditionOperator.Equal, guid);
+        var q = new QueryExpression("workqueueitem") { ColumnSet = new ColumnSet(NativeColumns), TopCount = 1 }; q.Criteria.AddCondition("workqueueitemid", ConditionOperator.Equal, guid);
         var e = service.RetrieveMultiple(q).Entities.FirstOrDefault(); return e == null ? null : Native(e);
     }
     public NativeItem NativeCreate(NativeItem item)
@@ -167,7 +172,7 @@ public sealed class DataverseStore : IStore
     public void NativeRedactInput(string id) { var entity = new Entity("workqueueitem", Guid.Parse(id)); entity["input"] = "{}"; service.Update(entity); }
     public IReadOnlyList<NativeItem> NativePage(string queue, string after, int limit)
     {
-        var q = new QueryExpression("workqueueitem") { ColumnSet = new ColumnSet(true), TopCount = Math.Min(100, limit) };
+        var q = new QueryExpression("workqueueitem") { ColumnSet = new ColumnSet(NativeColumns), TopCount = Math.Min(100, limit) };
         q.Criteria.AddCondition("workqueueid", ConditionOperator.Equal, Guid.Parse(Policy(queue).NativeQueueId));
         if (after != "") q.Criteria.AddCondition("workqueueitemid", ConditionOperator.GreaterThan, Guid.Parse(after));
         q.AddOrder("workqueueitemid", OrderType.Ascending); return service.RetrieveMultiple(q).Entities.Select(Native).ToList();

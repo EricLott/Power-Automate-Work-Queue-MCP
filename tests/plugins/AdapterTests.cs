@@ -38,6 +38,13 @@ public class AdapterTests {
         new DataverseStore(service.Object,context.Object).Put(new Row{Kind="attempt",Key="attempt",Queue="mail",Body="{}"},7);
         service.Verify(s=>s.Execute(It.Is<UpdateRequest>(r=>r.ConcurrencyBehavior==ConcurrencyBehavior.IfRowVersionMatches&&r.Target.RowVersion=="7")),Times.Once);
     }
+    [Fact] public void ReadsSelectOnlyAdapterColumns(){
+        var service=new Mock<IOrganizationService>();var context=new Mock<IPluginExecutionContext>();QueryExpression? observed=null;
+        var entity=new Entity("qmcp_wqattempt",Guid.NewGuid()){RowVersion="8"};entity["qmcp_key"]="attempt";entity["qmcp_queuekey"]="mail";entity["qmcp_document"]="{}";
+        service.Setup(s=>s.RetrieveMultiple(It.IsAny<QueryBase>())).Callback<QueryBase>(q=>observed=(QueryExpression)q).Returns(new EntityCollection(new List<Entity>{entity}));
+        new DataverseStore(service.Object,context.Object).Get("attempt","attempt");
+        Assert.NotNull(observed);Assert.False(observed!.ColumnSet.AllColumns);Assert.Equal(new[]{"modifiedon","qmcp_document","qmcp_key","qmcp_queuekey","versionnumber"},observed.ColumnSet.Columns.OrderBy(x=>x).ToArray());
+    }
     [Theory]
     [InlineData("attempt", "after-attempt", "Create")]
     [InlineData("itemcontext", "after-context", "Update")]

@@ -22,7 +22,7 @@ async function boundClient() {
   }
   return liveClient;
 }
-export async function command(operation, queueKey, data = {}, fields = {}) {
+export async function command(operation, queueKey, data = {}, fields = {}, { spawnProcess = spawn } = {}) {
   const allowed = ['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','RequestRetry','StartTestRun','CancelTestRun','GetTestRun','CleanupTestRun'];
   if (!allowed.includes(operation)) throw new Error('OPERATION_NOT_EXPOSED');
   if (!/^[a-z][a-z0-9_-]{0,63}$/.test(queueKey)) throw new Error('QUEUE_KEY_INVALID');
@@ -31,12 +31,14 @@ export async function command(operation, queueKey, data = {}, fields = {}) {
   const payload = JSON.stringify({ ...fields, Operation: operation, QueueKey: queueKey, RequestId: fields.RequestId || randomUUID(), DataJson: JSON.stringify(data) });
   if (Buffer.byteLength(payload) > 180000) throw new Error('INPUT_TOO_LARGE');
   return new Promise((resolve, reject) => {
-    const child = spawn('dotnet', [dll], { cwd: root, env: { ...process.env, QMCP_SIM_STATE: state }, windowsHide: true, stdio: ['pipe','pipe','pipe'] });
-    let output = '', errors = ''; const timer = setTimeout(() => { child.kill(); reject(new Error('LOCAL_RUNTIME_TIMEOUT')); }, 30000);
-    child.stdout.on('data', data => { output += data; if (output.length > 1000000) child.kill(); });
-    child.stderr.on('data', data => { errors += data; });
-    child.on('error', () => { clearTimeout(timer); reject(new Error('LOCAL_RUNTIME_UNAVAILABLE')); });
-    child.on('close', code => { clearTimeout(timer); if (code !== 0) return reject(new Error('LOCAL_RUNTIME_FAILED')); try { const result = JSON.parse(output.trim()); if (result.Error) reject(new Error(result.Error)); else resolve(result); } catch { reject(new Error('LOCAL_RUNTIME_RESPONSE_INVALID')); } });
+    const child = spawnProcess('dotnet', [dll], { cwd: root, env: { ...process.env, QMCP_SIM_STATE: state }, windowsHide: true, stdio: ['pipe','pipe','pipe'] });
+    let output = '', done = false; const finish = (error, result) => { if (done) return; done = true; clearTimeout(timer); error ? reject(error) : resolve(result); };
+    const timer = setTimeout(() => { finish(new Error('LOCAL_RUNTIME_TIMEOUT')); child.kill(); }, 30000);
+    child.stdout.on('data', data => { output += data; if (Buffer.byteLength(output) > 1000000) { finish(new Error('LOCAL_RUNTIME_RESPONSE_TOO_LARGE')); child.kill(); } });
+    // Drain diagnostics without retaining unbounded child-process output.
+    child.stderr.resume();
+    child.on('error', () => finish(new Error('LOCAL_RUNTIME_UNAVAILABLE')));
+    child.on('close', code => { if (done) return; if (code !== 0) return finish(new Error('LOCAL_RUNTIME_FAILED')); try { const result = JSON.parse(output.trim()); if (result.Error) finish(new Error(result.Error)); else finish(null, result); } catch { finish(new Error('LOCAL_RUNTIME_RESPONSE_INVALID')); } });
     child.stdin.end(payload + '\n');
   });
 }
