@@ -7,3 +7,7 @@ The release-review comparison helper also exercises additive transitions: retain
 Local verification is intentionally bounded. The result is classified `candidate-only`, carries `tenantImport: not-run` and `tenantValidated: false`, and never presents uninstall/reinstall as rollback. A real development-tenant run must still inspect active attempts and native queue state, perform the managed import and any controlled queue migration, preserve customer flows/evidence, and exercise forward-fix or approved environment recovery. Those acceptance criteria remain open in [P7-02](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/65) and [G21](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/90).
 
 Evidence source: `src/mcp/test/upgrade.test.js`, the MCP integration test, `config/upgrade-policy.json`, and `config/release.json`. No tenant data, credentials, mailbox content, or deployment result is included.
+
+## Live upgrade-readiness checkpoint
+
+The [2026-09-19 read-only preflight](evidence/upgrade-readiness-2026-09-19.json) matched the authorized development organization and found all four packages at `0.1.0.0` as unmanaged solutions. All seven framework flows were present and Draft, and the observable installation checks completed without unknown reads. Because no managed baseline exists in this environment, no managed upgrade, queue migration, or recovery mutation was attempted. The prerequisite for G21 is an approved environment with a supported managed baseline; this checkpoint does not close G21.

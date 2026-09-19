@@ -1,0 +1,26 @@
+{
+  "classification": "read-only-live-upgrade-readiness",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "observableInstallationComplete": true,
+  "managedBaselinePresent": false,
+  "packages": [
+    {"name": "WQCore", "version": "0.1.0.0", "managed": false},
+    {"name": "WQTesting", "version": "0.1.0.0", "managed": false},
+    {"name": "WQNotificationsEmail", "version": "0.1.0.0", "managed": false},
+    {"name": "WQReferenceSharedMailbox", "version": "0.1.0.0", "managed": false}
+  ],
+  "frameworkFlows": {
+    "count": 7,
+    "allPresent": true,
+    "allDraft": true
+  },
+  "manualPrerequisites": {
+    "licensesCapacity": "unknown",
+    "targetUserPrivileges": "unknown",
+    "connectionOwnership": "unknown"
+  },
+  "upgradeExperimentReady": false,
+  "writesPerformed": false,
+  "limitation": "This development environment cannot establish managed upgrade continuity until a supported managed baseline is installed in an approved clean environment."
+}
