@@ -1,0 +1,42 @@
+{
+  "classification": "local-synthetic-capacity-profile",
+  "sourceCommit": "11a9bcd",
+  "runId": "local-capacity-2026-09-19-25",
+  "environment": "local-simulation",
+  "tenantImport": "not-run",
+  "profile": {
+    "queue": "capacity",
+    "itemsRequested": 25,
+    "queuePageLimit": 100,
+    "maintenancePageLimit": 50,
+    "pollIntervalSeconds": 0.2
+  },
+  "observations": {
+    "setupSeconds": 0.295604,
+    "enqueueSeconds": 0.169956,
+    "enqueueMillisecondsPerItem": 6.798,
+    "drainSeconds": 6.749566,
+    "drainItemsPerSecond": 3.704,
+    "nativeStatusCounts": { "Processed": 25 },
+    "harnessRequests": 57,
+    "durableCommandReceipts": 102,
+    "retryRequests": 0,
+    "promptCalls": 0,
+    "pendingSenderEvents": 25,
+    "storageBytesBeforeDrain": 51429,
+    "storageBytesAfterDrain": 193448,
+    "storageGrowthBytes": 142019,
+    "throttlingObserved": false
+  },
+  "limits": {
+    "localProfileMaximumItems": 100,
+    "serviceThrottlingMeasured": false,
+    "tenantThroughputClaim": false,
+    "costClaim": false
+  },
+  "limitations": [
+    "Fixture worker only; no Dataverse, mailbox, AI, connector, or service-throttling calls.",
+    "Local timings and storage are not tenant limits or cost estimates.",
+    "Real tenant baseline/burst evidence remains required for P7-05 and G22."
+  ]
+}
