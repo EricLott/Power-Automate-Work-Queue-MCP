@@ -1,0 +1,22 @@
+{
+  "classification": "synthetic-development-native-concurrent-cancellation",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "nativeConcurrencyVerified": false,
+  "serializedWithoutConflict": true,
+  "race": {
+    "cancel": "Succeeded",
+    "workerFail": "Transport surfaced DATAVERSE_CLI_FAILED; structured VERSION_CONFLICT was not observable"
+  },
+  "finalState": {
+    "run": "Cancelled",
+    "result": "Cancelled",
+    "nativeItem": "Exception",
+    "reviewRequired": true,
+    "activeAttempt": false,
+    "businessOutput": false
+  },
+  "externalDestinationsUsed": false,
+  "limitation": "The concurrent dispatch produced one durable winner and a safe terminal result, but the authenticated CLI did not expose the losing native fault code. This is ordering evidence, not a passed native-concurrency gate."
+}
