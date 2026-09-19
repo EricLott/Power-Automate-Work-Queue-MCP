@@ -10,7 +10,7 @@ Snapshot reconciled with GitHub on **2026-09-13 UTC: six gates closed, sixteen o
 
 | Gate | Local coverage | Remaining live evidence |
 |---|---|---|
-| [G01 Clean install](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/70) | PAC pack/unpack, metadata/catalog checks, bootstrap plan | Import, key activation, API binding, app and connection checks |
+| [G01 Clean install](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/70) | PAC pack/unpack, metadata/catalog checks, bootstrap plan; read-only clean candidate recorded in [clean-install-candidate-2026-09-19.json](evidence/clean-install-candidate-2026-09-19.json) | Import, key activation, API binding, app and connection checks |
 | [G02 Intake duplicate](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/71) | Stable deduplication and long mailbox identity tests | Closed: sequential and concurrent duplicate reuse; see [intake proof](intake-proof.md). Real mailbox integration remains separate. |
 | [G03 Intake conflict](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/72) | Content mismatch rejected without another item | Closed: sequential and concurrent content conflicts rejected; see [intake proof](intake-proof.md). |
 | [G04 Acquisition concurrency](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/73) | Concurrent local acquisition and SDK dequeue request tests | Closed: competing acquisition identities, one winner and replay; see [identity proof](acquisition-identity-proof.md). Separate-identity authorization and load remain separate. |

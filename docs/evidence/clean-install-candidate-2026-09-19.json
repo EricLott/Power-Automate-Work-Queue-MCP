@@ -1,0 +1,17 @@
+{
+  "classification": "read-only-clean-install-candidate",
+  "recordedDateUtc": "2026-09-19",
+  "environmentDiscovery": "A second development environment was discovered through the authenticated PAC profile.",
+  "workQueueSolutionsPresent": false,
+  "frameworkFlowsPresent": 0,
+  "workQueueTablesPresent": false,
+  "observableInstallComplete": false,
+  "ready": false,
+  "writesPerformed": false,
+  "connectionReferences": "Expected qmcp references are present, but no Work Queue solution has been imported to bind or validate them.",
+  "nextRequiredAction": "Obtain explicit authorization for this second environment, then run the hash-bound unmanaged bootstrap/import and retain all import and metadata evidence before any activation.",
+  "limitations": [
+    "No import, registration, activation, role assignment, queue creation, or connection mutation was attempted.",
+    "The clean-candidate observation does not establish licensing, privileges, connector ownership, or managed release readiness."
+  ]
+}
