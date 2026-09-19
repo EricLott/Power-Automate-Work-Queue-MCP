@@ -1,0 +1,21 @@
+{
+  "classification": "synthetic-native-direct-write-comparison",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "effectiveIdentityVerified": true,
+  "cases": [
+    {"case": "registered-create", "observed": "LIFECYCLE_BYPASS"},
+    {"case": "unregistered-create", "observed": "created and independently read back"},
+    {"case": "unregistered-update", "observed": "updated and independently read back"},
+    {"case": "move-into-registered", "observed": "LIFECYCLE_BYPASS; row unchanged"},
+    {"case": "unregistered-delete", "observed": "deleted and independently absent"}
+  ],
+  "testOwnedCleanup": true,
+  "businessDataChanged": false,
+  "rolesChanged": false,
+  "queuePolicyChanged": false,
+  "limitations": [
+    "The distinct test identity retains administrator privileges; least privilege remains unproved.",
+    "Registered Delete, companion-table behavior, and a full producer/worker/reader/operator/installer matrix remain separate gates."
+  ]
+}
