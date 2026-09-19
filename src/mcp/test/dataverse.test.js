@@ -10,6 +10,13 @@ test('Dataverse adapter verifies identity, scopes queue, and preserves request I
   assert.equal(calls.length, 2); assert.equal(calls[1].options.redirect, 'error'); assert.equal(JSON.parse(calls[1].options.body).RequestId, id);
   await assert.rejects(client.invoke('GetQueueHealth', 'other', {}, {}, id), /QUEUE_NOT_BOUND/); assert.equal(calls.length, 2);
 });
+test('retry adapter preserves expected version and safe reconciliation', async () => {
+  const calls = []; const client = new DataverseClient(binding, () => 'synthetic-test-token', async (url, options) => { calls.push({ url, options }); return response(url.endsWith('WhoAmI') ? { OrganizationId: id, UserId: id } : { ResultJson: '{"Outcome":"RetryScheduled"}' }); });
+  const result = await client.invoke('RequestRetry', 'mail', { reason: 'Reconciled output', reconciliation: 'VerifiedSafe' }, { ItemId: id, ExpectedVersion: 0 }, id);
+  assert.equal(result.Outcome, 'RetryScheduled');
+  assert.equal(calls[1].url.endsWith('qmcp_WQ_RequestRetry'), true);
+  const body = JSON.parse(calls[1].options.body); assert.equal(body.ExpectedVersion, '0'); assert.equal(body.ItemId, id); assert.equal(JSON.parse(body.DataJson).reconciliation, 'VerifiedSafe');
+});
 test('environment mismatch prevents any mutation', async () => {
   let calls = 0; const client = new DataverseClient(binding, () => 'synthetic', async () => { calls++; return response({ OrganizationId: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb' }); });
   await assert.rejects(client.invoke('Enqueue','mail',{}, {},id), /ENVIRONMENT_MISMATCH/);assert.equal(calls,1);

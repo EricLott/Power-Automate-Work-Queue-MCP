@@ -22,7 +22,7 @@ async function boundClient() {
   return liveClient;
 }
 export async function command(operation, queueKey, data = {}, fields = {}) {
-  const allowed = ['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','StartTestRun','CancelTestRun','GetTestRun','CleanupTestRun'];
+  const allowed = ['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','RequestRetry','StartTestRun','CancelTestRun','GetTestRun','CleanupTestRun'];
   if (!allowed.includes(operation)) throw new Error('OPERATION_NOT_EXPOSED');
   if (!/^[a-z][a-z0-9_-]{0,63}$/.test(queueKey)) throw new Error('QUEUE_KEY_INVALID');
   const live = await boundClient();

@@ -1,4 +1,4 @@
-const operations = new Set(['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','StartTestRun','CancelTestRun','GetTestRun','CleanupTestRun']);
+const operations = new Set(['RegisterQueue','RegisterContract','Enqueue','GetItemStatus','GetQueueHealth','RequestRetry','StartTestRun','CancelTestRun','GetTestRun','CleanupTestRun']);
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 export class DataverseClient {
   constructor(binding, tokenProvider, fetchImpl = fetch) {
@@ -32,7 +32,7 @@ export class DataverseClient {
     if (Buffer.byteLength(dataJson) > 131072) throw new Error('INPUT_TOO_LARGE');
     await this.verify();
     // The request ID is supplied once by the caller; this client never silently retries a mutation.
-    const input = { QueueKey: queueKey, RequestId: requestId, DataJson: dataJson, ItemId: fields.ItemId || '', AttemptId: fields.AttemptId || '', Generation: fields.Generation || 0, ExpectedVersion: String(fields.ExpectedVersion || '') };
+    const input = { QueueKey: queueKey, RequestId: requestId, DataJson: dataJson, ItemId: fields.ItemId || '', AttemptId: fields.AttemptId || '', Generation: fields.Generation || 0, ExpectedVersion: String(fields.ExpectedVersion ?? '') };
     const output = await this.request('qmcp_WQ_' + operation, input);
     if (typeof output.ResultJson !== 'string') throw new Error('API_BINDING_INVALID');
     return JSON.parse(output.ResultJson);

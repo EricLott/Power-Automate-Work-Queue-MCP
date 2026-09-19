@@ -20,7 +20,7 @@ test('MCP session ends; independent runtime finishes durable test; a new session
   const dir = await mkdtemp(path.join(tmpdir(), 'qmcp-')); const state = path.join(dir, 'state.json'); let client, worker;
   try {
     client = await connect(state);
-    const tools = await client.listTools(); assert.equal(tools.tools.length, 15);
+    const tools = await client.listTools(); assert.equal(tools.tools.length, 16);
     const installation = await call(client, 'plan_installation', {});
     assert.equal(installation.localArtifacts, 'verified');
     assert.equal(installation.liveVerification, 'not-run');
