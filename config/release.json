@@ -5,6 +5,15 @@
   "stage": "local-development-candidate",
   "productionReady": false,
   "schemaDialect": "http://json-schema.org/draft-07/schema#",
+  "compatibility": {
+    "runtime": { "name": "QueueFramework.Runtime", "assemblyVersion": "1.0.0.0", "targetFrameworks": ["net462", "net8.0"] },
+    "apiCatalog": { "path": "config/api-catalog.json", "version": "0.1.0.0", "prefix": "qmcp_WQ_" },
+    "mcp": { "name": "wq-mcp", "version": "0.1.0", "sdk": "1.30.0", "node": ">=20" },
+    "templates": { "path": "templates/catalog.json", "version": "0.1.0.0" },
+    "envelope": { "path": "templates/native-envelope.schema.json", "version": "1.0" },
+    "referenceContract": { "path": "config/reference.json", "id": "mail.v1" }
+  },
+  "provenance": { "source": "git", "artifactManifest": "artifacts/packages/manifest.json", "tenantImport": "not-run" },
   "packages": [
     { "name": "WQCore", "requires": [] },
     { "name": "WQTesting", "requires": ["WQCore"] },

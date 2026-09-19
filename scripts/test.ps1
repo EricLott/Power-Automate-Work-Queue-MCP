@@ -8,7 +8,7 @@ try {
     if($LASTEXITCODE){throw 'Build failed before tests'}
   }
   foreach($suite in @(@('runtime','QueueFramework.Tests'),@('plugins','QueueFramework.PluginTests'))) {
-    dotnet test "tests/$($suite[0])/$($suite[1]).csproj" -c Release --logger "trx;LogFileName=$($suite[0]).trx" --results-directory artifacts/test-results
+    dotnet test "tests/$($suite[0])/$($suite[1]).csproj" -c Release --no-build --no-restore --logger "trx;LogFileName=$($suite[0]).trx" --results-directory artifacts/test-results
     if($LASTEXITCODE){throw "Tests failed: $($suite[0])"}
   }
   python -m unittest discover -s tests/offline -v

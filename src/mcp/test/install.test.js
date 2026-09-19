@@ -16,6 +16,18 @@ test('installation plan reports local package state and missing binding', async 
   assert.equal(result.provenance.signedRelease, false);
 });
 
+test('release candidate publishes a versioned compatibility matrix and provenance boundary', async () => {
+  const release = JSON.parse(await readFile(path.join(path.resolve(import.meta.dirname, '../../..'), 'config/release.json'), 'utf8'));
+  assert.deepEqual(release.compatibility.runtime.targetFrameworks, ['net462', 'net8.0']);
+  assert.equal(release.compatibility.apiCatalog.prefix, 'qmcp_WQ_');
+  assert.equal(release.compatibility.mcp.sdk, '1.30.0');
+  assert.equal(release.compatibility.templates.version, '0.1.0.0');
+  assert.equal(release.compatibility.envelope.version, '1.0');
+  assert.equal(release.compatibility.referenceContract.id, 'mail.v1');
+  assert.equal(release.provenance.tenantImport, 'not-run');
+  assert.equal(release.productionReady, false);
+});
+
 test('installation plan validates dependency graph and binds order to hash', async () => {
   const manifest={version:'test',files:[{file:'A.zip',sha256:'0'.repeat(64)},{file:'A_managed.zip',sha256:'0'.repeat(64)},{file:'B.zip',sha256:'0'.repeat(64)},{file:'B_managed.zip',sha256:'0'.repeat(64)}]};
   const release={version:'test',packages:[{name:'A',requires:[]},{name:'B',requires:['A']}]};

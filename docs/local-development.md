@@ -10,7 +10,7 @@ The local tool installer downloads Microsoft's pinned CLI and .NET 10.0.12 runti
 ./scripts/test.ps1                 # self-contained build + test
 ```
 
-`build.ps1` is the supported full build. It generates deterministic solution sources, builds the C# dependency package and simulator, restores the locked MCP dependencies, and packs four solutions in both formats. It unpacks and repacks each archive, compares contents, verifies published assembly bytes through the embedded package, and checks framework invariants. `test.ps1` runs the build first by default, then runs runtime, SDK adapter, Python structural, and real stdio MCP integration tests. Pass `-SkipBuild` only when a fresh build has already completed. Build outputs and local state are excluded from Git. The GitHub workflow is manual only; it has not been used for this local development run.
+`build.ps1` is the supported full build. It generates deterministic solution sources, builds the C# dependency package, simulator, and test binaries, restores the locked MCP dependencies, and packs four solutions in both formats. It unpacks and repacks each archive, compares contents, verifies published assembly bytes through the embedded package, and checks framework invariants. `test.ps1` runs the build first by default, then runs the already-built runtime and SDK adapter binaries, Python structural tests, and real stdio MCP integration tests. Pass `-SkipBuild` only when a fresh build has already completed. Build outputs and local state are excluded from Git. The GitHub workflow is manual only; it has not been used for this local development run.
 
 ## Demonstration
 

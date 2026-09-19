@@ -24,6 +24,10 @@ try {
   Copy-Item -LiteralPath (Join-Path $pluginPackageOutput 'QueueFramework.Plugins.0.1.0.nupkg') -Destination solutions/WQCore/src/pluginpackages/qmcp_QueueFramework/package/qmcp_QueueFramework.nupkg
   dotnet build src/simulator/QueueFramework.Simulator.csproj -c Release
   if($LASTEXITCODE){throw 'Simulator build failed'}
+  dotnet build tests/runtime/QueueFramework.Tests.csproj -c Release --no-restore
+  if($LASTEXITCODE){throw 'Runtime test build failed'}
+  dotnet build tests/plugins/QueueFramework.PluginTests.csproj -c Release --no-restore
+  if($LASTEXITCODE){throw 'Plug-in test build failed'}
   if(!$SkipRestore){Push-Location src/mcp; try {npm ci --ignore-scripts; if($LASTEXITCODE){throw 'MCP restore failed'}} finally {Pop-Location}}
   New-Item -ItemType Directory -Force artifacts/packages,artifacts/validation | Out-Null
   # Fresh run directories also avoid OneDrive locks on old unpacked XML files.
