@@ -6,6 +6,7 @@ using QueueFramework.Plugins;
 using Xunit;
 namespace QueueFramework.Tests;
 public class AdapterTests {
+    sealed class ErrorCodeException : Exception { public int ErrorCode { get; } public ErrorCodeException(int code) : base("secret customer payload") { ErrorCode = code; } }
     [Fact] public void MovingManagedItemToAnotherQueueCannotBypassGuard(){
         var oldQueue=Guid.NewGuid();var newQueue=Guid.NewGuid();var item=Guid.NewGuid();
         var context=new Mock<IPluginExecutionContext>();context.SetupGet(c=>c.PrimaryEntityName).Returns("workqueueitem");context.SetupGet(c=>c.PrimaryEntityId).Returns(item);context.SetupGet(c=>c.MessageName).Returns("Update");var target=new Entity("workqueueitem",item);target["workqueueid"]=new EntityReference("workqueue",newQueue);context.SetupGet(c=>c.InputParameters).Returns(new ParameterCollection{{"Target",target}});
@@ -197,5 +198,21 @@ public class AdapterTests {
         var provider=new Mock<IServiceProvider>(); provider.Setup(p=>p.GetService(typeof(IPluginExecutionContext))).Returns(context.Object); provider.Setup(p=>p.GetService(typeof(IOrganizationServiceFactory))).Returns(factory.Object); provider.Setup(p=>p.GetService(typeof(ITracingService))).Returns(trace.Object);
         var error=Assert.Throws<InvalidPluginExecutionException>(()=>new LifecyclePlugin().Execute(provider.Object));
         Assert.Equal("RUNTIME_FAILURE",error.Message); var diagnostic=Assert.Single(traces,t=>t.Contains("unexpected failure")); Assert.Contains("exceptionType",diagnostic); Assert.Contains("stackTrace",diagnostic); Assert.Contains("innerTypes",diagnostic); Assert.Contains("organizationServiceErrorCode",diagnostic); Assert.DoesNotContain("secret customer payload",diagnostic);
+    }
+    [Fact] public void DataverseConcurrencyFaultIsSanitizedToFrameworkConflict(){
+        var user=Guid.NewGuid(); var context=new Mock<IPluginExecutionContext>();
+        context.SetupGet(c=>c.InitiatingUserId).Returns(user); context.SetupGet(c=>c.MessageName).Returns("qmcp_WQ_GetQueueHealth");
+        context.SetupGet(c=>c.InputParameters).Returns(new ParameterCollection{{"QueueKey","mail"}});
+        context.SetupGet(c=>c.SharedVariables).Returns(new ParameterCollection());
+        context.SetupGet(c=>c.IsInTransaction).Returns(true);
+        var principal=new Entity("qmcp_wqprincipal"){RowVersion="1"}; principal["qmcp_key"]=user.ToString(); principal["qmcp_document"]="{\"roles\":[\"administrator\"],\"production\":false}";
+        var service=new Mock<IOrganizationService>(MockBehavior.Strict);
+        service.Setup(s=>s.RetrieveMultiple(It.Is<QueryBase>(q=>((QueryExpression)q).EntityName=="qmcp_wqprincipal"))).Returns(new EntityCollection(new List<Entity>{principal}));
+        service.Setup(s=>s.RetrieveMultiple(It.Is<QueryBase>(q=>((QueryExpression)q).EntityName=="qmcp_wqdefinition"))).Throws(new ErrorCodeException(-2147088254));
+        var factory=new Mock<IOrganizationServiceFactory>(); factory.Setup(f=>f.CreateOrganizationService(user)).Returns(service.Object);
+        var traces=new List<string>(); var trace=new Mock<ITracingService>(); trace.Setup(t=>t.Trace(It.IsAny<string>(),It.IsAny<object[]>())).Callback<string,object[]>((format,args)=>traces.Add(string.Format(format,args)));
+        var provider=new Mock<IServiceProvider>(); provider.Setup(p=>p.GetService(typeof(IPluginExecutionContext))).Returns(context.Object); provider.Setup(p=>p.GetService(typeof(IOrganizationServiceFactory))).Returns(factory.Object); provider.Setup(p=>p.GetService(typeof(ITracingService))).Returns(trace.Object);
+        var error=Assert.Throws<InvalidPluginExecutionException>(()=>new LifecyclePlugin().Execute(provider.Object));
+        Assert.Equal("VERSION_CONFLICT",error.Message); var diagnostic=Assert.Single(traces,t=>t.Contains("concurrency conflict")); Assert.DoesNotContain("secret customer payload",diagnostic);
     }
 }

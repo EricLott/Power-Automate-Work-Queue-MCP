@@ -46,6 +46,15 @@ public sealed class LifecyclePlugin : IPlugin
         catch (Fault e) { trace.Trace("qmcp failure {0}; correlation {1}", e.Code, context.CorrelationId); throw new InvalidPluginExecutionException(e.Code); }
         catch (Exception error)
         {
+            // Dataverse reports an SDK row-version race as a wrapped
+            // OrganizationServiceFault. Preserve only the stable framework
+            // conflict code at the public API boundary; never expose the SDK
+            // message or any record payload.
+            if (OrganizationServiceErrorCode(error) == -2147088254)
+            {
+                trace.Trace("qmcp concurrency conflict; correlation {0}; organizationServiceErrorCode -2147088254", context.CorrelationId);
+                throw new InvalidPluginExecutionException("VERSION_CONFLICT");
+            }
             // Keep the public fault deliberately generic. These diagnostics help identify
             // an SDK/registration failure without copying exception messages or payloads.
             trace.Trace($"qmcp unexpected failure; correlation {context.CorrelationId}; exceptionType {error.GetType().FullName ?? error.GetType().Name}; stackTrace {error.StackTrace ?? ""}; innerTypes {InnerTypes(error)}; organizationServiceErrorCode {OrganizationServiceErrorCode(error)?.ToString() ?? ""}");

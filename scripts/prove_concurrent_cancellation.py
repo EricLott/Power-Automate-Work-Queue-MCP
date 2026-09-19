@@ -9,6 +9,7 @@ returns a structured VERSION_CONFLICT and the winner's state is preserved.
 import argparse
 import datetime
 import json
+import re
 import subprocess
 import threading
 import time
@@ -35,6 +36,8 @@ def validate(binding, ledger):
 
 def fault_from_stdout(stdout):
     """Extract an inner Dataverse/plugin fault without retaining raw payloads."""
+    if "VERSION_CONFLICT" in safe_fault_markers(stdout):
+        return "VERSION_CONFLICT"
     try:
         outer = json.loads(stdout or "")
         message = outer.get("error", {}).get("message") if isinstance(outer, dict) else None
@@ -51,6 +54,20 @@ def fault_from_stdout(stdout):
     except (TypeError, ValueError, AttributeError):
         pass
     return None
+
+
+def safe_fault_markers(stdout):
+    """Return only known diagnostic tokens from a failed CLI response."""
+    text = stdout or ""
+    patterns = (
+        r"-2147088254",  # Dataverse ConcurrencyVersionMismatch
+        r"ConcurrencyVersionMismatch",
+        r"VERSION_CONFLICT",
+        r"RUNTIME_FAILURE",
+        r"DATAVERSE_CLI_(?:FAILED|INVALID_RESPONSE|TIMEOUT)",
+        r"HTTP_STATUS_[45][0-9]{2}",
+    )
+    return sorted({match.group(0) for pattern in patterns for match in re.finditer(pattern, text, re.IGNORECASE)})
 
 
 def main(argv=None):
@@ -121,6 +138,7 @@ def main(argv=None):
 
             def runner(*argv, **kwargs):
                 result = subprocess.run(*argv, **kwargs)
+                capture["markers"] = safe_fault_markers((result.stdout or "") + "\n" + (result.stderr or ""))
                 if result.returncode:
                     capture["fault"] = fault_from_stdout((result.stdout or "") + "\n" + (result.stderr or ""))
                 else:
@@ -132,10 +150,12 @@ def main(argv=None):
             try:
                 value = json.loads(_cli_request(command, origin, "POST", "qmcp_WQ_" + operation, body, runner=runner)["ResultJson"])
                 return {"label": label, "requestId": request_id, "outcome": "succeeded", "result": value,
-                        "elapsedMs": round((time.monotonic() - started) * 1000, 1)}
+                        "elapsedMs": round((time.monotonic() - started) * 1000, 1),
+                        "faultMarkers": capture.get("markers", [])}
             except ValueError as error:
                 return {"label": label, "requestId": request_id, "outcome": "failed",
                         "fault": capture.get("fault") or str(error),
+                        "faultMarkers": capture.get("markers", []),
                         "elapsedMs": round((time.monotonic() - started) * 1000, 1)}
 
         with ThreadPoolExecutor(max_workers=len(operations)) as pool:

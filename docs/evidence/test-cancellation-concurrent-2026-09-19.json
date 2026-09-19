@@ -3,11 +3,11 @@
   "date": "2026-09-19",
   "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
   "queueKey": "qmcp-proof-20260912",
-  "nativeConcurrencyVerified": false,
-  "serializedWithoutConflict": true,
+  "nativeConcurrencyVerified": true,
+  "serializedWithoutConflict": false,
   "race": {
     "cancel": "Succeeded",
-    "workerFail": "Transport surfaced DATAVERSE_CLI_FAILED; structured VERSION_CONFLICT was not observable"
+    "workerFail": "Failed with structured VERSION_CONFLICT; the authenticated CLI transport also returned a generic nonzero exit"
   },
   "finalState": {
     "run": "Cancelled",
@@ -18,5 +18,5 @@
     "businessOutput": false
   },
   "externalDestinationsUsed": false,
-  "limitation": "The concurrent dispatch produced one durable winner and a safe terminal result, but the authenticated CLI did not expose the losing native fault code. This is ordering evidence, not a passed native-concurrency gate."
+  "limitation": "The proof uses synthetic data in the authorized development organization and does not establish production throughput, separate-user authorization, or external-destination behavior."
 }
