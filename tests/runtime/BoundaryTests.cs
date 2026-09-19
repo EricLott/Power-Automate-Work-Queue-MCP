@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using System.Text;
 using QueueFramework;
 using Xunit;
 namespace QueueFramework.Tests;
@@ -20,5 +21,9 @@ public class BoundaryTests {
     [Fact] public void WatchdogMarksMissingAttemptForReview(){var f=new Fixture();var id=f.Enqueue();var a=f.Acquire();var row=f.Store.Get("attempt",(string)a["AttemptId"]!)!;f.Store.Delete("attempt",row.Key,row.Version);f.Run(f.Cmd("RunMaintenance"));Assert.True((bool)f.Status(id)["ReviewRequired"]!);Assert.Equal("Exception",(string)f.Status(id)["Outcome"]!);}
     [Fact] public void CompletionFromAnotherQueueIsDenied(){var f=new Fixture();f.Enqueue();var a=f.Acquire();var c=f.Owned("Complete",a,new{table="qmcp_emailrequest",recordId=Guid.NewGuid().ToString()});c.QueueKey="other";var policy=f.Policy();policy.NativeQueueId=Guid.NewGuid().ToString();var p=f.Cmd("RegisterQueue",policy);p.QueueKey="other";f.Run(p);Assert.Equal("FORBIDDEN",Assert.Throws<Fault>(()=>f.Run(c)).Code);}
     [Fact] public void DeliveryLeaseCannotBeReusedAfterExpiry(){var f=new Fixture();f.Enqueue();f.Worker().Process("mail");var e=f.Run(f.Cmd("ClaimEvent"))["Event"]!;f.Now=f.Now.AddMinutes(3);Assert.Equal("STALE_DELIVERY",Assert.Throws<Fault>(()=>f.Run(f.Cmd("FinishEvent",new{eventId=(string)e["Id"]!,leaseToken=(string)e["LeaseToken"]!,accepted=true}))).Code);}
+    [Fact] public void JsonObjectUsesUtf8ByteBoundary(){var prefix="{\"x\":\"";var suffix="\"}";var remaining=131072-Encoding.UTF8.GetByteCount(prefix+suffix);var exact=prefix+new string('é',remaining/2)+suffix;Assert.Equal(131072,Encoding.UTF8.GetByteCount(exact));Assert.NotNull(Json.Object(exact));Assert.Equal("INPUT_TOO_LARGE",Assert.Throws<Fault>(()=>Json.Object(prefix+new string('é',remaining/2+1)+suffix)).Code);}
+    [Fact] public void JsonObjectRejectsExcessiveDepth(){var nested="{}";for(var i=0;i<32;i++)nested="{\"a\":"+nested+"}";Assert.Equal("INPUT_INVALID",Assert.Throws<Fault>(()=>Json.Object(nested)).Code);}
+    [Fact] public void JsonObjectRejectsExcessiveStructuralComplexity(){var value=new JObject();for(var i=0;i<8200;i++)value["p"+i]=i;Assert.Equal("INPUT_TOO_COMPLEX",Assert.Throws<Fault>(()=>Json.Object(value.ToString(Newtonsoft.Json.Formatting.None))).Code);}
+    [Fact] public void StableReferenceDigestIsCanonicalAndFixedLength(){var first=Json.Fingerprint(new JObject{{"b",2},{"a",1}});var second=Json.Fingerprint(new JObject{{"a",1},{"b",2}});Assert.Equal(64,first.Length);Assert.Matches("^[0-9a-f]{64}$",first);Assert.Equal(first,second);}
     [Fact] public void CleanupRollbackPreservesEvidenceOnDeleteFailure(){var f=new Fixture();var id=(string)f.Run(f.Cmd("StartTestRun",new{cases=new[]{new TestCase{Id="clean",Input=f.Envelope()}}}))["RunId"]!;f.Worker().Process("mail");f.Run(f.Cmd("AdvanceTestRun",item:id));f.Store.BeforeWrite=op=>{if(op=="delete:business")throw new Fault("DELETE_DENIED");};Assert.Throws<Fault>(()=>f.Run(f.Cmd("CleanupTestRun",item:id)));Assert.Single(f.Store.Page("business","mail","",100));}
 }
