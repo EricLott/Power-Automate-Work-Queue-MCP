@@ -1,0 +1,35 @@
+{
+  "classification": "authorized-event-activation-import-attempt",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "package": "WQReferenceSharedMailbox.zip",
+  "commandOptions": [
+    "solution import",
+    "--activate-plugins",
+    "--publish-changes",
+    "--force-overwrite"
+  ],
+  "importResult": "Solution Imported successfully; Published All Customizations.",
+  "flowReadback": {
+    "Intake": {"statecode": 0, "statuscode": 1},
+    "OnQueueChanged": {"statecode": 0, "statuscode": 1},
+    "ProcessOne": {"statecode": 0, "statuscode": 1},
+    "SweepQueue": {"statecode": 0, "statuscode": 1}
+  },
+  "callbackRegistrationQuery": {
+    "entityname": "workqueueitem",
+    "count": 0,
+    "registrations": []
+  },
+  "queueItemsCreated": 0,
+  "businessDataChanged": false,
+  "customerContentUsed": false,
+  "conclusion": "The tested PAC activation option imported and published the reference package but did not activate the cloud flows or materialize a workqueueitem callback registration in this tenant.",
+  "limitations": [
+    "This did not test maker UI activation or another supported deployment package that may carry activation metadata.",
+    "The package import was authorized development-environment work; no clean managed-release claim is made."
+  ],
+  "writesPerformed": true
+}
