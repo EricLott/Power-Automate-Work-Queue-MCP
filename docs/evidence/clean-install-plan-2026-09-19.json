@@ -1,0 +1,25 @@
+{
+  "classification": "read-only-hash-bound-clean-install-plan",
+  "recordedDateUtc": "2026-09-19",
+  "releaseVersion": "0.1.0.0",
+  "packageMode": "unmanaged-development",
+  "installOrder": [
+    "WQCore",
+    "WQNotificationsEmail",
+    "WQReferenceSharedMailbox",
+    "WQTesting"
+  ],
+  "targetSolutionsPresent": [],
+  "targetFrameworkFlowsPresent": [],
+  "activation": false,
+  "planHash": "6675c7213d3f690cdfda0cc211951f9f8c4f8a088952b561ef554ced755ac51e",
+  "manualPrerequisitesRetained": [
+    "Dataverse, Power Automate and AI Builder entitlement/capacity verification",
+    "Deployment identity privilege and connection ownership verification",
+    "Queue and contract registration before smoke tests",
+    "Prompt and mailbox binding review before activation",
+    "Candidate is not a signed managed production release"
+  ],
+  "writesPerformed": false,
+  "nextStep": "Use the reviewed plan hash only after the target environment is explicitly approved for the hash-bound unmanaged bootstrap/import."
+}
