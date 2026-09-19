@@ -11,7 +11,7 @@ const [flag, queueKey, output] = process.argv.slice(2);
 if (!['--execute','--resume'].includes(flag) || !queueKey || !output || !process.env.QMCP_ENVIRONMENT_BINDING) throw new Error('EXPLICIT_EXECUTION_AND_BINDING_REQUIRED');
 const binding = JSON.parse(await readFile(process.env.QMCP_ENVIRONMENT_BINDING, 'utf8'));
 if (binding.environmentClass !== 'development' || !binding.queueKeys.includes(queueKey)) throw new Error('QUEUE_NOT_BOUND');
-const client = new Client({ name: 'qmcp-cancellation-proof', version: '0.1.0' });
+let client;
 const prior = flag === '--resume' ? JSON.parse(await readFile(output, 'utf8')) : null;
 if (prior && (prior.organizationId !== binding.organizationId || prior.queueKey !== queueKey || !prior.runId || !prior.cancelRequestId)) throw new Error('PROOF_RESUME_INVALID');
 const proofId = prior?.proofId || randomUUID();
@@ -25,14 +25,23 @@ async function call(name, args) {
   if (response.isError) throw new Error(value.error);
   return value;
 }
-try {
+async function connect() {
+  client = new Client({ name: 'qmcp-cancellation-proof', version: '0.1.0' });
   await client.connect(new StdioClientTransport({ command: 'node', args: [path.join(root, 'src/mcp/server.js')], env: { ...process.env }, stderr: 'pipe' }));
+}
+try {
+  await connect();
   evidence.identity = (await call('inspect_installation', {})).identity;
   evidence.startRequestId ||= randomUUID();
   await writeFile(output, JSON.stringify(evidence, null, 2));
   const run = evidence.runId ? { RunId: evidence.runId } : await call('start_test_run', { queueKey, requestId: evidence.startRequestId, cases: [{ Id: 'cancel-before-acquisition', Input: { envelopeVersion: '1.0', contract: 'mail.v1', correlationId: proofId, deduplicationKey: proofId, source: { kind: 'synthetic' }, payload: { subject: 'Synthetic cancellation proof', senderAddress: 'synthetic@example.invalid', bodyText: 'No external action is required.' } }, Expected: {} }] });
   evidence.runId = run.RunId;
   await writeFile(output, JSON.stringify(evidence, null, 2));
+  await client.close();
+  client = undefined;
+  evidence.disconnectedAt = new Date().toISOString();
+  await writeFile(output, JSON.stringify(evidence, null, 2));
+  await connect();
   const args = { queueKey, runId: run.RunId, requestId: evidence.cancelRequestId || randomUUID() };
   evidence.cancelRequestId = args.requestId;
   await writeFile(output, JSON.stringify(evidence, null, 2));
@@ -51,7 +60,7 @@ try {
   evidence.error = /^[A-Z_]+$/.test(error.message) ? error.message : 'PROOF_FAILED';
   process.exitCode = 1;
 } finally {
-  await client.close();
+  if (client) await client.close();
   await writeFile(output, JSON.stringify(evidence, null, 2));
   console.log(JSON.stringify(evidence, null, 2));
 }

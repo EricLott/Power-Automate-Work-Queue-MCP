@@ -1,0 +1,25 @@
+{
+  "classification": "live-mcp-session-disconnect-durable-test",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "queueKey": "qmcp-proof-20260912",
+  "mcpStartSession": {
+    "tool": "start_test_run",
+    "clientClosedAfterStart": true,
+    "runId": "bcd016e7-2804-48c8-a5e6-81302d3b31f2"
+  },
+  "mcpReconnectSession": {
+    "tool": "cancel_test_run",
+    "replayEqual": true,
+    "runState": "Cancelled",
+    "resultStates": ["Cancelled"],
+    "itemOutcome": "OnHold",
+    "attemptCount": 0
+  },
+  "mutations": "synthetic test lifecycle only",
+  "limitations": [
+    "This proves a durable MCP-initiated test survives client disconnect and is recoverable from a new session.",
+    "It does not by itself prove installed autonomous worker/coordinator continuation after disconnect; G20 remains In Review."
+  ]
+}
