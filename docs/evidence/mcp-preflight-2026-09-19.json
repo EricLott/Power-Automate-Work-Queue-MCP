@@ -5,6 +5,8 @@
   "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
   "tool": "preflight_installation",
   "transport": "MCP stdio with authenticated Dataverse CLI bridge",
+  "preflightRuntimeSeconds": 54.38,
+  "defaultMcpRequestTimeoutValidated": true,
   "observableComplete": true,
   "ready": false,
   "unknownCount": 0,

@@ -1,7 +1,7 @@
 {
   "classification": "read-only-live-installation-preflight",
   "recordedDate": "2026-09-19",
-  "sourceCommit": "a0f91c5",
+  "sourceCommit": "d720150",
   "environmentClass": "development",
   "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
   "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
@@ -28,14 +28,15 @@
     "active": 0
   },
   "unknownReadCount": 0,
-  "preflightRuntimeSeconds": 109.67,
+  "preflightRuntimeSeconds": 54.38,
   "bulkReadScope": [
     "solutions",
     "customapis",
     "plugintypes",
     "sdkmessageprocessingsteps",
     "connectionreferences",
-    "workflows"
+    "workflows",
+    "EntityDefinitions"
   ],
   "eventCallbackRegistration": {
     "activeEventFlow": false,
