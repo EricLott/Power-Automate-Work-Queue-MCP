@@ -5,9 +5,11 @@ import { inspect, plan, provision, scaffold, command, validateScaffold } from '.
 import { planInstallation } from './install.js';
 import { applyDeployment, deploymentStatus } from './deployment.js';
 import { planDeployment } from './deployment-plan.js';
+import { registerResources } from './resources.js';
 const server = new McpServer({ name: 'wq-mcp', version: '0.1.0' });
 const queueKey = z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/);
-const wrap = fn => async args => { try { return { content: [{ type: 'text', text: JSON.stringify(await fn(args)) }] }; } catch (error) { return { isError: true, content: [{ type: 'text', text: JSON.stringify({ error: /^[A-Z_]+$/.test(error.message) ? error.message : 'LOCAL_OPERATION_FAILED' }) }] }; } };
+const executionContext = () => ({ selectedEnvironment: process.env.QMCP_ENVIRONMENT_BINDING ? 'bound-development' : 'local-simulation', redaction: 'default' });
+const wrap = fn => async args => { try { const result = await fn(args); return { content: [{ type: 'text', text: JSON.stringify({ ...result, ...executionContext() }) }] }; } catch (error) { return { isError: true, content: [{ type: 'text', text: JSON.stringify({ error: /^[A-Z_]+$/.test(error.message) ? error.message : 'LOCAL_OPERATION_FAILED', ...executionContext() }) }] }; } };
 server.registerTool('inspect_installation', { description: 'Inspect the pinned installation and explicit binding. Defaults to local simulation; opt-in Dataverse mode verifies the development organization.', inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(inspect));
 server.registerTool('plan_installation', { description: 'Read-only plan for a pinned local release. Verifies package hashes and reports explicit development-binding prerequisites; never installs or verifies Dataverse.', inputSchema: { bindingPath: z.string().max(500).optional() }, annotations: { readOnlyHint: true } }, wrap(planInstallation));
 server.registerTool('plan_queue', { description: 'Create a hash-bound plan for a synthetic local queue.', inputSchema: { queueKey }, annotations: { readOnlyHint: true } }, wrap(a => plan(a.queueKey)));
@@ -24,4 +26,5 @@ server.registerTool('cleanup_test', { description: 'Remove only recorded success
 server.registerTool('plan_deployment', { description: 'Read the configured development target and pinned package/settings inputs to produce an environment-bound deployment hash. Does not import or activate flows.', inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(planDeployment));
 server.registerTool('apply_deployment', { description: 'Launch a development import using the exact plan hash approved in the host configuration. The independent worker persists a journal and leaves flows Draft.', inputSchema: { planHash: z.string().regex(/^[a-f0-9]{64}$/), requestId: z.string().uuid() } }, wrap(applyDeployment));
 server.registerTool('deployment_status', { description: 'Read a deployment journal for the bound organization. A Running record is not proof that its worker is still alive.', inputSchema: { requestId: z.string().uuid() }, annotations: { readOnlyHint: true } }, wrap(deploymentStatus));
+registerResources(server);
 await server.connect(new StdioServerTransport());

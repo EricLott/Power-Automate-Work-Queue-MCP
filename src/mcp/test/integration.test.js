@@ -21,9 +21,18 @@ test('MCP session ends; independent runtime finishes durable test; a new session
   try {
     client = await connect(state);
     const tools = await client.listTools(); assert.equal(tools.tools.length, 16);
+    const resources = await client.listResources();
+    assert.ok(resources.resources.some(resource => resource.uri === 'qmcp://wq/architecture/v0.1'));
+    assert.ok(resources.resources.some(resource => resource.uri === 'qmcp://wq/flow/ProcessOne/v1'));
+    const architecture = await client.readResource({ uri: 'qmcp://wq/architecture/v0.1' });
+    assert.match(architecture.contents[0].text, /versioned instructions|versioned resources/i);
+    const processOne = await client.readResource({ uri: 'qmcp://wq/flow/ProcessOne/v1' });
+    assert.match(processOne.contents[0].text, /qmcp_WQ_Complete/);
     const installation = await call(client, 'plan_installation', {});
     assert.equal(installation.localArtifacts, 'verified');
     assert.equal(installation.liveVerification, 'not-run');
+    assert.equal(installation.selectedEnvironment, 'local-simulation');
+    assert.equal(installation.redaction, 'default');
     assert.match(installation.planHash, /^[a-f0-9]{64}$/);
     assert.equal(installation.packages.length, 8);
     const p = await call(client, 'plan_queue', { queueKey: 'mail' });
