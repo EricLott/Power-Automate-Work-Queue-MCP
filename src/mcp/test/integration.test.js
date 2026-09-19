@@ -56,6 +56,27 @@ test('scaffolding rejects traversal and only exposes a local target', async () =
   assert.equal(config.contract.Id, 'mail.v1');
 });
 
+test('public MCP workflow scaffolds and validates a synthetic customer target', async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'qmcp-workflow-')); const state = path.join(dir, 'state.json');
+  const name = `workflow-${process.pid}-${Date.now().toString(36)}`; let client;
+  try {
+    client = await connect(state);
+    const inspected = await call(client, 'inspect_installation', {});
+    assert.equal(inspected.selectedEnvironment, 'local-simulation');
+    const planned = await call(client, 'plan_installation', {});
+    assert.equal(planned.localArtifacts, 'verified');
+    const scaffolded = await call(client, 'scaffold_reference', { name });
+    assert.equal(scaffolded.liveValidated, false);
+    const validation = await call(client, 'validate_scaffold', { name });
+    assert.equal(validation.classification, 'local-template-drift-and-safety-check');
+    assert.ok(validation.files.every(file => file.jsonValid && file.staticValidation.status === 'passed'));
+  } finally {
+    if (client) await client.close();
+    await rm(path.join(root, 'artifacts/scaffolds', name), { recursive: true, force: true });
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 test('MCP cancellation persists and replays through the public tool', async () => {
   const dir = await mkdtemp(path.join(tmpdir(), 'qmcp-cancel-')); let client;
   try {
