@@ -9,3 +9,9 @@ Using the explicit development binding, the harness saved the installed `Process
 The harness restored both workflow records after each attempt. Independent readback confirmed `ProcessOne` is Draft with a Request trigger and `OnQueueChanged` is Draft with an `OpenApiConnectionWebhook` trigger. Both synthetic items were reconciled through PrepareAcquire, native Dequeue, ResolveAcquire and Fail, ending in `Exception`/`ReviewRequired` with no business output and no active attempt. Redacted details are in [event-parent-2026-09-19.json](evidence/event-parent-2026-09-19.json).
 
 This is an inconclusive tenant observation, not a pass or a claim that webhook triggers are unsupported. P0-07 remains In Progress because the event wake-up path and aggregate concurrency requirement are still unproven.
+
+## Callback-registration inspection
+
+The follow-up read-only inspection temporarily set the installed `OnQueueChanged` and `ProcessOne` workflow rows to Active, waited 30 seconds, and read back the `callbackregistrations` entity for `workqueueitem`. Both workflow rows reported Active, but the callback-registration query returned zero rows. The records were restored to Draft and independently verified after the inspection; no queue item was enqueued and no business data was changed.
+
+This separates a workflow-row state from a materialized Dataverse event subscription. Direct workflow-row activation is therefore not sufficient evidence for P0-07. A supported activation/import path that creates the callback registration is still required; the preflight now fails `observableComplete` when an Active event flow has no `workqueueitem` registration. Redacted details are in [event-callback-registration-2026-09-19.json](evidence/event-callback-registration-2026-09-19.json).

@@ -65,7 +65,7 @@ Read-only live preflight is available separately from the local installation pla
 python scripts/preflight_installation.py --binding artifacts/live/mcp-binding.json
 ```
 
-It checks the pinned local artifacts and reads installed versions, API plug-in bindings, synchronous guard/image configuration, table keys/concurrency, connection mappings, and flow states. `observableComplete` describes those observed components; `ready` remains false while licensing, target privileges, and connection ownership need verification. It neither imports nor activates anything, and it excludes flow clientdata. The local `plan_installation` MCP tool does not yet incorporate this live preflight or apply a deployment.
+It checks the pinned local artifacts and reads installed versions, API plug-in bindings, synchronous guard/image configuration, table keys/concurrency, connection mappings, flow states, and `workqueueitem` callback registrations. An Active `OnQueueChanged` flow without at least one matching callback registration makes `observableComplete` false; the flow row alone is not proof that an event subscription exists. `observableComplete` describes those observed components; `ready` remains false while licensing, target privileges, and connection ownership need verification. It neither imports nor activates anything, and it excludes flow clientdata. The local `plan_installation` MCP tool does not yet incorporate this live preflight or apply a deployment.
 
 Use `cancel_test_run` with a stable request ID to cancel pending test results. See [cancellation behavior and tenant proof](test-cancellation.md).
 

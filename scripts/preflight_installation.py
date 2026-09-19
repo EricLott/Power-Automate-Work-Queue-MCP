@@ -108,8 +108,20 @@ def preflight(binding, runner=None):
     for name in FLOW_NAMES:
         fid=uid('flow:'+name); rows=query('workflows','workflowid,name,statecode,statuscode,category','workflowid eq '+fid,top=1)
         flows.append({'name':name,'id':fid,'found':bool(rows),'statecode':rows[0].get('statecode') if rows else None,'statuscode':rows[0].get('statuscode') if rows else None})
-    checks={'solutions':solutions,'apis':apis,'tables':tables,'registrationSteps':steps,'connectionReferences':refs,'flows':flows}
-    observable_complete=not unknown and all(s.get('uniqueName') in expected_solutions and s.get('version')==expected_solutions.get(s.get('uniqueName')) for s in solutions) and len(solutions)==len(expected_solutions) and len(apis)==len(api_names) and all(a['bound'] and a.get('pluginTypeId')==runtime_id for a in apis) and all(t['found'] and t.get('optimisticConcurrency') is True and t.get('keyStatus')==['Active'] for t in tables) and all(s['found'] and s.get('correct') for s in steps) and all(f['found'] for f in flows) and all(len(v['found'])==len(v['expected']) and all(x.get('correct') for x in v['found']) for v in refs.values()) and all(p['status']=='verified-local' for p in packages)
+    event_flow = next((flow for flow in flows if flow['name'] == 'OnQueueChanged'), None)
+    callback_rows = query('callbackregistrations', 'callbackregistrationid,name,entityname,message,scope,filterexpression,softdeletestatus', "entityname eq 'workqueueitem'", top=20)
+    callback_registration = {
+        'activeEventFlow': bool(event_flow and event_flow.get('statecode') == 1),
+        'count': len(callback_rows),
+        'present': bool(callback_rows),
+        'registrations': [
+            {key: row.get(key) for key in ('callbackregistrationid', 'name', 'entityname', 'message', 'scope', 'filterexpression', 'softdeletestatus')}
+            for row in callback_rows
+        ],
+        'limitation': 'Dataverse does not expose a direct workflow-id foreign key on callbackregistration in this preflight; active event-flow readiness requires at least one workqueueitem registration.'
+    }
+    checks={'solutions':solutions,'apis':apis,'tables':tables,'registrationSteps':steps,'connectionReferences':refs,'flows':flows,'eventCallbackRegistration':callback_registration}
+    observable_complete=not unknown and (not callback_registration['activeEventFlow'] or callback_registration['present']) and all(s.get('uniqueName') in expected_solutions and s.get('version')==expected_solutions.get(s.get('uniqueName')) for s in solutions) and len(solutions)==len(expected_solutions) and len(apis)==len(api_names) and all(a['bound'] and a.get('pluginTypeId')==runtime_id for a in apis) and all(t['found'] and t.get('optimisticConcurrency') is True and t.get('keyStatus')==['Active'] for t in tables) and all(s['found'] and s.get('correct') for s in steps) and all(f['found'] for f in flows) and all(len(v['found'])==len(v['expected']) and all(x.get('correct') for x in v['found']) for v in refs.values()) and all(p['status']=='verified-local' for p in packages)
     manual={'licensesCapacity':'unknown','targetUserPrivileges':'unknown','connectionOwnership':'unknown'}
     return {'classification':'read-only-live-installation-preflight','organizationId':expected,'environmentUrl':origin,'releaseVersion':release['version'],'manifestVersion':manifest.get('version'),'packages':packages,'checks':checks,'manualPrerequisites':manual,'unknown':unknown,'observableComplete':observable_complete,'ready':False,'writesPerformed':False,'clientdataIncluded':False}
 

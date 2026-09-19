@@ -1,0 +1,31 @@
+{
+  "classification": "read-only-event-callback-registration-inspection",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "parentFlow": "OnQueueChanged",
+  "childFlow": "ProcessOne",
+  "activationReadback": {
+    "OnQueueChanged": {"statecode": 1, "statuscode": 2},
+    "ProcessOne": {"statecode": 1, "statuscode": 2}
+  },
+  "callbackRegistrationQuery": {
+    "entityname": "workqueueitem",
+    "count": 0,
+    "registrations": []
+  },
+  "restoration": {
+    "flowsRestoredTo": "Draft",
+    "restorationErrors": []
+  },
+  "writesPerformed": true,
+  "queueItemsCreated": 0,
+  "businessDataChanged": false,
+  "customerContentUsed": false,
+  "conclusion": "Direct workflow-row activation reported Active but did not materialize a workqueueitem callback registration; event readiness is unproven and this activation path is insufficient.",
+  "limitations": [
+    "The inspection did not execute the supported solution import or maker activation path that may create the registration.",
+    "The callbackregistration entity does not expose a direct workflow-id foreign key in this preflight, so the check establishes presence for workqueueitem rather than exact flow ownership."
+  ]
+}

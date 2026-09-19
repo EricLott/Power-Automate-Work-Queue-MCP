@@ -82,4 +82,37 @@ class PreflightTests(unittest.TestCase):
         self.assertTrue(result['observableComplete'])
         self.assertFalse(result['ready'])
 
+    def test_active_event_flow_without_callback_registration_is_incomplete(self):
+        def request(command, origin, method, relative, **kwargs):
+            decoded = urllib.parse.unquote_plus(relative)
+            if relative == 'WhoAmI': return {'OrganizationId': VALID['organizationId']}
+            if relative.startswith('solutions?'):
+                name = next(n for n in ('WQCore','WQTesting','WQNotificationsEmail','WQReferenceSharedMailbox') if n in decoded)
+                return {'value':[{'uniquename':name,'version':'0.1.0.0','ismanaged':False}]}
+            if relative.startswith('customapis?'): return {'value':[{'uniquename':'qmcp_WQ_Any','_plugintypeid_value':'runtime-id'}]}
+            if relative.startswith('plugintypes?'):
+                typ = decoded.split("'")[1]
+                ident = 'runtime-id' if typ.endswith('LifecyclePlugin') else 'acquisition-id' if typ.endswith('AcquisitionPostPlugin') else 'guard-id'
+                return {'value':[{'plugintypeid':ident,'typename':typ}]}
+            if relative.startswith('sdkmessageprocessingstepimages?'):
+                return {'value':[{'name':'Before','imagetype':0,'attributes':'statecode,workqueueid','_sdkmessageprocessingstepid_value':preflight.uid('acquisition-post:workqueueitem:Update'),'messagepropertyname':'Target'}]}
+            if relative.startswith('sdkmessageprocessingsteps?'):
+                return {'value':[{'stage':40 if 'acquisition-post' in decoded else 20,'mode':0,'statecode':0,'_eventhandler_value':'acquisition-id' if 'acquisition-post' in decoded else 'guard-id'}]}
+            if relative.startswith('EntityDefinitions('):
+                return {'LogicalName':'qmcp_wqdefinition','EntitySetName':'qmcp_wqdefinitions','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]}
+            if relative.startswith('connectionreferences?'):
+                logical = decoded.split("'")[1]
+                connector = next(c for refs in preflight._connection_expectations().values() for ref,c in refs.items() if ref == logical)
+                return {'value':[{'connectionreferencelogicalname':logical,'connectorid':connector,'connectionid':'synthetic-connection'}]}
+            if relative.startswith('workflows?'):
+                return {'value':[{'name':'OnQueueChanged' if '656a2463' in decoded else 'flow','statecode':1 if '656a2463' in decoded else 0,'statuscode':2}]}
+            if relative.startswith('callbackregistrations?'):
+                return {'value':[]}
+            return {'value':[]}
+        with patch.object(preflight.bootstrap, '_cli_command', return_value=['dataverse']), patch.object(preflight.bootstrap, '_cli_request', side_effect=request):
+            result = preflight.preflight(VALID)
+        self.assertTrue(result['checks']['eventCallbackRegistration']['activeEventFlow'])
+        self.assertFalse(result['checks']['eventCallbackRegistration']['present'])
+        self.assertFalse(result['observableComplete'])
+
 if __name__ == '__main__': unittest.main()
