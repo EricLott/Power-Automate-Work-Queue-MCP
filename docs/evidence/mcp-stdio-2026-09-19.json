@@ -1,0 +1,19 @@
+{
+  "classification": "read-only-live-mcp-stdio-host",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "transport": "cli-bridge",
+  "toolCount": 17,
+  "resourceCount": 13,
+  "resourcesRead": [
+    "qmcp://wq/architecture/v0.1",
+    "qmcp://wq/flow/ProcessOne/v1"
+  ],
+  "inspectMode": "dataverse-development",
+  "mutations": 0,
+  "limitations": [
+    "Read-only host/identity/resource proof; no tenant mutation or promotion claim.",
+    "Full MCP-initiated tenant workflow and clean managed installation remain open in G20/P7-07."
+  ]
+}

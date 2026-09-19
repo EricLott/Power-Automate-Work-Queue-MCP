@@ -31,3 +31,6 @@ The promotion step is intentionally `not-run`: local evidence cannot establish a
 
 This is local workflow evidence, not a tenant acceptance claim.
 
+## Current live host checkpoint
+
+On 2026-09-19, `scripts/probe_mcp_session.mjs` connected through the actual MCP stdio transport with the explicit development binding and CLI bridge. It exposed 17 tools, listed three resources, read `qmcp://wq/architecture/v0.1` and `qmcp://wq/flow/ProcessOne/v1`, and verified the Dataverse organization through `inspect_installation`; no mutation was performed. The redacted record is [mcp-stdio-2026-09-19.json](evidence/mcp-stdio-2026-09-19.json). This proves the bound host/protocol boundary, not clean installation, flow activation, independent-identity authorization, or full disconnected tenant workflow.
