@@ -1,0 +1,47 @@
+{
+  "classification": "synthetic-event-parent-child-flow-attempt",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "parentFlow": "OnQueueChanged",
+  "childFlow": "ProcessOne",
+  "initialFlowState": "Both Draft",
+  "temporaryActivation": "Both flows were bound to the synthetic queue and temporarily activated.",
+  "enqueue": {
+    "outcome": "Enqueued",
+    "syntheticItemCreated": true
+  },
+  "eventObservation": {
+    "nativeFinalState": "Queued",
+    "workflowLogCount": 0,
+    "matchingParentOrChildLogs": 0,
+    "childObserved": false
+  },
+  "cleanup": {
+    "method": "PrepareAcquire, native Dequeue, ResolveAcquire, Fail",
+    "nativeFinalState": "Exception",
+    "nativeFinalStatus": "ReviewRequired",
+    "activeAttempt": false,
+    "attemptCount": 1,
+    "reviewRequired": true,
+    "output": "{}",
+    "businessRowsForSyntheticKey": 0
+  },
+  "restoration": {
+    "processOneState": "Draft",
+    "onQueueChangedState": "Draft",
+    "processOneTriggerType": "Request",
+    "onQueueChangedTriggerType": "OpenApiConnectionWebhook",
+    "restorationErrors": []
+  },
+  "writesPerformed": true,
+  "businessDataChanged": false,
+  "customerContentUsed": false,
+  "conclusion": "Inconclusive negative result: the webhook parent did not produce an observable child run during the bounded wait.",
+  "limitations": [
+    "The run does not prove that the webhook trigger is unsupported; it records no observed trigger/run in this tenant attempt.",
+    "No aggregate concurrency measurement was attempted.",
+    "The synthetic cleanup item and framework diagnostic rows remain retained as controlled evidence."
+  ]
+}
