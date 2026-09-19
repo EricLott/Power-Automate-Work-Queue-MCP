@@ -7,26 +7,31 @@
   "parentFlow": "OnQueueChanged",
   "childFlow": "ProcessOne",
   "initialFlowState": "Both Draft",
-  "temporaryActivation": "Both flows were bound to the synthetic queue and temporarily activated.",
+  "temporaryActivation": "Both flows were bound to the synthetic queue and temporarily activated twice; the retry included a 30-second settle and active-state readback.",
   "enqueue": {
-    "outcome": "Enqueued",
-    "syntheticItemCreated": true
+    "attempts": 2,
+    "outcomes": ["Enqueued", "Enqueued"],
+    "syntheticItemsCreated": 2
   },
   "eventObservation": {
+    "attempts": 2,
+    "retrySettleSeconds": 30,
+    "retryActivationStateReadback": {"OnQueueChanged": 1, "ProcessOne": 1},
     "nativeFinalState": "Queued",
-    "workflowLogCount": 0,
+    "workflowLogCountPerAttempt": [0, 0],
     "matchingParentOrChildLogs": 0,
     "childObserved": false
   },
   "cleanup": {
+    "itemsReconciled": 2,
     "method": "PrepareAcquire, native Dequeue, ResolveAcquire, Fail",
-    "nativeFinalState": "Exception",
-    "nativeFinalStatus": "ReviewRequired",
+    "finalNativeState": "Exception",
+    "finalNativeStatus": "ReviewRequired",
     "activeAttempt": false,
-    "attemptCount": 1,
+    "attemptCountPerItem": [1, 1],
     "reviewRequired": true,
-    "output": "{}",
-    "businessRowsForSyntheticKey": 0
+    "outputPerItem": ["{}", "{}"],
+    "businessRowsForSyntheticKeys": 0
   },
   "restoration": {
     "processOneState": "Draft",
@@ -38,9 +43,9 @@
   "writesPerformed": true,
   "businessDataChanged": false,
   "customerContentUsed": false,
-  "conclusion": "Inconclusive negative result: the webhook parent did not produce an observable child run during the bounded wait.",
+  "conclusion": "Inconclusive negative result: two bounded attempts, including a delayed activation retry, did not produce an observable webhook parent or child run.",
   "limitations": [
-    "The run does not prove that the webhook trigger is unsupported; it records no observed trigger/run in this tenant attempt.",
+    "The attempts do not prove that the webhook trigger is unsupported; they record no observed trigger/run in this tenant configuration.",
     "No aggregate concurrency measurement was attempted.",
     "The synthetic cleanup item and framework diagnostic rows remain retained as controlled evidence."
   ]
