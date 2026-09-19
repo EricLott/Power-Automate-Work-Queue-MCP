@@ -94,6 +94,53 @@ public class RetentionPolicyTests
     }
 
     [Fact]
+    public void RetentionUsesHistoricalAttemptDestinationsAfterPolicyChange()
+    {
+        var f = new Fixture();
+        var itemId = f.Enqueue();
+        var first = f.Acquire();
+        f.Run(f.Owned("Fail", first, new { category = "Technical", code = "TRANSIENT", effect = "None" }));
+        f.Now = f.Now.AddSeconds(10);
+        var second = f.Acquire();
+        f.Run(f.Owned("Complete", second, new { table = "qmcp_emailrequest", recordId = Guid.NewGuid().ToString() }));
+
+        var rotated = f.Policy();
+        rotated.Destinations = new[] { "new-ops" };
+        f.Run(f.Cmd("RegisterQueue", rotated, version: 1));
+
+        var oldAttempt = f.Store.Get("attempt", (string)first["AttemptId"]!)!;
+        oldAttempt.Updated = f.Now.AddDays(-91);
+        f.Store.Put(oldAttempt, oldAttempt.Version);
+
+        var result = f.Run(f.Cmd("ApplyRetention"));
+        Assert.Equal(0, (int)result["AttemptsPurged"]!);
+        Assert.NotNull(f.Store.Get("attempt", oldAttempt.Key));
+        Assert.Equal("Processed", (string)f.Status(itemId)["Outcome"]!);
+    }
+
+    [Fact]
+    public void RetentionPreservesLegacyErrorsWithoutDestinationSnapshot()
+    {
+        var f = new Fixture();
+        var policy = f.Policy();
+        policy.Destinations = Array.Empty<string>();
+        policy.Retention.ErrorDays = 30;
+        f.Run(f.Cmd("RegisterQueue", policy, version: 1));
+        f.Run(f.Cmd("ReportIntakeFailure", new { source = "synthetic", correlationId = "legacy", code = "INVALID" }));
+        var row = f.Store.Page("intakefailure", "mail", "", 50).Single();
+        var body = Json.Object(row.Body);
+        body.Remove("Destinations");
+        row.Body = body.ToString(Newtonsoft.Json.Formatting.None);
+        row.Updated = f.Now.AddDays(-31);
+        f.Store.Put(row, row.Version);
+
+        var result = f.Run(f.Cmd("ApplyRetention"));
+        Assert.Equal(0, (int)result["ErrorsPurged"]!);
+        Assert.True((int)result["ProtectedRows"]! > 0);
+        Assert.NotNull(f.Store.Get("intakefailure", row.Key));
+    }
+
+    [Fact]
     public void RetentionPurgesTerminalEvidenceButPreservesRunningEvidence()
     {
         var f = new Fixture();

@@ -375,7 +375,7 @@ public sealed partial class Engine
     {
         string source = Required(d, "source", 500), correlation = Required(d, "correlationId", 100), code = Required(d, "code", 100);
         var id = Json.Hash(c.QueueKey + "|" + source + "|" + correlation + "|" + code);
-        if (store.Get("intakefailure", id) == null) Add("intakefailure", id, c.QueueKey, new { SourceHash = Json.Hash(source), CorrelationId = correlation, Code = code });
+        if (store.Get("intakefailure", id) == null) Add("intakefailure", id, c.QueueKey, new { SourceHash = Json.Hash(source), CorrelationId = correlation, Code = code, Destinations = p.Destinations });
         Events(c.QueueKey, "", id, "IntakeFailure", p);
         return new { Outcome = "Recorded", FailureId = id };
     }
@@ -421,9 +421,9 @@ public sealed partial class Engine
         return new { Outcome = "Swept", Changed = changed, NextCursor = next };
     }
     string Cursor(string queue, string purpose) => (string?)Get<JObject>("cursor", Json.Hash(queue + "|" + purpose))?["value"] ?? "";
-    bool HasActiveDelivery(string queue, string itemId, string attemptId, string kind, QueuePolicy policy)
+    bool HasActiveDelivery(string queue, string itemId, string attemptId, string kind, IEnumerable<string> destinations)
     {
-        foreach (var destination in policy.Destinations)
+        foreach (var destination in destinations.Distinct(StringComparer.Ordinal))
         {
             var key = Json.Hash(queue + "|" + itemId + "|" + attemptId + "|" + kind + "|" + destination);
             var row = store.Get("event", key);
@@ -441,9 +441,10 @@ public sealed partial class Engine
         var context = Get<ItemContext>("itemcontext", native.UniqueKey);
         if (context == null || context.ActiveAttempt != "" || context.ReviewRequired || context.LastAttempt == attempt.Id) return false;
         if (native.Status != "Processed" && native.Status != "Exception") return false;
-        return !new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, policy));
+        var destinations = attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy.Destinations : policy.Destinations;
+        return !new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, destinations));
     }
-    bool TestRunCanBePurged(TestRun run)
+    bool TestRunCanBePurged(string queue, TestRun run, QueuePolicy policy)
     {
         if (run.State == "Running" || run.Results.Any(result => result.State == "Pending")) return false;
         foreach (var result in run.Results)
@@ -453,6 +454,10 @@ public sealed partial class Engine
             if (native == null || native.Status == "Queued" || native.Status == "Processing") return false;
             var context = Get<ItemContext>("itemcontext", native.UniqueKey);
             if (context == null || context.ActiveAttempt != "" || context.ReviewRequired) return false;
+            var attempt = Get<Attempt>("attempt", context.LastAttempt);
+            if (attempt == null) return false;
+            var destinations = attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy.Destinations : policy.Destinations;
+            if (new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, destinations))) return false;
         }
         foreach (var caseId in run.Results.Select(result => result.CaseId).Distinct(StringComparer.Ordinal))
             if (store.Get("testcase", Json.Hash(run.Id + "|" + caseId)) == null) return false;
@@ -497,7 +502,10 @@ public sealed partial class Engine
         var errorRows = store.Page("intakefailure", c.QueueKey, Cursor(c.QueueKey, "error-retention"), 50);
         foreach (var row in errorRows)
         {
-            if (row.Updated < errorCutoff && !HasActiveDelivery(c.QueueKey, "", row.Key, "IntakeFailure", policy)) { store.Delete("intakefailure", row.Key, row.Version); errors++; }
+            var failure = Json.Object(row.Body);
+            var destinations = failure["Destinations"]?.Values<string>().Where(destination => destination != null).Select(destination => destination!).ToArray();
+            if (destinations == null) { if (row.Updated < errorCutoff) protectedRows++; continue; }
+            if (row.Updated < errorCutoff && !HasActiveDelivery(c.QueueKey, "", row.Key, "IntakeFailure", destinations)) { store.Delete("intakefailure", row.Key, row.Version); errors++; }
             else if (row.Updated < errorCutoff) protectedRows++;
         }
         SetCursor(c.QueueKey, "error-retention", errorRows.Count == 50 ? errorRows.Last().Key : "");
@@ -506,7 +514,7 @@ public sealed partial class Engine
         {
             var run = Json.Read<TestRun>(row.Body);
             if (row.Updated >= evidenceCutoff) continue;
-            if (!TestRunCanBePurged(run)) { protectedRows++; continue; }
+            if (!TestRunCanBePurged(c.QueueKey, run, policy)) { protectedRows++; continue; }
             foreach (var result in run.Results)
             {
                 var resultRow = store.Get("testresult", result.Id);
