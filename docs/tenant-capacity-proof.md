@@ -20,3 +20,7 @@ python scripts/profile_tenant_capacity.py `
 ```
 
 The run does not measure burst capacity, platform throttling thresholds, retention/storage cost, prompt execution, mailbox intake, or sender delivery. G22 remains open for those broader limits.
+
+## Service-protection boundary
+
+The profile intentionally does not probe until throttling. Current [Microsoft Dataverse service-protection guidance](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits) says to start at a low, consistent rate, increase gradually, and honor the server-provided `Retry-After` interval after a limit error. The documented default values (including 6,000 requests and 1,200 seconds of combined execution time in a five-minute window, with a concurrency limit of 52 or higher per web server) can vary by environment and are not tenant measurements. Any future burst run must have an explicit item/concurrency ceiling, capture `Retry-After` and response headers, stop on the first service-protection signal, and leave the queue drained before it is considered evidence.
