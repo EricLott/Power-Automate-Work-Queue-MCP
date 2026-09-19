@@ -1,0 +1,18 @@
+{
+  "classification": "local-synthetic-notification-failure",
+  "recordedDateUtc": "2026-09-19",
+  "test": "LifecycleTests.NotificationFailurePreservesWork",
+  "command": "dotnet test tests/runtime/QueueFramework.Tests.csproj --no-restore --filter FullyQualifiedName~NotificationFailurePreservesWork --verbosity minimal",
+  "passed": 1,
+  "failed": 0,
+  "observed": {
+    "businessOutcome": "Processed",
+    "deliveryRejectionCode": "MAIL_OFFLINE",
+    "deliveryEvidenceRetained": true
+  },
+  "writesPerformed": false,
+  "limitations": [
+    "Local synthetic runtime only; no native tenant mutation or connector call.",
+    "Does not establish Outlook timeout, provider acceptance, mailbox delivery, or installed EmailSender behavior."
+  ]
+}
