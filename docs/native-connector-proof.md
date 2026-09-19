@@ -1,5 +1,7 @@
 # Native dequeue through the Dataverse connector
 
+The current post-deployment checkpoint on 2026-09-19 repeated the isolated matrix against the authorized development environment after request `5e8f7f2b-5638-4bfd-9eb6-57d5bd5ca5e1` completed. The available, empty, and paused cases passed through one real temporary flow run; the runner restored the temporary flow to Draft, the probe queue to Active, and the probe item to Queued with no restoration errors. [Redacted evidence](evidence/native-connector-2026-09-19.json) records the run.
+
 The [installed connector matrix](evidence/native-connector-2026-09-13.json) passed in the authorized development environment on 2026-09-13 UTC. A temporary recurrence flow called the standard Dataverse connector's PerformBoundAction with entityName `workqueues`, actionName `Microsoft.Dynamics.CRM.Dequeue` and the explicit synthetic queue ID. It did not list items and then patch one to claim it.
 
 | Queue condition | Observed connector response |

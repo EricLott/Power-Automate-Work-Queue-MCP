@@ -1,0 +1,33 @@
+{
+  "classification": "isolated-native-connector",
+  "observedAt": "2026-09-19T16:23:33.6160932Z",
+  "runId": "native-20260919-1618",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "syntheticProbe": {
+    "queueId": "d14ec06b-3109-57e6-b18e-43763044a876",
+    "itemId": "15acd185-a46c-59ba-a0da-61047e214964",
+    "temporaryFlowId": "5dd598a6-dbc8-5607-8405-6c5c186b9117",
+    "input": "{}"
+  },
+  "matrix": {
+    "available": { "actionStatus": "Succeeded", "returnedExpectedItem": true, "returnedState": "Processing" },
+    "empty": { "actionStatus": "Succeeded", "body": null, "error": null },
+    "paused": { "actionStatus": "Failed", "errorCode": "RecordNotActive", "pausedQueueIdMatched": true }
+  },
+  "commonFlowRunObserved": true,
+  "matrixVerified": true,
+  "restorationErrors": [],
+  "restored": {
+    "temporaryFlow": "Draft",
+    "queue": "Active",
+    "item": "Queued",
+    "input": "{}"
+  },
+  "businessLogicInvoked": false,
+  "mailboxOrNotificationConnectorInvoked": false,
+  "limitations": [
+    "The isolated probe queue has no framework queue binding and makes no attempt-ownership claim.",
+    "This validates the real Dataverse connector matrix only; it does not close separate-user, mailbox, managed-release, upgrade, or capacity gates."
+  ]
+}
