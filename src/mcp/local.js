@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DataverseClient } from './dataverse.js';
 import { DataverseCliClient } from './cli.js';
+import { validateFlow } from './flow-validation.js';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 export const state = path.resolve(process.env.QMCP_SIM_STATE || path.join(root, 'artifacts/local/state.json'));
@@ -97,7 +98,7 @@ export async function validateScaffold(name) {
     const expected = JSON.parse(await readFile(path.join(root, 'templates/flows', file), 'utf8'));
     const remap = value => { if (value && typeof value === 'object') { if (value.workflowReferenceName) value.workflowReferenceName = ownership.flowIds['ProcessOne.json']; for (const child of Object.values(value)) remap(child); } };
     remap(expected);
-    results.push({ file, modifiedFromTemplate: hash(JSON.stringify(actual)) !== hash(JSON.stringify(expected)), jsonValid: !!actual.properties?.definition });
+    results.push({ file, modifiedFromTemplate: hash(JSON.stringify(actual)) !== hash(JSON.stringify(expected)), jsonValid: !!actual.properties?.definition, staticValidation: validateFlow(actual) });
   }
-  return { classification: 'local-template-drift-check', files: results, tenantValidated: false, guidance: 'Modified customer logic needs the source validator and tenant testing; drift alone is not an error.' };
+  return { classification: 'local-template-drift-and-safety-check', files: results, tenantValidated: false, guidance: 'Modified customer logic needs the source validator and tenant testing; drift alone is not an error.' };
 }
