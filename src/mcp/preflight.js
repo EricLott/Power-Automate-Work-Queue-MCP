@@ -62,4 +62,3 @@ export async function preflightInstallation({ env = process.env, cwd = root, run
   const result = await run(['--binding', path.resolve(bindingPath)], { cwd });
   return validateReadOnly(result);
 }
-
