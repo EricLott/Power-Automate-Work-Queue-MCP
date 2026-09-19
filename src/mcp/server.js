@@ -6,6 +6,7 @@ import { planInstallation } from './install.js';
 import { applyDeployment, deploymentStatus } from './deployment.js';
 import { planDeployment } from './deployment-plan.js';
 import { planUpgrade } from './upgrade.js';
+import { preflightInstallation } from './preflight.js';
 import { redactForAgent } from './redaction.js';
 import { registerResources } from './resources.js';
 const server = new McpServer({ name: 'wq-mcp', version: '0.1.0' });
@@ -14,6 +15,7 @@ const executionContext = () => ({ selectedEnvironment: process.env.QMCP_ENVIRONM
 const wrap = fn => async args => { try { const result = await fn(args); return { content: [{ type: 'text', text: JSON.stringify(redactForAgent({ ...result, ...executionContext() })) }] }; } catch (error) { return { isError: true, content: [{ type: 'text', text: JSON.stringify({ error: /^[A-Z_]+$/.test(error.message) ? error.message : 'LOCAL_OPERATION_FAILED', ...executionContext() }) }] }; } };
 server.registerTool('inspect_installation', { description: 'Inspect the pinned installation and explicit binding. Defaults to local simulation; opt-in Dataverse mode verifies the development organization.', inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(inspect));
 server.registerTool('plan_installation', { description: 'Read-only plan for a pinned local release. Verifies package hashes and reports explicit development-binding prerequisites; never installs or verifies Dataverse.', inputSchema: { bindingPath: z.string().max(500).optional() }, annotations: { readOnlyHint: true } }, wrap(planInstallation));
+server.registerTool('preflight_installation', { description: 'Read-only live preflight for the explicitly bound development organization. Reads installed components and reports unknown/manual prerequisites; never imports, activates, or mutates the tenant.', inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(preflightInstallation));
 server.registerTool('plan_queue', { description: 'Create a hash-bound plan for a synthetic local queue.', inputSchema: { queueKey }, annotations: { readOnlyHint: true } }, wrap(a => plan(a.queueKey)));
 server.registerTool('provision_local_queue', { description: 'Apply a reviewed local simulation plan. Cannot deploy to Dataverse.', inputSchema: { queueKey, planHash: z.string().regex(/^[a-f0-9]{64}$/) } }, wrap(a => provision(a.queueKey, a.planHash)));
 server.registerTool('scaffold_reference', { description: 'Create customer-owned flow sources in a new local directory.', inputSchema: { name: z.string().regex(/^[a-z][a-z0-9_-]{0,40}$/) } }, wrap(a => scaffold(a.name)));

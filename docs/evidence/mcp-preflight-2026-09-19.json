@@ -1,0 +1,33 @@
+{
+  "classification": "read-only-mcp-installation-preflight",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "tool": "preflight_installation",
+  "transport": "MCP stdio with authenticated Dataverse CLI bridge",
+  "observableComplete": true,
+  "ready": false,
+  "unknownCount": 0,
+  "observations": {
+    "packageCount": 8,
+    "customApiCount": 24,
+    "registrationStepCount": 41,
+    "tableCount": 14,
+    "connectionReferencePackages": 4,
+    "flowCount": 7,
+    "flowStates": "ProcessOne, OnQueueChanged, SweepQueue, Intake, Watchdog, TestCoordinator, and EmailSender are Draft",
+    "eventCallbackRegistrationCount": 0,
+    "activeEventFlow": false
+  },
+  "manualPrerequisites": {
+    "licensesCapacity": "unknown",
+    "targetUserPrivileges": "unknown",
+    "connectionOwnership": "unknown"
+  },
+  "writesPerformed": false,
+  "clientdataIncluded": false,
+  "limitations": [
+    "This is a read-only development preflight, not clean-install, managed-upgrade, activation, or production evidence.",
+    "The callback-registration check is not required while OnQueueChanged is Draft; supported event activation remains tracked by issue 107."
+  ]
+}

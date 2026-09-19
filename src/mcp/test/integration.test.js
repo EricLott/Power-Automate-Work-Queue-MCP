@@ -20,7 +20,7 @@ test('MCP session ends; independent runtime finishes durable test; a new session
   const dir = await mkdtemp(path.join(tmpdir(), 'qmcp-')); const state = path.join(dir, 'state.json'); let client, worker;
   try {
     client = await connect(state);
-    const tools = await client.listTools(); assert.equal(tools.tools.length, 17);
+    const tools = await client.listTools(); assert.equal(tools.tools.length, 18);
     const resources = await client.listResources();
     assert.ok(resources.resources.some(resource => resource.uri === 'qmcp://wq/architecture/v0.1'));
     assert.ok(resources.resources.some(resource => resource.uri === 'qmcp://wq/flow/ProcessOne/v1'));
