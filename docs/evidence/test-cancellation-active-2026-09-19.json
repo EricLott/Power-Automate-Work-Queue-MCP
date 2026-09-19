@@ -1,0 +1,29 @@
+{
+  "classification": "synthetic-development-active-worker-cancellation",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "queueKey": "qmcp-proof-20260912",
+  "proofId": "2865803e-897a-49a2-890a-9fa1c9c1f873",
+  "runId": "1aa52544-385a-4a94-b3f6-0977ac3c68be",
+  "itemId": "04d18586-8c07-409f-bab9-f8d51e2ecd8c",
+  "attemptId": "b60e064a-8096-4edf-ab7f-1d6c97e1c668",
+  "observations": {
+    "nativeBeforeCancel": "Processing",
+    "cancelReplayEqual": true,
+    "runStateAfterCancel": "Cancelled",
+    "resultStateAfterCancel": "Cancelled",
+    "activeAttemptAfterCancel": true,
+    "failureOutcomeAfterCancel": "ReviewRequired",
+    "finalNativeState": "Exception",
+    "finalReviewRequired": true,
+    "attemptCount": 1,
+    "businessOutput": false,
+    "externalDestinationsUsed": false
+  },
+  "sideEffects": "One synthetic test fixture was created and retained as diagnostic evidence; no mailbox, prompt, notification, or customer-content flow was enabled.",
+  "limitations": [
+    "This proves the active-worker cancellation boundary and guarded failure reconciliation in the authorized development tenant.",
+    "It does not establish separate-user authorization, native concurrent-write behavior, or production cancellation guarantees."
+  ]
+}
