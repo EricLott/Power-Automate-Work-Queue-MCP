@@ -44,7 +44,12 @@ def preflight(binding, runner=None):
     if actual != expected: raise ValueError('ENVIRONMENT_MISMATCH')
     unknown = []
     def query(entity, select, filter_text, top=2, solution='WQCore', expand=None):
-        params={'$select':select} if entity.startswith('EntityDefinitions(') else {'$select':select, '$filter':filter_text, '$top':top}
+        metadata = entity == 'EntityDefinitions'
+        params={'$select':select}
+        if not (metadata or entity.startswith('EntityDefinitions(')):
+            params.update({'$filter':filter_text, '$top':top})
+        elif metadata and filter_text:
+            params['$filter'] = filter_text
         if expand: params['$expand']=expand
         qs = urllib.parse.urlencode(params)
         try:
@@ -100,9 +105,11 @@ def preflight(binding, runner=None):
     image_rows=query('sdkmessageprocessingstepimages','sdkmessageprocessingstepimageid,name,imagetype,attributes,_sdkmessageprocessingstepid_value,messagepropertyname','sdkmessageprocessingstepimageid eq '+image)
     steps += [{'id':post,'kind':'acquisition-post','found':bool(post_row),'correct':bool(post_row and post_row.get('stage')==40 and post_row.get('mode')==0 and post_row.get('statecode')==0 and post_row.get('_eventhandler_value')==acquisition_id)},{'id':image,'kind':'acquisition-preimage','found':bool(image_rows),'correct':bool(image_rows and image_rows[0].get('name')=='Before' and image_rows[0].get('imagetype')==0 and image_rows[0].get('attributes')=='statecode,workqueueid' and image_rows[0].get('_sdkmessageprocessingstepid_value')==post and image_rows[0].get('messagepropertyname')=='Target')}]
     tables=[]
-    for logical in TABLES:
-        name='qmcp_'+logical
-        rows=query('EntityDefinitions(LogicalName='+"'"+name+"'"+')','LogicalName,EntitySetName,OwnershipType,IsOptimisticConcurrencyEnabled','LogicalName eq '+"'"+name+"'",top=1,expand='Keys($select=EntityKeyIndexStatus,SchemaName)')
+    table_names=['qmcp_'+logical for logical in TABLES]
+    table_rows=query_many('EntityDefinitions','LogicalName,EntitySetName,OwnershipType,IsOptimisticConcurrencyEnabled',["LogicalName eq '"+name+"'" for name in table_names],expand='Keys($select=EntityKeyIndexStatus,SchemaName)')
+    table_by_name={row.get('LogicalName'):row for row in table_rows}
+    for name in table_names:
+        rows=[table_by_name[name]] if name in table_by_name else []
         keys=rows[0].get('Keys',[]) if rows else []
         tables.append({'logicalName':name,'found':bool(rows),'optimisticConcurrency':rows[0].get('IsOptimisticConcurrencyEnabled') if rows else None,'keyStatus':sorted({k.get('EntityKeyIndexStatus') for k in keys if k.get('EntityKeyIndexStatus')}) or None})
     refs={}

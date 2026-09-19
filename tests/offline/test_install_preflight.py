@@ -38,17 +38,22 @@ class PreflightTests(unittest.TestCase):
                 preflight.preflight(VALID)
         self.assertEqual(calls, ['WhoAmI'])
 
-    def test_single_entity_definition_response_is_recorded(self):
+    def test_batched_entity_definition_response_is_recorded(self):
+        calls = []
         def request(command, origin, method, relative, **kwargs):
+            calls.append(relative)
             if relative == 'WhoAmI': return {'OrganizationId': VALID['organizationId']}
-            if relative.startswith("EntityDefinitions(LogicalName='qmcp_wqdefinition')"):
-                return {'LogicalName':'qmcp_wqdefinition','EntitySetName':'qmcp_wqdefinitions','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]}
+            if relative.startswith('EntityDefinitions?'):
+                decoded = urllib.parse.unquote_plus(relative)
+                names = re.findall(r"LogicalName eq '([^']+)'", decoded)
+                return {'value':[{'LogicalName':name,'EntitySetName':name+'s','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]} for name in names]}
             return {'value': []}
         with patch.object(preflight.bootstrap, '_cli_command', return_value=['dataverse']), patch.object(preflight.bootstrap, '_cli_request', side_effect=request):
             result = preflight.preflight(VALID)
         table = next(t for t in result['checks']['tables'] if t['logicalName'] == 'qmcp_wqdefinition')
         self.assertTrue(table['found'])
         self.assertEqual(table['keyStatus'], ['Active'])
+        self.assertEqual(1, sum(relative.startswith('EntityDefinitions?') for relative in calls))
 
     def test_complete_observable_state_is_still_not_ready_with_manual_unknowns(self):
         runtime, guard, acquisition = 'runtime-id', 'guard-id', 'acquisition-id'
@@ -71,8 +76,9 @@ class PreflightTests(unittest.TestCase):
                 post = preflight.uid('acquisition-post:workqueueitem:Update')
                 ids = re.findall(r'sdkmessageprocessingstepid eq ([0-9a-f-]+)', decoded)
                 return {'value':[{'sdkmessageprocessingstepid':ident,'stage':40 if ident==post else 20,'mode':0,'statecode':0,'_eventhandler_value':acquisition if ident==post else guard} for ident in ids]}
-            if relative.startswith('EntityDefinitions('):
-                return {'LogicalName':'qmcp_wqdefinition','EntitySetName':'qmcp_wqdefinitions','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]}
+            if relative.startswith('EntityDefinitions?'):
+                names = re.findall(r"LogicalName eq '([^']+)'", decoded)
+                return {'value':[{'LogicalName':name,'EntitySetName':name+'s','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]} for name in names]}
             if relative.startswith('connectionreferences?'):
                 logicals = re.findall(r"connectionreferencelogicalname eq '([^']+)'", decoded)
                 return {'value':[{'connectionreferencelogicalname':logical,'connectorid':next(c for refs in expected_refs.values() for ref,c in refs.items() if ref == logical),'connectionid':'synthetic-connection'} for logical in logicals]}
@@ -104,8 +110,9 @@ class PreflightTests(unittest.TestCase):
                 post = preflight.uid('acquisition-post:workqueueitem:Update')
                 ids = re.findall(r'sdkmessageprocessingstepid eq ([0-9a-f-]+)', decoded)
                 return {'value':[{'sdkmessageprocessingstepid':ident,'stage':40 if ident == post else 20,'mode':0,'statecode':0,'_eventhandler_value':'acquisition-id' if ident == post else 'guard-id'} for ident in ids]}
-            if relative.startswith('EntityDefinitions('):
-                return {'LogicalName':'qmcp_wqdefinition','EntitySetName':'qmcp_wqdefinitions','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]}
+            if relative.startswith('EntityDefinitions?'):
+                names = re.findall(r"LogicalName eq '([^']+)'", decoded)
+                return {'value':[{'LogicalName':name,'EntitySetName':name+'s','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]} for name in names]}
             if relative.startswith('connectionreferences?'):
                 logicals = re.findall(r"connectionreferencelogicalname eq '([^']+)'", decoded)
                 return {'value':[{'connectionreferencelogicalname':logical,'connectorid':next(c for refs in preflight._connection_expectations().values() for ref,c in refs.items() if ref == logical),'connectionid':'synthetic-connection'} for logical in logicals]}
