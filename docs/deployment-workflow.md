@@ -43,6 +43,8 @@ The local CLI uses the operator's authorization boundary. It is not a security b
 
 The MCP host configures `QMCP_ENVIRONMENT_BINDING`, `QMCP_DEPLOYMENT_SETTINGS`, and `QMCP_APPROVED_DEPLOYMENT_PLAN`. The last value must equal the reviewed plan hash. `apply_deployment` takes only that hash and a request UUID; tool arguments cannot supply an approval flag or substitute settings paths. The independent Python worker continues after the MCP session closes.
 
+Both deployment mutations and status reads return the request ID, normalized target environment, a durable `deploymentRecord` path, and `affectedIds`. The launch response has an empty `affectedIds` list until the worker journal records the imported solution IDs; status reads project those IDs from the completed journal.
+
 `deployment_status` requires the binding and request UUID. It checks the record's organization and reads either a CLI-started or MCP-started execution. Its `liveState: unknown` is deliberate: a persisted Running record does not prove process liveness. Use actual process/import observations when recovering an interruption. A worker rejected before importing writes a Rejected record; launch failures are recorded separately.
 
 ```powershell

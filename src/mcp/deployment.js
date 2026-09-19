@@ -24,6 +24,15 @@ function requestMatches(record, requestId) {
 }
 async function optional(file) { try { return JSON.parse(await readFile(file, 'utf8')); } catch (e) { if (e.code === 'ENOENT') return null; throw e; } }
 async function save(file, record) { const temp = file + '.tmp'; await writeFile(temp, JSON.stringify(record, null, 2)); await rename(temp, file); }
+function result(record, c, recordPath) {
+  const source = record?.journal || record?.launch || record;
+  const affectedIds = Array.isArray(source?.affectedSolutions)
+    ? source.affectedSolutions.map(solution => solution?.solutionid).filter(Boolean)
+    : Array.isArray(source?.affectedIds) ? source.affectedIds : [];
+  return { ...record, requestId: record.requestId, affectedIds,
+    environment: { organizationId: c.binding.organizationId, environmentUrl: c.binding.environmentUrl },
+    deploymentRecord: recordPath };
+}
 function launchPython(args, root) {
   return new Promise((resolve, reject) => {
     const child = spawn('python', args, { cwd: root, windowsHide: true, shell: false, detached: true, stdio: 'ignore' });
@@ -44,12 +53,12 @@ export async function applyDeployment({ planHash, requestId }, opts = {}) {
     return old;
   };
   const old = await optional(file);
-  if (old) return compatible(old);
+  if (old) return result(compatible(old), c, file);
   // A CLI-started request is also durable; do not start it a second time.
   const existing = await optional(path.join(c.directory, requestId + '.json'));
   if (existing) {
     if (!requestMatches(existing, requestId) || existing.planHash !== planHash || !matches(existing, c)) throw new Error('REQUEST_CONFLICT');
-    return { requestId, status: existing.status, journal: existing, liveState: 'unknown' };
+    return result({ requestId, status: existing.status, journal: existing, liveState: 'unknown' }, c, path.join(c.directory, requestId + '.json'));
   }
   const record = { requestId, planHash, organizationId: c.binding.organizationId, environmentUrl: c.binding.environmentUrl,
     settingsPath, bindingPath: c.bindingPath, status: 'LaunchRequested', liveState: 'unknown' };
@@ -65,7 +74,7 @@ export async function applyDeployment({ planHash, requestId }, opts = {}) {
     if (Number.isInteger(launched?.pid)) record.processId = launched.pid;
   } catch { record.status = 'LaunchFailed'; record.error = 'DEPLOYMENT_LAUNCH_FAILED'; }
   await save(file, record);
-  return record;
+  return result(record, c, file);
 }
 export async function deploymentStatus({ requestId }, opts = {}) {
   requestId = id(requestId);
@@ -76,6 +85,8 @@ export async function deploymentStatus({ requestId }, opts = {}) {
   if ((launch && (!requestMatches(launch, requestId) || !matches(launch, c)))
       || (journal && (!requestMatches(journal, requestId) || !matches(journal, c)))
       || (launch && journal && launch.planHash !== journal.planHash)) throw new Error('DEPLOYMENT_RECORD_MISMATCH');
-  return { requestId, source: 'local-deployment-journal', status: journal?.status || launch.status,
-    liveState: 'unknown', ...(launch ? { launch } : {}), ...(journal ? { journal } : {}) };
+  const record = journal || launch;
+  return result({ requestId, source: 'local-deployment-journal', status: record.status,
+    liveState: 'unknown', ...(launch ? { launch } : {}), ...(journal ? { journal } : {}) }, c,
+    journal ? path.join(c.directory, requestId + '.json') : path.join(c.directory, requestId + '.launch.json'));
 }
