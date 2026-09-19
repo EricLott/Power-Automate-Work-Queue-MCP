@@ -1,0 +1,32 @@
+{
+  "classification": "read-only-tenant-schema-key-probe",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "tablesRequested": 13,
+  "tablesObserved": 13,
+  "tablesWithExactlyOneActiveKey": 13,
+  "allExpectedKeysActive": true,
+  "tables": [
+    {"logicalName": "qmcp_wqattempt", "key": "qmcp_wqattempt_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqcommand", "key": "qmcp_wqcommand_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqcontract", "key": "qmcp_wqcontract_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqcursor", "key": "qmcp_wqcursor_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqdefinition", "key": "qmcp_wqdefinition_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqevent", "key": "qmcp_wqevent_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqintakefailure", "key": "qmcp_wqintakefailure_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqitemcontext", "key": "qmcp_wqitemcontext_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqqueuebinding", "key": "qmcp_wqqueuebinding_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqtestcase", "key": "qmcp_wqtestcase_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqtestresult", "key": "qmcp_wqtestresult_identity", "indexStatus": "Active"},
+    {"logicalName": "qmcp_wqtestrun", "key": "qmcp_wqtestrun_identity", "indexStatus": "Active"},
+    {"logicalName": "workqueueitem", "key": "uniqueidbyqueue_workqueueid", "indexStatus": "Active"}
+  ],
+  "writesPerformed": false,
+  "limitations": [
+    "Metadata reads do not prove write permissions, transactions, connector activation, or production compatibility.",
+    "This probe records the installed development tenant only.",
+    "Local framework limits remain separate from native Dataverse payload and metadata limits."
+  ]
+}
