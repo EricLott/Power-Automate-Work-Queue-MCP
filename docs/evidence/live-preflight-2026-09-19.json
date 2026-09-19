@@ -1,0 +1,41 @@
+{
+  "classification": "read-only-live-installation-preflight",
+  "recordedDate": "2026-09-19",
+  "sourceCommit": "fe6232c",
+  "environmentClass": "development",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "releaseVersion": "0.1.0.0",
+  "manifestVersion": "0.1.0.0",
+  "writesPerformed": false,
+  "observableComplete": true,
+  "ready": false,
+  "packageStatus": {
+    "verifiedLocal": 8,
+    "missing": 0,
+    "tampered": 0
+  },
+  "solutions": [
+    { "uniqueName": "WQCore", "version": "0.1.0.0", "isManaged": false },
+    { "uniqueName": "WQTesting", "version": "0.1.0.0", "isManaged": false },
+    { "uniqueName": "WQNotificationsEmail", "version": "0.1.0.0", "isManaged": false },
+    { "uniqueName": "WQReferenceSharedMailbox", "version": "0.1.0.0", "isManaged": false }
+  ],
+  "customApis": { "observed": 24, "bound": 24 },
+  "frameworkFlows": {
+    "observed": 7,
+    "draft": 7,
+    "active": 0
+  },
+  "unknownReadCount": 0,
+  "manualPrerequisites": {
+    "licensesCapacity": "unknown",
+    "targetUserPrivileges": "unknown",
+    "connectionOwnership": "unknown"
+  },
+  "limitations": [
+    "Read-only preflight; no solution import, activation, connection mutation, queue mutation or business processing was performed.",
+    "This is an existing development environment, not a clean tenant.",
+    "Unmanaged installation state does not establish managed release, customer-flow preservation, licensing, capacity or production readiness."
+  ]
+}
