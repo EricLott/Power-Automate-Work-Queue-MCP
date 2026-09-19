@@ -21,3 +21,9 @@ This separates a workflow-row state from a materialized Dataverse event subscrip
 The authorized tenant also received the scoped `WQReferenceSharedMailbox.zip` package with PAC `solution import --activate-plugins --publish-changes --force-overwrite`. PAC reported a successful import and publish, but the four reference workflow rows (`Intake`, `OnQueueChanged`, `ProcessOne`, and `SweepQueue`) all read back Draft and the `workqueueitem` callback-registration query remained empty. No queue item or business row was created by this attempt. Redacted details are in [event-activation-import-2026-09-19.json](evidence/event-activation-import-2026-09-19.json).
 
 This records that the tested PAC import option did not establish an active cloud-flow subscription in this tenant; it does not rule out a maker-supported activation sequence or a different deployment package. P0-07 remains In Progress.
+
+## Maker activation permission boundary
+
+The authenticated Power Automate maker surface was opened at the exact authorized environment ID. The portal rejected the flow page with a permission error stating that the signed-in operator is not permitted to make flows in this environment and must switch to an environment where maker permissions are granted. No flow action was attempted and no state changed through the portal. Redacted details are in [event-maker-activation-2026-09-19.json](evidence/event-maker-activation-2026-09-19.json).
+
+The Dataverse CLI identity can read and mutate the explicitly authorized records used by the tenant probes, but that does not establish Power Automate maker permission. P0-07 and follow-up #107 therefore remain open; the next supported activation attempt requires an operator with maker permission in this environment or an approved deployment path that creates the subscription.

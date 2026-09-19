@@ -1,0 +1,16 @@
+{
+  "classification": "authorized-maker-activation-permission-check",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "environmentId": "7f4c5058-8003-e789-b5f5-e761953c8a0e",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "portal": "https://make.powerautomate.com/environments/7f4c5058-8003-e789-b5f5-e761953c8a0e/flows",
+  "signedInOperator": "Eric Lott",
+  "portalResult": "Maker page denied: the signed-in operator is not permitted to make flows in this environment.",
+  "flowActionAttempted": false,
+  "writesPerformed": false,
+  "businessDataChanged": false,
+  "customerContentUsed": false,
+  "conclusion": "Power Automate maker permission is not available for the signed-in operator in the explicitly authorized environment; maker-surface activation cannot proceed from this session.",
+  "nextAction": "Grant the signed-in operator maker permission in the authorized environment or provide an approved supported deployment path that materializes the event subscription."
+}
