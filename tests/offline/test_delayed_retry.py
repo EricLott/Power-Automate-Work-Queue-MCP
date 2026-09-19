@@ -33,7 +33,10 @@ class DelayedRetryProofTests(unittest.TestCase):
             b.write_text(json.dumps(self.binding)); l.write_text(json.dumps(self.ledger))
             item = self.ledger["itemId"]
 
+            dequeue_calls = 0
+
             def request(_command, _origin, method, path, body, runner):
+                nonlocal dequeue_calls
                 if method == "GET" and path.startswith("workqueueitems("):
                     if "delayuntil" in path:
                         return {"statecode": 0, "statuscode": 0, "delayuntil": "2099-01-01T00:00:00Z"}
@@ -41,9 +44,11 @@ class DelayedRetryProofTests(unittest.TestCase):
                 if path == "qmcp_WQ_PrepareAcquire":
                     return {"ResultJson": json.dumps({"Outcome": "Prepared"})}
                 if path.endswith("/Microsoft.Dynamics.CRM.Dequeue"):
-                    return {"workqueueitemid": item}
+                    dequeue_calls += 1
+                    return {"workqueueitemid": item} if dequeue_calls == 1 else {}
                 if path == "qmcp_WQ_ResolveAcquire":
-                    return {"ResultJson": json.dumps({"Outcome": "Acquired", "ItemId": item, "AttemptId": "attempt", "Generation": 1, "BusinessKey": "business", "SourceKey": "source", "ContentHash": "hash"})}
+                    outcome = "Acquired" if dequeue_calls == 1 else "Pending"
+                    return {"ResultJson": json.dumps({"Outcome": outcome, "ItemId": item, "AttemptId": "attempt", "Generation": 1, "BusinessKey": "business", "SourceKey": "source", "ContentHash": "hash"})}
                 if path == "qmcp_WQ_Fail":
                     return {"ResultJson": json.dumps({"Outcome": "RetryScheduled"})}
                 raise AssertionError((method, path, body))
@@ -54,7 +59,10 @@ class DelayedRetryProofTests(unittest.TestCase):
             evidence = json.loads(out.read_text())
             self.assertEqual(evidence["stage"], "retry-scheduled")
             self.assertEqual(evidence["delayUntil"], "2099-01-01T00:00:00Z")
-            self.assertTrue(evidence["earlyClaimNotProven"])
+            self.assertFalse(evidence["earlyClaimed"])
+            self.assertEqual(evidence["earlyResolveOutcome"], "Pending")
+            self.assertFalse(evidence["earlyClaimNotProven"])
+            self.assertNotIn("finish-prepare", evidence["requests"])
 
     def test_finish_requires_a_completed_stage_record(self):
         with tempfile.TemporaryDirectory() as temp:

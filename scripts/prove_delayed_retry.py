@@ -72,9 +72,6 @@ def main(argv=None):
         return json.loads(call("POST", "qmcp_WQ_" + op, body)["ResultJson"])
     if args.finish:
         try:
-            second = request("PrepareAcquire", "finish-prepare")
-            if second.get("Outcome") != "Prepared":
-                raise ValueError("ACQUIRE_NOT_PREPARED")
             native = call("POST", "workqueues(" + ledger["queue"] + ")/Microsoft.Dynamics.CRM.Dequeue", {})
         except ValueError as error:
             save(finishOutcome="TransportFailure", completed=False, error="NATIVE_DEQUEUE_FAILED")
@@ -85,7 +82,7 @@ def main(argv=None):
         if native["workqueueitemid"].lower() != item.lower():
             save(finishOutcome="WrongItem", completed=False)
             raise ValueError("UNEXPECTED_NATIVE_ITEM")
-        acquired = request("ResolveAcquire", "finish-resolve")
+        acquired = request("ResolveAcquire", "early-prepare")
         if acquired.get("Outcome") != "Acquired" or acquired.get("ItemId", "").lower() != item.lower():
             raise ValueError("ACQUIRE_NOT_RESOLVED")
         record_id = str(uuid.uuid4())
@@ -104,7 +101,7 @@ def main(argv=None):
         claimed = call("POST", "workqueues(" + ledger["queue"] + ")/Microsoft.Dynamics.CRM.Dequeue", {})
         if claimed.get("workqueueitemid", "").lower() != item.lower():
             raise ValueError("NATIVE_CLAIM_FAILED")
-        acquired = request("ResolveAcquire", "resolve")
+        acquired = request("ResolveAcquire", "prepare")
         if acquired.get("Outcome") != "Acquired":
             raise ValueError("ACQUIRE_NOT_RESOLVED")
         failed = request("Fail", "fail", {"category": "Technical", "code": "SYNTHETIC_DELAYED_RETRY", "effect": "None"}, acquired)
@@ -113,7 +110,16 @@ def main(argv=None):
         after = call("GET", "workqueueitems(" + item + ")?$select=statecode,statuscode,delayuntil")
         if after.get("statecode") != 0 or not after.get("delayuntil"):
             raise ValueError("DELAYED_QUEUE_STATE_INVALID")
-        save(stage="retry-scheduled", attemptId=acquired.get("AttemptId"), delayUntil=after["delayuntil"], nativeState=after.get("statecode"), earlyClaimNotProven=True)
+        early_prepared = request("PrepareAcquire", "early-prepare")
+        if early_prepared.get("Outcome") != "Prepared":
+            raise ValueError("EARLY_CHECK_NOT_PREPARED")
+        early_claimed = call("POST", "workqueues(" + ledger["queue"] + ")/Microsoft.Dynamics.CRM.Dequeue", {})
+        if early_claimed.get("workqueueitemid"):
+            raise ValueError("EARLY_CLAIM")
+        early_resolved = request("ResolveAcquire", "early-prepare")
+        if early_resolved.get("Outcome") != "Pending":
+            raise ValueError("EARLY_RESOLVE_NOT_PENDING")
+        save(stage="retry-scheduled", attemptId=acquired.get("AttemptId"), delayUntil=after["delayuntil"], nativeState=after.get("statecode"), earlyClaimed=False, earlyResolveOutcome=early_resolved.get("Outcome"), earlyClaimNotProven=False)
     print(json.dumps(evidence, indent=2, sort_keys=True))
 
 

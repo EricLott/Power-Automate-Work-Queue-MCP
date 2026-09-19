@@ -1,0 +1,28 @@
+{
+  "classification": "synthetic-development-tenant-delayed-retry",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "queueKey": "qmcp-proof-20260912",
+  "itemId": "4f8eaa9e-13c3-4ae0-a53f-a15f522bea9f",
+  "script": "scripts/prove_delayed_retry.py",
+  "observations": {
+    "retryScheduled": true,
+    "delayUntil": "2026-09-19T16:58:16Z",
+    "earlyClaimed": false,
+    "earlyResolveOutcome": "Pending",
+    "reacquiredAfterDelay": true,
+    "finishOutcome": "Completed",
+    "finalNativeState": "Processed",
+    "attemptCount": 2,
+    "attemptOutcomes": ["Exception", "Processed"],
+    "syntheticBusinessRecordWritten": true,
+    "flowsActivated": false,
+    "externalDestinationsUsed": false
+  },
+  "limitations": [
+    "Synthetic development queue and payload only.",
+    "No mailbox, prompt provider, external destination, or production identity was used.",
+    "This proves the bounded delayed-retry path; broader tenant throughput, retention, and separate-identity gates remain open."
+  ]
+}
