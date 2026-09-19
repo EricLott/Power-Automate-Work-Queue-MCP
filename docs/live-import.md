@@ -99,7 +99,7 @@ The coordinator was returned to Draft and its temporary fixture binding removed.
 
 The existing Dataverse CLI authentication now supports the MCP stdio server without exporting tokens. WQTesting was reimported, all five testing API bindings were repaired and verified, and the updated plug-in package was installed. Reimport had cleared four existing API bindings; post-import verification must include existing operations.
 
-A live MCP run initially failed when cancellation attempted Queued-to-Exception. The revised runtime uses OnHold for unstarted cancelled items. Retrying the same saved run/request passed: Cancelled run and result, native OnHold, zero attempts, and identical receipt replay. See [evidence](evidence/test-cancellation-2026-09-12.json) and [reproduction](test-cancellation.md). Active-worker cancellation and real concurrent cancellation remain unproven tenant cases.
+A live MCP run initially failed when cancellation attempted Queued-to-Exception. The revised runtime uses OnHold for unstarted cancelled items. The original proof and a fresh 2026-09-19 run both passed: Cancelled run and result, native OnHold, zero attempts, and identical receipt replay after the client disconnected. See [original evidence](evidence/test-cancellation-2026-09-12.json), [fresh evidence](evidence/test-cancellation-2026-09-19.json), and [reproduction](test-cancellation.md). Active-worker cancellation and real concurrent cancellation remain unproven tenant cases.
 
 ## Development deployment and cancellation retention checkpoint
 

@@ -25,4 +25,8 @@ node scripts/prove_test_cancellation.mjs --resume qmcp-proof-20260912 artifacts/
 
 The proof requires a persisted Cancelled run, identical command replay, a native OnHold item, and zero processing attempts. Active-worker cancellation and tenant concurrency remain separate validation cases.
 
+## Latest live checkpoint — 2026-09-19
+
+The fresh bounded run [test-cancellation-2026-09-19.json](evidence/test-cancellation-2026-09-19.json) used the authorized development organization and a synthetic queue. The MCP client disconnected after `StartTestRun`; cancellation then succeeded and an identical request replay returned the same result. Independent reads found a persisted `Cancelled` run/result, a native `OnHold` item, zero attempts, no active attempt, and no output record. The item is retained as diagnostic evidence. This does not prove active-worker cancellation, separate-user authorization, or native concurrent-write behavior.
+
 Reimporting WQTesting was observed to clear existing testing API plug-in bindings. Verify and repair all testing bindings after import, including existing APIs, before invoking any tool or activating TestCoordinator. `scripts/bootstrap_tenant.py` includes CancelTestRun in its testing package registration plan.

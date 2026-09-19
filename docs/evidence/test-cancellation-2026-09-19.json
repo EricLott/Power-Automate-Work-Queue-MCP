@@ -1,0 +1,33 @@
+{
+  "classification": "live-mcp-test-cancellation",
+  "date": "2026-09-19",
+  "proofId": "eb4e05b4-9c7a-48a4-a237-44f67e70a6c8",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-20260912",
+  "identity": {
+    "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+    "userId": "c81ea07e-b825-ed11-9db1-000d3a8fed55"
+  },
+  "startRequestId": "b1eef69b-655e-4096-9f47-93a310ef221e",
+  "runId": "4771244d-6c0a-434d-80b8-a3db604cb2f8",
+  "cancelRequestId": "92610179-9b0a-4859-95a9-90960fd09316",
+  "replayEqual": true,
+  "runState": "Cancelled",
+  "resultStates": ["Cancelled"],
+  "item": {
+    "Outcome": "OnHold",
+    "ActiveAttempt": "",
+    "LastAttempt": "",
+    "Generation": 0,
+    "AttemptCount": 0,
+    "ReviewRequired": false,
+    "Output": {}
+  },
+  "disconnectedBeforeCancellation": true,
+  "writesPerformed": true,
+  "sideEffects": "One synthetic test item was created and retained for diagnostic evidence; no mailbox, prompt, notification, or customer-content flow was enabled.",
+  "limitations": [
+    "This proves cancellation before acquisition and identical command replay in the authorized development tenant.",
+    "Active-worker cancellation, separate-user authorization, and native concurrency remain unproven acceptance cases."
+  ]
+}
