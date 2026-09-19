@@ -1,7 +1,7 @@
 {
   "classification": "read-only-live-installation-preflight",
   "recordedDate": "2026-09-19",
-  "sourceCommit": "fe6232c",
+  "sourceCommit": "a0f91c5",
   "environmentClass": "development",
   "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
   "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
@@ -28,6 +28,22 @@
     "active": 0
   },
   "unknownReadCount": 0,
+  "preflightRuntimeSeconds": 109.67,
+  "bulkReadScope": [
+    "solutions",
+    "customapis",
+    "plugintypes",
+    "sdkmessageprocessingsteps",
+    "connectionreferences",
+    "workflows"
+  ],
+  "eventCallbackRegistration": {
+    "activeEventFlow": false,
+    "count": 0,
+    "present": false,
+    "registrations": [],
+    "limitation": "The preflight can establish registration presence for workqueueitem but cannot map a callback row directly to a workflow ID."
+  },
   "manualPrerequisites": {
     "licensesCapacity": "unknown",
     "targetUserPrivileges": "unknown",
@@ -36,6 +52,7 @@
   "limitations": [
     "Read-only preflight; no solution import, activation, connection mutation, queue mutation or business processing was performed.",
     "This is an existing development environment, not a clean tenant.",
-    "Unmanaged installation state does not establish managed release, customer-flow preservation, licensing, capacity or production readiness."
+    "Unmanaged installation state does not establish managed release, customer-flow preservation, licensing, capacity or production readiness.",
+    "All seven framework flows were Draft during this read; the event subscription was therefore not expected to be present."
   ]
 }
