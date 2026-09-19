@@ -1,0 +1,17 @@
+{
+  "classification": "read-only-effective-identity",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "effectiveIdentityVerified": true,
+  "operatorControlVerified": true,
+  "impersonatedUserMappingVerified": true,
+  "writesPerformed": false,
+  "readRequests": 4,
+  "transport": "@microsoft/dataverse@1.0.77 api request; CallerObjectId header",
+  "additionalObservation": "The user-supplied object ID resolved to the operator identity and was rejected by the probe's CALLER_DID_NOT_DIFFER guard; no mutation was attempted.",
+  "limitations": [
+    "CallerObjectId impersonation is not an independent interactive login.",
+    "The distinct test identity retains administrator privileges; least privilege is unproved.",
+    "This checkpoint does not establish the full producer, worker, reader, operator and installer role matrix or cross-queue denial."
+  ]
+}

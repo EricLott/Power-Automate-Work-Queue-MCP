@@ -12,6 +12,8 @@ Run `python scripts/probe_effective_identity.py --binding artifacts/live/mcp-bin
 
 The [successful effective-identity evidence](evidence/security-effective-identity-2026-09-13.json) records the completed four-read probe using Dataverse CLI 1.0.77.
 
+The [2026-09-19 refresh](evidence/security-effective-identity-2026-09-19.json) repeated the four-read probe in the authorized development environment and again verified organization, operator control, and the distinct effective identity without writes. The user-supplied environment object ID correctly resolved to the operator and was rejected by the probe's `CALLER_DID_NOT_DIFFER` guard. This confirms the probe is fail-closed for a non-distinct identity; it does not establish least privilege or an independent login.
+
 ## Installed guard result
 
 The [direct-update evidence](evidence/security-second-identity-update-2026-09-13.json) records a PATCH of the existing name back to the retained synthetic Queued item `e9c029c3-95e9-4e93-a07d-5d7688b31922` in the registered proof queue. Immediately before the PATCH, an impersonated `eq-userid` query established the second identity. The server returned exactly `LIFECYCLE_BYPASS`. An independent operator read found the selected row and ETag unchanged.
