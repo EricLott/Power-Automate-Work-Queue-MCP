@@ -1,0 +1,58 @@
+{
+  "classification": "live-development-deployment",
+  "observedAt": "2026-09-19T16:16:50.2312616Z",
+  "requestId": "5e8f7f2b-5638-4bfd-9eb6-57d5bd5ca5e1",
+  "planHash": "739f094ab2c4b5d5e4bfe2172a0a78813ecc611445b2f39da287190705dfb7ba",
+  "inputHash": "e4609093fab860f4328418ba2a0769b00efd241e9c98e4b61d57e0d3c73ed372",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "status": "ImportedAwaitingAcceptance",
+  "packageMode": "unmanaged-development",
+  "packages": [
+    { "package": "WQCore", "status": "Imported" },
+    { "package": "WQNotificationsEmail", "status": "Imported" },
+    { "package": "WQReferenceSharedMailbox", "status": "Imported" },
+    { "package": "WQTesting", "status": "Imported" }
+  ],
+  "affectedSolutions": [
+    { "solutionid": "d70c3cd9-c571-49e7-a8ac-03c4a32ece3d", "uniquename": "WQNotificationsEmail", "version": "0.1.0.0", "isManaged": false },
+    { "solutionid": "c87593df-dee8-4b08-8f9c-6907f7253ddc", "uniquename": "WQCore", "version": "0.1.0.0", "isManaged": false },
+    { "solutionid": "a88798a9-bd5e-4e96-b668-8f92fc8265ca", "uniquename": "WQTesting", "version": "0.1.0.0", "isManaged": false },
+    { "solutionid": "8d86b37d-cd2e-4006-9b3b-b826fefec640", "uniquename": "WQReferenceSharedMailbox", "version": "0.1.0.0", "isManaged": false }
+  ],
+  "packageHashes": [
+    { "file": "WQCore_managed.zip", "sha256": "2c010d9e8214742ec9251dbba175a20bed2faa55135b71917dab9020efbfff40" },
+    { "file": "WQCore.zip", "sha256": "c5e1b059588a0ba5a052ca3e6b2496989386b8dd03da9d18ec35b006961fc9fa" },
+    { "file": "WQNotificationsEmail_managed.zip", "sha256": "1d37ae8f8af11453ad02356d7fab871603c40f05f06ded7159365f07835f1c2c" },
+    { "file": "WQNotificationsEmail.zip", "sha256": "590b454e80a2157c854c89ea62f9522c5314e0a2d4996db87e239c07a5058412" },
+    { "file": "WQReferenceSharedMailbox_managed.zip", "sha256": "3f8835bf88311d8aca3125a138904419da3cf1d87554a36efb0c72b7a976bbbe" },
+    { "file": "WQReferenceSharedMailbox.zip", "sha256": "653aa5a6d87145240df4549539fd11827d602e8e695e9111bb99e760e6959956" },
+    { "file": "WQTesting_managed.zip", "sha256": "a9ebab8599f9bda648e6a4673f9164df11cdc1a435a3e67647ebbc356ff7c6c5" },
+    { "file": "WQTesting.zip", "sha256": "6785459a53a3953a4a9e91a0f8b3c512eea8819a8fc2ee1785f954d28ee03e9a" }
+  ],
+  "observableChecks": {
+    "apiCount": 24,
+    "boundApiCount": 24,
+    "tableCount": 14,
+    "tablesWithActiveKeys": 14,
+    "correctRegistrationSteps": 48,
+    "connectionReferencesChecked": 8,
+    "frameworkFlows": 7,
+    "frameworkFlowsDraft": 7,
+    "unknownReads": 0,
+    "observableComplete": true
+  },
+  "manualPrerequisites": {
+    "licensesCapacity": "unknown",
+    "targetUserPrivileges": "unknown",
+    "connectionOwnership": "unknown"
+  },
+  "flowsActivated": false,
+  "ready": false,
+  "writesPerformed": true,
+  "limitations": [
+    "This is an existing unmanaged development environment, not a clean managed installation.",
+    "The executor imported and repaired framework components only; it did not activate flows or process business data.",
+    "Managed upgrade, separate-user authorization, connector/prompt execution, capacity, and end-to-end acceptance gates remain open."
+  ]
+}

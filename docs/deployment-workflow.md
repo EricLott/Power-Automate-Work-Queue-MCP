@@ -6,6 +6,8 @@ The planner verifies package checksums, dependency order, exact connection-refer
 
 The read-only [live preflight checkpoint](evidence/live-preflight-2026-09-19.json) recorded on 2026-09-19 found all eight local package hashes verified, all four unmanaged 0.1.0.0 solutions present, 24 of 24 Custom APIs bound, and all seven framework flows Draft. It returned `ready: false` because licensing/capacity, target-user privileges, and connection ownership remain manual prerequisites. The checkpoint performed no writes and is not clean-install or managed-release evidence.
 
+With explicit current authorization for the supplied development environment, request `5e8f7f2b-5638-4bfd-9eb6-57d5bd5ca5e1` applied the current unmanaged candidate on 2026-09-19. All four packages imported, registration repair completed, and the final read-only health check observed 24/24 bound APIs, 14/14 active table keys, 48 correct registration steps, all expected connection references, and seven Draft flows. The journal returned `ImportedAwaitingAcceptance` with `flowsActivated: false`; redacted details are in [deployment-2026-09-19.json](evidence/deployment-2026-09-19.json). This remains development-import evidence, not clean managed installation, activation, or release acceptance.
+
 Create a JSON map with one settings file per package:
 
 ```json
