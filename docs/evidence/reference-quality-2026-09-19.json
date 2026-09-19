@@ -1,0 +1,41 @@
+{
+  "classification": "live-synthetic-reference-quality",
+  "observedAtUtc": "2026-09-19T16:33:35.016937Z",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "runId": "caa183c5-1d9f-4a88-8034-cdd0fa318bde",
+  "promptVersion": "mail-extraction-v1.2",
+  "promptModelId": "a1afa5d4-7a44-4c31-9cd2-e852a78431fa",
+  "fixture": {
+    "queueKey": "qmcp-proof-20260912",
+    "caseCount": 6,
+    "positiveCases": 3,
+    "negativeCases": 3,
+    "allInputsSynthetic": true
+  },
+  "run": {
+    "state": "Passed",
+    "complete": true,
+    "resultCount": 6,
+    "cases": [
+      { "caseId": "explicit-service-request", "resultState": "Passed", "nativeState": "Processed", "businessRecordCount": 1, "fieldAndProvenanceChecks": true },
+      { "caseId": "explicit-question", "resultState": "Passed", "nativeState": "Processed", "businessRecordCount": 1, "fieldAndProvenanceChecks": true },
+      { "caseId": "embedded-instruction-is-data", "resultState": "Passed", "nativeState": "Exception", "businessRecordCount": 0, "expectedErrorMatch": true },
+      { "caseId": "ambiguous-no-request", "resultState": "Passed", "nativeState": "Exception", "businessRecordCount": 0, "expectedErrorMatch": true },
+      { "caseId": "missing-sender", "resultState": "Passed", "nativeState": "Exception", "businessRecordCount": 0, "expectedErrorMatch": true },
+      { "caseId": "long-bounded-service-request", "resultState": "Passed", "nativeState": "Processed", "businessRecordCount": 1, "fieldAndProvenanceChecks": true }
+    ]
+  },
+  "restoration": {
+    "ProcessOne": { "state": "Draft", "clientdataRestored": true },
+    "SweepQueue": { "state": "Draft", "clientdataRestored": true },
+    "TestCoordinator": { "state": "Draft", "clientdataRestored": true },
+    "Intake": "not activated",
+    "EmailSender": "not activated"
+  },
+  "limitations": [
+    "This is one bounded synthetic six-case run through the installed scheduled worker/coordinator path.",
+    "It does not establish repeated AI-quality performance, real mailbox intake, notification delivery, managed release, upgrade safety, or capacity limits.",
+    "Temporary flow clientdata bindings were saved directly for the experiment and fully restored; the rebuilt solution was not reimported for this binding."
+  ]
+}
