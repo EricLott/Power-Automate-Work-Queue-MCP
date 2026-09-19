@@ -1,0 +1,16 @@
+{
+  "classification": "all-companion-direct-create-guards",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "effectiveIdentityVerified": true,
+  "tablesTested": 12,
+  "exactLifecycleBypassDenials": 12,
+  "generatedIdsAbsentAfterAttempt": 12,
+  "cleanupRequired": false,
+  "businessDataChanged": false,
+  "rolesChanged": false,
+  "limitations": [
+    "Only Create registration was refreshed across all 12 companion tables; Update/Delete remain separately scoped.",
+    "The distinct test identity retains System Administrator privileges; native least privilege remains unproved."
+  ]
+}

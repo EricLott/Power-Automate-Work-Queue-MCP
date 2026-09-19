@@ -61,6 +61,8 @@ These results establish framework profile and queue-grant enforcement. Native Da
 
 The [2026-09-19 direct-write refresh](evidence/queue-write-guards-2026-09-19.json) repeated the five-case native comparison with the verified distinct identity. Registered-queue Create and move were denied with `LIFECYCLE_BYPASS`; unregistered synthetic Create/Update/Delete were independently verified and cleaned up. No business data, roles, or queue policy changed. This strengthens the cross-queue/direct-write boundary but does not close G18 because the identity retains administrator privileges and the complete role matrix remains open.
 
+The [2026-09-19 companion-Create refresh](evidence/all-companion-create-guards-2026-09-19.json) then exercised all 12 configured companion tables. Every direct Create returned exact `LIFECYCLE_BYPASS`, and every generated primary key was independently absent afterward. No cleanup was needed because no row was created. Update/Delete coverage and restricted native privileges remain separate acceptance work.
+
 ## Every companion Create registration
 
 The [all-companion Create run](evidence/all-companion-create-guards-2026-09-13.json) tested every one of the 12 guarded companion tables listed in `config/registration.json`: definition, queue binding, contract, item context, attempt, command, event, cursor, intake failure, test case, test run and test result. Each direct POST under the freshly verified second effective identity returned exactly `LIFECYCLE_BYPASS`. Independent queries found each generated primary key absent both before and after its attempt. All 12 cases completed; no test row required deletion.
