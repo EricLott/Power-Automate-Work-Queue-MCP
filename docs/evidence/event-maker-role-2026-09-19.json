@@ -1,0 +1,29 @@
+{
+  "classification": "authorized-maker-role-remediation-check",
+  "recordedDateUtc": "2026-09-19",
+  "organizationMatched": true,
+  "environmentId": "7f4c5058-8003-e789-b5f5-e761953c8a0e",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "operator": "Eric Lott",
+  "remediation": {
+    "command": "pac admin assign-user",
+    "role": "Environment Maker",
+    "result": "Assigned successfully"
+  },
+  "roleReadback": {
+    "environmentMakerPresent": true,
+    "existingAdministratorRolePreserved": true
+  },
+  "makerPortalReadback": {
+    "freshSessionChecked": true,
+    "propagationWaitSeconds": 20,
+    "flowPageAccessible": false,
+    "result": "The exact authorized environment still reports that the signed-in operator is not permitted to make flows."
+  },
+  "flowActionAttempted": false,
+  "writesPerformed": true,
+  "businessDataChanged": false,
+  "customerContentUsed": false,
+  "conclusion": "Dataverse Environment Maker role assignment is verified, but Power Automate maker access remains unavailable in the target environment; event activation cannot yet proceed.",
+  "nextAction": "Resolve the remaining Power Automate environment/licensing or service-side maker access boundary, then rerun the supported activation check."
+}
