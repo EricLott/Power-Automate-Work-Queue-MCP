@@ -21,6 +21,12 @@ python scripts/profile_tenant_capacity.py `
 
 The run does not measure burst capacity, platform throttling thresholds, retention/storage cost, prompt execution, mailbox intake, or sender delivery. G22 remains open for those broader limits.
 
+## Bounded burst experiment
+
+A separate authorized development-tenant experiment on 2026-09-19 requested five synthetic items at concurrency two. Three items completed before two concurrent `qmcp_WQ_PrepareAcquire` calls returned the redacted `DATAVERSE_CLI_FAILED` harness error. The two remaining synthetic items were reconciled serially through the normal lifecycle path; the final readback showed zero queued and zero Processing items. The result is recorded in [tenant-capacity-burst-2026-09-19.json](evidence/tenant-capacity-burst-2026-09-19.json).
+
+This is a client-bridge failure observation, not a Dataverse throttling or platform-capacity result. The experimental concurrent harness was not retained. Capacity evidence therefore remains sequential-only until [follow-up #108](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/108) establishes a supported concurrency-safe transport or documents the boundary.
+
 ## Service-protection boundary
 
 The profile intentionally does not probe until throttling. Current [Microsoft Dataverse service-protection guidance](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits) says to start at a low, consistent rate, increase gradually, and honor the server-provided `Retry-After` interval after a limit error. The documented default values (including 6,000 requests and 1,200 seconds of combined execution time in a five-minute window, with a concurrency limit of 52 or higher per web server) can vary by environment and are not tenant measurements. Any future burst run must have an explicit item/concurrency ceiling, capture `Retry-After` and response headers, stop on the first service-protection signal, and leave the queue drained before it is considered evidence.

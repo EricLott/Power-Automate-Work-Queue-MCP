@@ -1,0 +1,43 @@
+{
+  "classification": "synthetic-development-tenant-capacity-burst-experiment",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "queueKey": "qmcp-proof-20260912",
+  "profile": {
+    "itemsRequested": 5,
+    "requestedConcurrency": 2,
+    "shape": "burst-acquire/complete",
+    "syntheticOnly": true
+  },
+  "observations": {
+    "itemsCompletedBeforeFailure": 3,
+    "failedPrepareAcquireCalls": 2,
+    "failureCode": "DATAVERSE_CLI_FAILED",
+    "failureRoute": "qmcp_WQ_PrepareAcquire",
+    "observedDataverseRequests": 27,
+    "requestMethods": {"GET": 5, "POST": 22},
+    "serviceProtectionSignalDetermined": false,
+    "serviceLimitConclusion": "none"
+  },
+  "cleanup": {
+    "remainingSyntheticItemsReconciledSerially": 2,
+    "reconciledBusinessRecords": 2,
+    "finalNativeStates": {"Processed": 2},
+    "queuedAfterCleanup": 0,
+    "processingAfterCleanup": 0
+  },
+  "disposition": {
+    "capacityClaim": false,
+    "throttlingClaim": false,
+    "concurrencyTransportSupported": false,
+    "concurrencyTransportDecision": "uncharacterized; retain sequential-only capacity evidence until a supported transport is proven",
+    "experimentalHarnessChangeRetained": false,
+    "followUpIssue": 108
+  },
+  "limitations": [
+    "DATAVERSE_CLI_FAILED is a redacted client-bridge error and does not establish a Dataverse service-protection response.",
+    "The concurrent harness change was not retained because it was not proven safe and had incomplete failure-result capture.",
+    "The two remaining synthetic items were processed serially through the normal lifecycle path before the queue-idle readback."
+  ]
+}
