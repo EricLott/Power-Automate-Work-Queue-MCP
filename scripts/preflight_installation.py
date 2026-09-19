@@ -53,6 +53,9 @@ def preflight(binding, runner=None):
             return [response] if entity.startswith('EntityDefinitions(') else []
         except ValueError as error:
             unknown.append({'resource':entity, 'reason':str(error) if str(error).isupper() else 'READ_FAILED'}); return []
+    def query_many(entity, select, filters, solution='WQCore', expand=None):
+        if not filters: return []
+        return query(entity, select, ' or '.join('('+value+')' for value in filters), top=len(filters), solution=solution, expand=expand)
     release = json.loads((ROOT/'config/release.json').read_text())
     manifest = json.loads((ROOT/'artifacts/packages/manifest.json').read_text())
     packages=[]
@@ -69,29 +72,33 @@ def preflight(binding, runner=None):
         packages.append({'file':file,'expectedSha256':entry.get('sha256'),'actualSha256':actual,'status':'verified-local' if actual and actual.lower()==str(entry.get('sha256','')).lower() else 'missing' if actual is None else 'tampered'})
     expected_solutions = {p['name']: release['version'] for p in release['packages']}
     solutions=[]
-    for name in expected_solutions:
-        rows=query('solutions','uniquename,version,ismanaged',"uniquename eq '"+name+"'")
-        solutions += [{'uniqueName':r.get('uniquename'),'version':r.get('version'),'isManaged':r.get('ismanaged')} for r in rows]
+    solution_rows=query_many('solutions','uniquename,version,ismanaged',["uniquename eq '"+name+"'" for name in expected_solutions])
+    solutions += [{'uniqueName':r.get('uniquename'),'version':r.get('version'),'isManaged':r.get('ismanaged')} for r in solution_rows]
     api_names=['qmcp_WQ_'+x for x in json.loads((ROOT/'config/api-catalog.json').read_text())['operations']]
     apis=[]
-    for name in api_names:
-        rows=query('customapis','uniquename,_plugintypeid_value',"uniquename eq '"+name+"'")
-        apis += [{'uniqueName':r.get('uniquename'),'bound':bool(r.get('_plugintypeid_value')),'pluginTypeId':r.get('_plugintypeid_value')} for r in rows]
+    api_rows=query_many('customapis','uniquename,_plugintypeid_value',["uniquename eq '"+name+"'" for name in api_names])
+    apis += [{'uniqueName':r.get('uniquename'),'bound':bool(r.get('_plugintypeid_value')),'pluginTypeId':r.get('_plugintypeid_value')} for r in api_rows]
     steps=[]
     registration=json.loads((ROOT/'config/registration.json').read_text())
     registration_plan=bootstrap.plan(); runtime_type=registration_plan['apiType']; guard_type=registration_plan['guardType']; acquisition_type=registration_plan['acquisitionPostType']
-    runtime_rows=query('plugintypes','plugintypeid,typename',"typename eq '"+runtime_type+"'",top=1)
-    guard_rows=query('plugintypes','plugintypeid,typename',"typename eq '"+guard_type+"'",top=1)
-    acquisition_rows=query('plugintypes','plugintypeid,typename',"typename eq '"+acquisition_type+"'",top=1)
-    runtime_id=runtime_rows[0].get('plugintypeid') if runtime_rows else None; guard_id=guard_rows[0].get('plugintypeid') if guard_rows else None; acquisition_id=acquisition_rows[0].get('plugintypeid') if acquisition_rows else None
+    plugin_rows=query_many('plugintypes','plugintypeid,typename',["typename eq '"+name+"'" for name in (runtime_type,guard_type,acquisition_type)])
+    plugin_by_type={r.get('typename'):r.get('plugintypeid') for r in plugin_rows}
+    runtime_id=plugin_by_type.get(runtime_type); guard_id=plugin_by_type.get(guard_type); acquisition_id=plugin_by_type.get(acquisition_type)
+    guard_specs=[]
     for spec in registration['guardSteps']:
         for message in spec['messages']:
-            sid=uid('guard:'+spec['table']+':'+message); rows=query('sdkmessageprocessingsteps','sdkmessageprocessingstepid,name,stage,mode,statecode,statuscode,_eventhandler_value','sdkmessageprocessingstepid eq '+sid)
-            row=rows[0] if rows else {}; steps.append({'id':sid,'kind':'guard','table':spec['table'],'message':message,'found':bool(rows),'correct':bool(rows and row.get('stage')==20 and row.get('mode')==0 and row.get('statecode')==0 and row.get('_eventhandler_value')==guard_id)})
-    post=uid('acquisition-post:workqueueitem:Update'); image=uid('acquisition-post:workqueueitem:Update:Before')
-    post_rows=query('sdkmessageprocessingsteps','sdkmessageprocessingstepid,stage,mode,statecode,_eventhandler_value','sdkmessageprocessingstepid eq '+post)
+            sid=uid('guard:'+spec['table']+':'+message)
+            guard_specs.append((sid,spec['table'],message))
+    post=uid('acquisition-post:workqueueitem:Update')
+    step_ids=[sid for sid,_,_ in guard_specs]+[post]
+    step_rows=query_many('sdkmessageprocessingsteps','sdkmessageprocessingstepid,name,stage,mode,statecode,statuscode,_eventhandler_value',["sdkmessageprocessingstepid eq "+sid for sid in step_ids])
+    step_by_id={r.get('sdkmessageprocessingstepid'):r for r in step_rows}
+    for sid,table,message in guard_specs:
+        row=step_by_id.get(sid,{}); steps.append({'id':sid,'kind':'guard','table':table,'message':message,'found':bool(row),'correct':bool(row and row.get('stage')==20 and row.get('mode')==0 and row.get('statecode')==0 and row.get('_eventhandler_value')==guard_id)})
+    image=uid('acquisition-post:workqueueitem:Update:Before')
+    post_row=step_by_id.get(post)
     image_rows=query('sdkmessageprocessingstepimages','sdkmessageprocessingstepimageid,name,imagetype,attributes,_sdkmessageprocessingstepid_value,messagepropertyname','sdkmessageprocessingstepimageid eq '+image)
-    steps += [{'id':post,'kind':'acquisition-post','found':bool(post_rows),'correct':bool(post_rows and post_rows[0].get('stage')==40 and post_rows[0].get('mode')==0 and post_rows[0].get('statecode')==0 and post_rows[0].get('_eventhandler_value')==acquisition_id)},{'id':image,'kind':'acquisition-preimage','found':bool(image_rows),'correct':bool(image_rows and image_rows[0].get('name')=='Before' and image_rows[0].get('imagetype')==0 and image_rows[0].get('attributes')=='statecode,workqueueid' and image_rows[0].get('_sdkmessageprocessingstepid_value')==post and image_rows[0].get('messagepropertyname')=='Target')}]
+    steps += [{'id':post,'kind':'acquisition-post','found':bool(post_row),'correct':bool(post_row and post_row.get('stage')==40 and post_row.get('mode')==0 and post_row.get('statecode')==0 and post_row.get('_eventhandler_value')==acquisition_id)},{'id':image,'kind':'acquisition-preimage','found':bool(image_rows),'correct':bool(image_rows and image_rows[0].get('name')=='Before' and image_rows[0].get('imagetype')==0 and image_rows[0].get('attributes')=='statecode,workqueueid' and image_rows[0].get('_sdkmessageprocessingstepid_value')==post and image_rows[0].get('messagepropertyname')=='Target')}]
     tables=[]
     for logical in TABLES:
         name='qmcp_'+logical
@@ -99,15 +106,23 @@ def preflight(binding, runner=None):
         keys=rows[0].get('Keys',[]) if rows else []
         tables.append({'logicalName':name,'found':bool(rows),'optimisticConcurrency':rows[0].get('IsOptimisticConcurrencyEnabled') if rows else None,'keyStatus':sorted({k.get('EntityKeyIndexStatus') for k in keys if k.get('EntityKeyIndexStatus')}) or None})
     refs={}
+    reference_specs=[]
     for package, expected_refs in _connection_expectations().items():
         refs[package]={'expected':expected_refs,'found':[]}
         for ref, connector_id in expected_refs.items():
-            rows=query('connectionreferences','connectionreferencelogicalname,connectorid,connectionid',"connectionreferencelogicalname eq '"+ref+"'",top=1)
-            refs[package]['found'] += [{'logicalName':r.get('connectionreferencelogicalname'),'connectorId':r.get('connectorid'),'mapped':bool(r.get('connectionid')),'correct':bool(r.get('connectionid')) and bool(r.get('connectorid')) and r.get('connectorid')==connector_id} for r in rows]
+            reference_specs.append((package,ref,connector_id))
+    reference_rows=query_many('connectionreferences','connectionreferencelogicalname,connectorid,connectionid',["connectionreferencelogicalname eq '"+ref+"'" for _,ref,_ in reference_specs])
+    reference_by_name={r.get('connectionreferencelogicalname'):r for r in reference_rows}
+    for package,ref,connector_id in reference_specs:
+        r=reference_by_name.get(ref,{})
+        refs[package]['found'].append({'logicalName':r.get('connectionreferencelogicalname'),'connectorId':r.get('connectorid'),'mapped':bool(r.get('connectionid')),'correct':bool(r.get('connectionid')) and bool(r.get('connectorid')) and r.get('connectorid')==connector_id})
     flows=[]
-    for name in FLOW_NAMES:
-        fid=uid('flow:'+name); rows=query('workflows','workflowid,name,statecode,statuscode,category','workflowid eq '+fid,top=1)
-        flows.append({'name':name,'id':fid,'found':bool(rows),'statecode':rows[0].get('statecode') if rows else None,'statuscode':rows[0].get('statuscode') if rows else None})
+    flow_ids={name:uid('flow:'+name) for name in FLOW_NAMES}
+    flow_rows=query_many('workflows','workflowid,name,statecode,statuscode,category',["workflowid eq "+fid for fid in flow_ids.values()])
+    flow_by_id={r.get('workflowid'):r for r in flow_rows}
+    for name,fid in flow_ids.items():
+        row=flow_by_id.get(fid,{})
+        flows.append({'name':name,'id':fid,'found':bool(row),'statecode':row.get('statecode'),'statuscode':row.get('statuscode')})
     event_flow = next((flow for flow in flows if flow['name'] == 'OnQueueChanged'), None)
     callback_rows = query('callbackregistrations', 'callbackregistrationid,name,entityname,message,scope,filterexpression,softdeletestatus', "entityname eq 'workqueueitem'", top=20)
     callback_registration = {

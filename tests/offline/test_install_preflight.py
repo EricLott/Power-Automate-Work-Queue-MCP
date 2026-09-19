@@ -1,4 +1,5 @@
 import json
+import re
 import sys
 import unittest
 import urllib.parse
@@ -56,26 +57,28 @@ class PreflightTests(unittest.TestCase):
             decoded = urllib.parse.unquote_plus(relative)
             if relative == 'WhoAmI': return {'OrganizationId': VALID['organizationId']}
             if relative.startswith('solutions?'):
-                name = next(n for n in ('WQCore','WQTesting','WQNotificationsEmail','WQReferenceSharedMailbox') if n in decoded)
-                return {'value':[{'uniquename':name,'version':'0.1.0.0','ismanaged':False}]}
+                names = re.findall(r"uniquename eq '([^']+)'", decoded)
+                return {'value':[{'uniquename':name,'version':'0.1.0.0','ismanaged':False} for name in names]}
             if relative.startswith('customapis?'):
-                name = decoded.split("'")[1]; return {'value':[{'uniquename':name,'_plugintypeid_value':runtime}]}
+                names = re.findall(r"uniquename eq '([^']+)'", decoded)
+                return {'value':[{'uniquename':name,'_plugintypeid_value':runtime} for name in names]}
             if relative.startswith('plugintypes?'):
-                typ = decoded.split("'")[1]; ident = runtime if typ.endswith('LifecyclePlugin') else acquisition if typ.endswith('AcquisitionPostPlugin') else guard
-                return {'value':[{'plugintypeid':ident,'typename':typ}]}
+                types = re.findall(r"typename eq '([^']+)'", decoded)
+                return {'value':[{'plugintypeid':runtime if typ.endswith('LifecyclePlugin') else acquisition if typ.endswith('AcquisitionPostPlugin') else guard,'typename':typ} for typ in types]}
             if relative.startswith('sdkmessageprocessingstepimages?'):
                 return {'value':[{'sdkmessageprocessingstepimageid':relative.split('eq%20')[-1],'name':'Before','imagetype':0,'attributes':'statecode,workqueueid','_sdkmessageprocessingstepid_value':preflight.uid('acquisition-post:workqueueitem:Update'),'messagepropertyname':'Target'}]}
             if relative.startswith('sdkmessageprocessingsteps?'):
-                post = preflight.uid('acquisition-post:workqueueitem:Update'); ident = post if post in decoded else 'guard'
-                return {'value':[{'sdkmessageprocessingstepid':ident,'stage':40 if ident==post else 20,'mode':0,'statecode':0,'_eventhandler_value':acquisition if ident==post else guard}]}
+                post = preflight.uid('acquisition-post:workqueueitem:Update')
+                ids = re.findall(r'sdkmessageprocessingstepid eq ([0-9a-f-]+)', decoded)
+                return {'value':[{'sdkmessageprocessingstepid':ident,'stage':40 if ident==post else 20,'mode':0,'statecode':0,'_eventhandler_value':acquisition if ident==post else guard} for ident in ids]}
             if relative.startswith('EntityDefinitions('):
                 return {'LogicalName':'qmcp_wqdefinition','EntitySetName':'qmcp_wqdefinitions','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]}
             if relative.startswith('connectionreferences?'):
-                logical = decoded.split("'")[1]
-                connector = next(c for refs in expected_refs.values() for ref,c in refs.items() if ref == logical)
-                return {'value':[{'connectionreferencelogicalname':logical,'connectorid':connector,'connectionid':'synthetic-connection'}]}
+                logicals = re.findall(r"connectionreferencelogicalname eq '([^']+)'", decoded)
+                return {'value':[{'connectionreferencelogicalname':logical,'connectorid':next(c for refs in expected_refs.values() for ref,c in refs.items() if ref == logical),'connectionid':'synthetic-connection'} for logical in logicals]}
             if relative.startswith('workflows?'):
-                return {'value':[{'name':'flow','statecode':0,'statuscode':1}]}
+                ids = re.findall(r'workflowid eq ([0-9a-f-]+)', decoded)
+                return {'value':[{'workflowid':ident,'name':'flow','statecode':0,'statuscode':1} for ident in ids]}
             return {'value':[]}
         with patch.object(preflight.bootstrap, '_cli_command', return_value=['dataverse']), patch.object(preflight.bootstrap, '_cli_request', side_effect=request):
             result = preflight.preflight(VALID)
@@ -87,25 +90,28 @@ class PreflightTests(unittest.TestCase):
             decoded = urllib.parse.unquote_plus(relative)
             if relative == 'WhoAmI': return {'OrganizationId': VALID['organizationId']}
             if relative.startswith('solutions?'):
-                name = next(n for n in ('WQCore','WQTesting','WQNotificationsEmail','WQReferenceSharedMailbox') if n in decoded)
-                return {'value':[{'uniquename':name,'version':'0.1.0.0','ismanaged':False}]}
-            if relative.startswith('customapis?'): return {'value':[{'uniquename':'qmcp_WQ_Any','_plugintypeid_value':'runtime-id'}]}
+                names = re.findall(r"uniquename eq '([^']+)'", decoded)
+                return {'value':[{'uniquename':name,'version':'0.1.0.0','ismanaged':False} for name in names]}
+            if relative.startswith('customapis?'):
+                names = re.findall(r"uniquename eq '([^']+)'", decoded)
+                return {'value':[{'uniquename':name,'_plugintypeid_value':'runtime-id'} for name in names]}
             if relative.startswith('plugintypes?'):
-                typ = decoded.split("'")[1]
-                ident = 'runtime-id' if typ.endswith('LifecyclePlugin') else 'acquisition-id' if typ.endswith('AcquisitionPostPlugin') else 'guard-id'
-                return {'value':[{'plugintypeid':ident,'typename':typ}]}
+                types = re.findall(r"typename eq '([^']+)'", decoded)
+                return {'value':[{'plugintypeid':'runtime-id' if typ.endswith('LifecyclePlugin') else 'acquisition-id' if typ.endswith('AcquisitionPostPlugin') else 'guard-id','typename':typ} for typ in types]}
             if relative.startswith('sdkmessageprocessingstepimages?'):
                 return {'value':[{'name':'Before','imagetype':0,'attributes':'statecode,workqueueid','_sdkmessageprocessingstepid_value':preflight.uid('acquisition-post:workqueueitem:Update'),'messagepropertyname':'Target'}]}
             if relative.startswith('sdkmessageprocessingsteps?'):
-                return {'value':[{'stage':40 if 'acquisition-post' in decoded else 20,'mode':0,'statecode':0,'_eventhandler_value':'acquisition-id' if 'acquisition-post' in decoded else 'guard-id'}]}
+                post = preflight.uid('acquisition-post:workqueueitem:Update')
+                ids = re.findall(r'sdkmessageprocessingstepid eq ([0-9a-f-]+)', decoded)
+                return {'value':[{'sdkmessageprocessingstepid':ident,'stage':40 if ident == post else 20,'mode':0,'statecode':0,'_eventhandler_value':'acquisition-id' if ident == post else 'guard-id'} for ident in ids]}
             if relative.startswith('EntityDefinitions('):
                 return {'LogicalName':'qmcp_wqdefinition','EntitySetName':'qmcp_wqdefinitions','IsOptimisticConcurrencyEnabled':True,'Keys':[{'EntityKeyIndexStatus':'Active'}]}
             if relative.startswith('connectionreferences?'):
-                logical = decoded.split("'")[1]
-                connector = next(c for refs in preflight._connection_expectations().values() for ref,c in refs.items() if ref == logical)
-                return {'value':[{'connectionreferencelogicalname':logical,'connectorid':connector,'connectionid':'synthetic-connection'}]}
+                logicals = re.findall(r"connectionreferencelogicalname eq '([^']+)'", decoded)
+                return {'value':[{'connectionreferencelogicalname':logical,'connectorid':next(c for refs in preflight._connection_expectations().values() for ref,c in refs.items() if ref == logical),'connectionid':'synthetic-connection'} for logical in logicals]}
             if relative.startswith('workflows?'):
-                return {'value':[{'name':'OnQueueChanged' if '656a2463' in decoded else 'flow','statecode':1 if '656a2463' in decoded else 0,'statuscode':2}]}
+                ids = re.findall(r'workflowid eq ([0-9a-f-]+)', decoded)
+                return {'value':[{'workflowid':ident,'name':'OnQueueChanged' if '656a2463' in ident else 'flow','statecode':1 if '656a2463' in ident else 0,'statuscode':2} for ident in ids]}
             if relative.startswith('callbackregistrations?'):
                 return {'value':[]}
             return {'value':[]}
