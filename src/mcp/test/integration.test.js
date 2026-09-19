@@ -20,7 +20,7 @@ test('MCP session ends; independent runtime finishes durable test; a new session
   const dir = await mkdtemp(path.join(tmpdir(), 'qmcp-')); const state = path.join(dir, 'state.json'); let client, worker;
   try {
     client = await connect(state);
-    const tools = await client.listTools(); assert.equal(tools.tools.length, 16);
+    const tools = await client.listTools(); assert.equal(tools.tools.length, 17);
     const resources = await client.listResources();
     assert.ok(resources.resources.some(resource => resource.uri === 'qmcp://wq/architecture/v0.1'));
     assert.ok(resources.resources.some(resource => resource.uri === 'qmcp://wq/flow/ProcessOne/v1'));
@@ -35,6 +35,10 @@ test('MCP session ends; independent runtime finishes durable test; a new session
     assert.equal(installation.redaction, 'default');
     assert.match(installation.planHash, /^[a-f0-9]{64}$/);
     assert.equal(installation.packages.length, 8);
+    const upgrade = await call(client, 'plan_upgrade', {});
+    assert.equal(upgrade.status, 'candidate-only');
+    assert.equal(upgrade.tenantImport, 'not-run');
+    assert.equal(upgrade.rollback.uninstallReinstall, false);
     const p = await call(client, 'plan_queue', { queueKey: 'mail' });
     await assert.rejects(call(client, 'provision_local_queue', { queueKey: 'mail', planHash: '0'.repeat(64) }), /PLAN_STALE/);
     await call(client, 'provision_local_queue', { queueKey: 'mail', planHash: p.planHash });

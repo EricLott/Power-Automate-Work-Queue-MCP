@@ -24,6 +24,8 @@ test('release candidate publishes a versioned compatibility matrix and provenanc
   assert.equal(release.compatibility.templates.version, '0.1.0.0');
   assert.equal(release.compatibility.envelope.version, '1.0');
   assert.equal(release.compatibility.referenceContract.id, 'mail.v1');
+  assert.equal(release.compatibility.upgradePolicy.path, 'config/upgrade-policy.json');
+  assert.equal(release.compatibility.upgradePolicy.version, '1');
   assert.equal(release.provenance.tenantImport, 'not-run');
   assert.equal(release.productionReady, false);
 });

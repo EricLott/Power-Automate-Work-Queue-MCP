@@ -5,6 +5,7 @@ import { inspect, plan, provision, scaffold, command, validateScaffold } from '.
 import { planInstallation } from './install.js';
 import { applyDeployment, deploymentStatus } from './deployment.js';
 import { planDeployment } from './deployment-plan.js';
+import { planUpgrade } from './upgrade.js';
 import { registerResources } from './resources.js';
 const server = new McpServer({ name: 'wq-mcp', version: '0.1.0' });
 const queueKey = z.string().regex(/^[a-z][a-z0-9_-]{0,63}$/);
@@ -24,6 +25,7 @@ server.registerTool('cancel_test_run', { description: 'Cancel pending test resul
 server.registerTool('test_evidence', { description: 'Read persisted local test evidence, including inconclusive results.', inputSchema: { queueKey, runId: z.string().uuid() }, annotations: { readOnlyHint: true } }, wrap(a => command('GetTestRun', a.queueKey, {}, { ItemId: a.runId })));
 server.registerTool('cleanup_test', { description: 'Remove only recorded successful-test-owned business records; retain diagnostic evidence.', inputSchema: { queueKey, runId: z.string().uuid() }, annotations: { destructiveHint: true } }, wrap(a => command('CleanupTestRun', a.queueKey, {}, { ItemId: a.runId })));
 server.registerTool('plan_deployment', { description: 'Read the configured development target and pinned package/settings inputs to produce an environment-bound deployment hash. Does not import or activate flows.', inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(planDeployment));
+server.registerTool('plan_upgrade', { description: 'Read-only local compatibility and recovery procedure for the pinned candidate. It does not import, migrate queues, or validate a tenant.', inputSchema: {}, annotations: { readOnlyHint: true } }, wrap(planUpgrade));
 server.registerTool('apply_deployment', { description: 'Launch a development import using the exact plan hash approved in the host configuration. The independent worker persists a journal and leaves flows Draft.', inputSchema: { planHash: z.string().regex(/^[a-f0-9]{64}$/), requestId: z.string().uuid() } }, wrap(applyDeployment));
 server.registerTool('deployment_status', { description: 'Read a deployment journal for the bound organization. A Running record is not proof that its worker is still alive.', inputSchema: { requestId: z.string().uuid() }, annotations: { readOnlyHint: true } }, wrap(deploymentStatus));
 registerResources(server);

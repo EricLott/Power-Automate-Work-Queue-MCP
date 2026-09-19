@@ -11,7 +11,8 @@
     "mcp": { "name": "wq-mcp", "version": "0.1.0", "sdk": "1.30.0", "node": ">=20" },
     "templates": { "path": "templates/catalog.json", "version": "0.1.0.0" },
     "envelope": { "path": "templates/native-envelope.schema.json", "version": "1.0" },
-    "referenceContract": { "path": "config/reference.json", "id": "mail.v1" }
+    "referenceContract": { "path": "config/reference.json", "id": "mail.v1" },
+    "upgradePolicy": { "path": "config/upgrade-policy.json", "version": "1" }
   },
   "provenance": { "source": "git", "artifactManifest": "artifacts/packages/manifest.json", "tenantImport": "not-run" },
   "packages": [

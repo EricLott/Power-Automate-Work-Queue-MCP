@@ -1,0 +1,12 @@
+{
+  "version": "1",
+  "activeAttemptHandling": "pause-and-drain-before-import",
+  "incomingEvents": "retain-and-reconcile-after-cutover",
+  "workerCutover": "one-compatible-version-per-queue",
+  "failureHandling": "stop-at-failed-package-and-preserve-journal",
+  "rollback": {
+    "uninstallReinstall": false,
+    "approvedRecovery": "forward-fix-or-environment-recovery"
+  },
+  "tenantValidationRequired": true
+}
