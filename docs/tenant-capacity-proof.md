@@ -25,7 +25,7 @@ The run does not measure burst capacity, platform throttling thresholds, retenti
 
 A separate authorized development-tenant experiment on 2026-09-19 requested five synthetic items at concurrency two. Three items completed before two concurrent `qmcp_WQ_PrepareAcquire` calls returned the redacted `DATAVERSE_CLI_FAILED` harness error. The two remaining synthetic items were reconciled serially through the normal lifecycle path; the final readback showed zero queued and zero Processing items. The result is recorded in [tenant-capacity-burst-2026-09-19.json](evidence/tenant-capacity-burst-2026-09-19.json).
 
-This is a client-bridge failure observation, not a Dataverse throttling or platform-capacity result. The experimental concurrent harness was not retained. Capacity evidence therefore remains sequential-only until [follow-up #108](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/108) establishes a supported concurrency-safe transport or documents the boundary.
+This is a client-bridge/lifecycle-concurrency failure observation, not a Dataverse throttling or platform-capacity result. A follow-up read-only probe showed two concurrent `WhoAmI` calls and two concurrent queue reads succeeding, so the failure is scoped to the concurrent lifecycle burst rather than all CLI concurrency. The experimental concurrent harness was not retained. Capacity evidence therefore remains sequential-only until [follow-up #108](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/108) establishes a supported concurrency-safe transport or documents the boundary.
 
 ## Service-protection boundary
 

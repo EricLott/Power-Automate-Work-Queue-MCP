@@ -17,6 +17,11 @@
     "failureRoute": "qmcp_WQ_PrepareAcquire",
     "observedDataverseRequests": 27,
     "requestMethods": {"GET": 5, "POST": 22},
+    "readOnlyConcurrencyProbe": {
+      "concurrentWhoAmI": {"requested": 2, "succeeded": 2},
+      "concurrentQueueReads": {"requested": 2, "succeeded": 2},
+      "organizationMatched": true
+    },
     "serviceProtectionSignalDetermined": false,
     "serviceLimitConclusion": "none"
   },
