@@ -168,4 +168,26 @@ public class RetentionPolicyTests
         Assert.Single(f.Store.Page("testresult", "mail", "", 100));
         Assert.Single(f.Store.Page("testcase", "mail", "", 100));
     }
+
+    [Fact]
+    public void RetentionPurgesCancelledQueuedEvidenceWithoutAnAttempt()
+    {
+        var f = new Fixture();
+        var policy = f.Policy();
+        policy.Destinations = Array.Empty<string>();
+        policy.Retention.EvidenceDays = 30;
+        f.Run(f.Cmd("RegisterQueue", policy, version: 1));
+
+        var run = (string)f.Run(f.Cmd("StartTestRun", new { cases = new[] { new TestCase { Id = "cancelled", Input = f.Envelope("cancelled") } } }))!["RunId"]!;
+        f.Run(f.Cmd("CancelTestRun", item: run));
+        var row = f.Store.Get("testrun", run)!;
+        row.Updated = f.Now.AddDays(-31);
+        f.Store.Put(row, row.Version);
+
+        var result = f.Run(f.Cmd("ApplyRetention"));
+        Assert.Equal(3, (int)result["EvidenceRowsPurged"]!);
+        Assert.Null(f.Store.Get("testrun", run));
+        Assert.Empty(f.Store.Page("testresult", "mail", "", 100));
+        Assert.Empty(f.Store.Page("testcase", "mail", "", 100));
+    }
 }

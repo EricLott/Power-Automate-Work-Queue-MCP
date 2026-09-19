@@ -454,10 +454,13 @@ public sealed partial class Engine
             if (native == null || native.Status == "Queued" || native.Status == "Processing") return false;
             var context = Get<ItemContext>("itemcontext", native.UniqueKey);
             if (context == null || context.ActiveAttempt != "" || context.ReviewRequired) return false;
-            var attempt = Get<Attempt>("attempt", context.LastAttempt);
-            if (attempt == null) return false;
-            var destinations = attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy.Destinations : policy.Destinations;
-            if (new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, destinations))) return false;
+            if (context.LastAttempt != "")
+            {
+                var attempt = Get<Attempt>("attempt", context.LastAttempt);
+                if (attempt == null) return false;
+                var destinations = attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy.Destinations : policy.Destinations;
+                if (new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, destinations))) return false;
+            }
         }
         foreach (var caseId in run.Results.Select(result => result.CaseId).Distinct(StringComparer.Ordinal))
             if (store.Get("testcase", Json.Hash(run.Id + "|" + caseId)) == null) return false;
