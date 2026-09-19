@@ -10,7 +10,8 @@
     "SafeEffects": true,
     "Contracts": ["mail.v1"],
     "Grants": { "local-developer": ["producer", "worker", "reader", "tester", "coordinator", "watchdog", "sender", "retry"] },
-    "Destinations": ["operations"]
+    "Destinations": ["operations"],
+    "Retention": { "PayloadDays": 30, "ReceiptDays": 30, "AttemptDays": 90, "EvidenceDays": 365, "ErrorDays": 90 }
   },
   "contract": {
     "Id": "mail.v1",

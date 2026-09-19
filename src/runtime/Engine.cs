@@ -79,7 +79,7 @@ public sealed partial class Engine
             case "RecoverExpiredAttempt": return Recover(c);
             case "ReportIntakeFailure": return IntakeFailure(c, d, p!);
             case "RunMaintenance": return Maintenance(c, d);
-            case "ApplyRetention": return Retention(c);
+            case "ApplyRetention": return Retention(c, p!);
             case "ClaimEvent": return ClaimEvent(c, a);
             case "FinishEvent": return FinishEvent(c, a, d);
             case "StartTestRun": return StartTest(c, a, d);
@@ -108,7 +108,9 @@ public sealed partial class Engine
         catch (Fault) { throw new Fault("POLICY_INVALID"); }
         if (p.Contracts == null || p.Destinations == null || p.Grants == null || p.Grants.Any(g => g.Value == null)) throw new Fault("POLICY_INVALID");
         if (!Guid.TryParse(p.NativeQueueId, out _) || p.MaxAttempts < 1 || p.MaxAttempts > 20 || p.LeaseSeconds < 1 || p.DeadlineSeconds < p.LeaseSeconds || p.DeadlineSeconds > 86400 ||
-           p.RetryBaseSeconds < 1 || p.RetryMaxSeconds < p.RetryBaseSeconds || p.RetryMaxSeconds > 86400 || p.Contracts.Length == 0 || p.Destinations.Length > 5 || p.Grants.Count == 0) throw new Fault("POLICY_INVALID");
+           p.RetryBaseSeconds < 1 || p.RetryMaxSeconds < p.RetryBaseSeconds || p.RetryMaxSeconds > 86400 || p.Contracts.Length == 0 || p.Destinations.Length > 5 || p.Grants.Count == 0 ||
+           p.Retention == null || p.Retention.PayloadDays < 1 || p.Retention.PayloadDays > 3650 || p.Retention.ReceiptDays < 1 || p.Retention.ReceiptDays > 3650 ||
+           p.Retention.AttemptDays < 1 || p.Retention.AttemptDays > 3650 || p.Retention.EvidenceDays < 1 || p.Retention.EvidenceDays > 3650 || p.Retention.ErrorDays < 1 || p.Retention.ErrorDays > 3650) throw new Fault("POLICY_INVALID");
         if (p.Grants.Any(g => g.Value.Any(r => !Roles.Values.Contains(r))) || p.Destinations.Any(x => x.Length < 1 || x.Length > 100)) throw new Fault("POLICY_INVALID");
         p.NativeQueueId=Guid.Parse(p.NativeQueueId).ToString();
         var previous = store.Get("definition", c.QueueKey);
@@ -419,19 +421,22 @@ public sealed partial class Engine
         return new { Outcome = "Swept", Changed = changed, NextCursor = next };
     }
     string Cursor(string queue, string purpose) => (string?)Get<JObject>("cursor", Json.Hash(queue + "|" + purpose))?["value"] ?? "";
-    object Retention(Command c)
+    object Retention(Command c, QueuePolicy policy)
     {
-        int inputs = 0, receipts = 0; var cutoff = clock().AddDays(-30);
+        int inputs = 0, receipts = 0;
+        var retention = policy.Retention;
+        var payloadCutoff = clock().AddDays(-retention.PayloadDays);
+        var receiptCutoff = clock().AddDays(-retention.ReceiptDays);
         var items = store.NativePage(c.QueueKey, Cursor(c.QueueKey, "input-retention"), 50);
         foreach (var item in items)
         {
             var context = Get<ItemContext>("itemcontext", item.UniqueKey);
             bool terminalForRetention = item.Status == "Processed" || (item.Status == "OnHold" && context?.TestCancelled == true);
-            if (terminalForRetention && item.Created < cutoff && context != null && !context.ReviewRequired && context.ActiveAttempt == "" && item.Input != "{}") { store.NativeRedactInput(item.Id); inputs++; }
+            if (terminalForRetention && item.Created < payloadCutoff && context != null && !context.ReviewRequired && context.ActiveAttempt == "" && item.Input != "{}") { store.NativeRedactInput(item.Id); inputs++; }
         }
         SetCursor(c.QueueKey, "input-retention", items.Count == 50 ? items.Last().Id : "");
         var commands = store.Page("command", c.QueueKey, Cursor(c.QueueKey, "receipt-retention"), 100);
-        foreach (var row in commands.Where(r => r.Updated < cutoff))
+        foreach (var row in commands.Where(r => r.Updated < receiptCutoff))
         {
             var receipt = Json.Read<Receipt>(row.Body); var result = Json.Object(receipt.Result, 1048576);
             if ((string?)result["Outcome"] == "ReplayExpired") continue;
@@ -440,7 +445,9 @@ public sealed partial class Engine
             receipt.Result = Json.Write(new { Outcome = "ReplayExpired" }); receipt.Reason = ""; Save("command", row.Key, receipt); receipts++;
         }
         SetCursor(c.QueueKey, "receipt-retention", commands.Count == 100 ? commands.Last().Key : "");
-        return new { Outcome = "RetentionApplied", InputsRedacted = inputs, ReceiptsRedacted = receipts, ReplayWindowDays = 30 };
+        return new { Outcome = "RetentionApplied", InputsRedacted = inputs, ReceiptsRedacted = receipts, ReplayWindowDays = retention.ReceiptDays,
+            Retention = new { PayloadDays = retention.PayloadDays, ReceiptDays = retention.ReceiptDays, AttemptDays = retention.AttemptDays, EvidenceDays = retention.EvidenceDays, ErrorDays = retention.ErrorDays },
+            ProtectedArtifacts = new[] { "active-attempts", "review-held-item-evidence", "test-evidence", "attempt-history", "error-history" } };
     }
     void SetCursor(string queue, string purpose, string value)
     {

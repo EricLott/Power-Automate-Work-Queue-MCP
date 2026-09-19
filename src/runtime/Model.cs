@@ -103,6 +103,15 @@ public sealed class QueuePolicy
     public string[] Contracts { get; set; } = Array.Empty<string>();
     public Dictionary<string, string[]> Grants { get; set; } = new Dictionary<string, string[]>();
     public string[] Destinations { get; set; } = Array.Empty<string>();
+    public RetentionPolicy Retention { get; set; } = new RetentionPolicy();
+}
+public sealed class RetentionPolicy
+{
+    public int PayloadDays { get; set; } = 30;
+    public int ReceiptDays { get; set; } = 30;
+    public int AttemptDays { get; set; } = 90;
+    public int EvidenceDays { get; set; } = 365;
+    public int ErrorDays { get; set; } = 90;
 }
 public sealed class Contract
 {
