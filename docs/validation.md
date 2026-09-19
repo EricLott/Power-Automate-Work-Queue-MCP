@@ -31,7 +31,7 @@ Snapshot reconciled with GitHub on **2026-09-13 UTC: six gates closed, sixteen o
 | [G19 Lifecycle bypass](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/88) | SDK guard tests and flow bypass lint | Direct writes and all registered pipeline paths |
 | [G20 Agent disconnect](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/89) | Actual stdio host shutdown and detached runtime completion | Installed flows/coordinator continue without MCP |
 | [G21 Upgrade](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/90) | Stable generated component IDs, customer isolation, state reload | Managed upgrade preserving data, registration and customer flows |
-| [G22 Capacity](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/91) | Bounded loops/pages, concurrent model regression | Measured tenant throughput, throttling, request budget and retention |
+| [G22 Capacity](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/91) | Bounded loops/pages, concurrent model regression | 2026-09-19 bounded tenant profile measured 5 sequential synthetic items, 37 Dataverse requests (7.4/item), 0 retries/errors and no observed throttling in [tenant-capacity-proof](tenant-capacity-proof.md); burst/throttle threshold, request budget, retention/storage and external-call limits remain open |
 
 Current environment inventory and access limitations: [proof environment](proof-environment.md). New experiments use the [evidence template](templates/proof-evidence.json).
 

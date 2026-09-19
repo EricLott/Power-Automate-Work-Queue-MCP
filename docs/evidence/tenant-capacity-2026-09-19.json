@@ -1,0 +1,38 @@
+{
+  "classification": "synthetic-development-tenant-capacity-profile",
+  "date": "2026-09-19",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "queueKey": "qmcp-proof-20260912",
+  "profile": {
+    "itemsRequested": 5,
+    "shape": "sequential enqueue/acquire/complete",
+    "queuePreflight": "Active; zero queued and zero Processing items"
+  },
+  "observations": {
+    "itemsProcessed": 5,
+    "finalNativeStates": {"Processed": 5},
+    "elapsedSeconds": 120.653157,
+    "itemsPerSecond": 0.041,
+    "observedDataverseRequests": 37,
+    "observedRequestsPerItem": 7.4,
+    "requestMethods": {"GET": 7, "POST": 30},
+    "retries": 0,
+    "errors": 0,
+    "throttlingObserved": false,
+    "promptCalls": 0,
+    "senderCalls": 0
+  },
+  "knownLimits": {
+    "requestedItemMaximum": 25,
+    "profileWasSequential": true,
+    "serviceLimitClaim": false,
+    "requestBudgetClaim": false,
+    "productionCapacityClaim": false
+  },
+  "limitations": [
+    "Synthetic development queue and payload only.",
+    "The measured rate includes one CLI process per Dataverse request and is not a platform throughput limit.",
+    "No burst, concurrency, throttling threshold, retention-cost, prompt, mailbox, or sender benchmark was performed."
+  ]
+}
