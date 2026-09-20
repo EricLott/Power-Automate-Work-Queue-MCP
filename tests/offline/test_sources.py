@@ -102,6 +102,23 @@ class FlowInvariantTests(unittest.TestCase):
         self.assertIn("contains(string(outputs('Acquired')?['Envelope']?['payload']?['bodyText'])",intent);self.assertIn("'please '",intent);self.assertIn("'what '",intent);self.assertIn("'explicit-request'",intent);self.assertIn("'explicit-question'",intent)
         self.assertEqual(make['ValidateIntent']['else']['actions']['RejectIntent']['metadata']['qmcpErrorCode'],'EXTRACTION_INTENT_UNSUPPORTED')
 
+    def test_intent_rejection_cannot_reach_business_output_or_complete(self):
+        flow=self.flow('ProcessOne')
+        actions=flow['properties']['definition']['actions']['HasWork']['actions']
+        business=actions['Business']
+        make=business['actions']['CreateIfAbsent']['actions']
+        rejection=make['ValidateIntent']['else']['actions']['RejectIntent']
+
+        # The injected validator failure must fail the business scope. The
+        # success-only dependencies below keep output lookup and Complete out
+        # of the rejection path even if the provider returns schema-valid JSON.
+        self.assertEqual(rejection['type'],'ParseJson')
+        self.assertEqual(rejection['metadata']['qmcpErrorCode'],'EXTRACTION_INTENT_UNSUPPORTED')
+        self.assertEqual(make['BusinessDocument']['runAfter'],{'ValidateIntent':['Succeeded']})
+        self.assertEqual(actions['OutputRecordId']['runAfter'],{'Business':['Succeeded']})
+        self.assertEqual(actions['Complete']['runAfter'],{'OutputRecordId':['Succeeded']})
+        self.assertEqual(actions['ReportFailure']['runAfter'],{'Business':['Failed','TimedOut']})
+
     def test_completion_retry_changed_output_is_rejected(self):
         flow=self.flow('ProcessOne');branch=flow['properties']['definition']['actions']['HasWork']['actions']
         branch['CompleteRetry']['inputs']['parameters']['item/DataJson']='{}'
