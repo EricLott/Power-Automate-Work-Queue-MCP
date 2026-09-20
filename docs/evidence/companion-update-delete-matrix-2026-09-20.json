@@ -1,0 +1,32 @@
+{
+  "classification": "synthetic-registered-companion-update-delete-matrix",
+  "date": "2026-09-20",
+  "environment": "authorized-development-tenant",
+  "queue": "qmcp-proof-f8283972",
+  "effectiveIdentityVerified": true,
+  "nativeRegisteredDelete": "LIFECYCLE_BYPASS; unchanged",
+  "companionTables": [
+    "definition",
+    "queuebinding",
+    "contract",
+    "itemcontext",
+    "attempt",
+    "command",
+    "event",
+    "cursor",
+    "intakefailure",
+    "testcase",
+    "testrun",
+    "testresult"
+  ],
+  "companionUpdateDenials": 12,
+  "companionDeleteDenials": 12,
+  "allDenials": "LIFECYCLE_BYPASS",
+  "allRowsUnchanged": true,
+  "documentHashesPublished": false,
+  "businessDataChanged": false,
+  "rolesChanged": false,
+  "queuePolicyChanged": false,
+  "completed": true,
+  "limitation": "The verified distinct identity retains administrator privileges; restricted-role least privilege and the complete producer/worker/reader/operator/installer matrix remain open."
+}
