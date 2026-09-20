@@ -1,0 +1,37 @@
+{
+  "classification": "synthetic-development-concurrent-sender",
+  "claimAttempts": [
+    {
+      "error": "VERSION_CONFLICT",
+      "eventId": null,
+      "outcome": "VERSION_CONFLICT"
+    },
+    {
+      "error": null,
+      "eventId": "ff060b7db76952c489695ad07ba550ee4b7c8e7bed97568fceec6715e8c7967c",
+      "outcome": "Claimed"
+    }
+  ],
+  "completed": true,
+  "cursorAfter": "7dc5e10fcd08e40b920d0ed11341e6388ef726cd8c2e45883d66f4ad3103efd4",
+  "date": "2026-09-20",
+  "destination": "qmcp-synthetic-outbox-proof",
+  "externalDestinationsUsed": false,
+  "finalState": "Pending",
+  "finalTries": 2,
+  "finishOutcome": "Pending",
+  "initialTries": 1,
+  "limitation": "This proves one winner and one safe loser (NoWork or the public VERSION_CONFLICT optimistic-contention response) for two concurrent sender claims on one synthetic event; connector acceptance, recipient delivery, and complete-Dataverse-outage behavior remain separate.",
+  "loserCount": 1,
+  "loserOutcome": "VERSION_CONFLICT",
+  "nativeItemPresent": false,
+  "nativeItemUnchanged": null,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "policyChanged": false,
+  "proofId": "716a7b8c-dc1b-46dc-8f97-c571020ebbc6",
+  "queueKey": "qmcp-proof-f8283972",
+  "targetEventId": "ff060b7db76952c489695ad07ba550ee4b7c8e7bed97568fceec6715e8c7967c",
+  "tenantCalls": true,
+  "winnerCount": 1,
+  "writesPerformed": true
+}
