@@ -1,0 +1,40 @@
+{
+  "classification": "synthetic-development-tenant-capacity-profile",
+  "completed": true,
+  "elapsedSeconds": 181.224472,
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "errors": 0,
+  "itemsProcessed": 10,
+  "itemsRequested": 10,
+  "itemsPerSecond": 0.055,
+  "limits": {
+    "productionCapacityClaim": false,
+    "profileShape": "sequential enqueue/acquire/complete",
+    "promptOrSenderCalls": 0,
+    "requestBudgetClaim": false,
+    "serviceLimitClaim": false
+  },
+  "nativeFinalStates": {
+    "Processed": 10
+  },
+  "observedRequestsPerItem": 7.2,
+  "observedRequestCount": 72,
+  "requestUsage": {
+    "byMethod": {
+      "GET": 12,
+      "POST": 60
+    }
+  },
+  "retries": 0,
+  "statusCode2Count": 10,
+  "throttlingObserved": false,
+  "writesPerformed": true,
+  "queueKey": "qmcp-proof-f8283972",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "limitations": [
+    "Synthetic development-tenant observation only.",
+    "Sequential profile; it does not establish burst capacity or a concurrency-safe lifecycle transport.",
+    "No service-protection threshold, production capacity, request budget, storage/cost, prompt, mailbox, or sender limit is claimed.",
+    "Synthetic target rows and queue items are retained as recorded evidence; no customer data was used."
+  ]
+}

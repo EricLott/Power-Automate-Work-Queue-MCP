@@ -8,6 +8,15 @@ The harness counts every Dataverse CLI request by method and route, records wall
 
 On 2026-09-19, five synthetic items completed in the authorized development queue. The run observed 37 Dataverse requests (7 GET, 30 POST; 7.4 requests per item), 120.653157 seconds elapsed, 0.041 sequential items/second, zero retries, zero errors, no observed throttling, and five final native `Processed` states. The redacted result is [tenant-capacity-2026-09-19.json](evidence/tenant-capacity-2026-09-19.json).
 
+On 2026-09-20, a fresh ten-item profile against the current bound synthetic
+queue completed all ten items in 181.224472 seconds. It observed 72
+Dataverse requests (12 GET, 60 POST; 7.2 requests per item), 0.055 sequential
+items/second, zero retries, zero errors, no observed throttling, and ten final
+native `Processed` states. The redacted result is
+[tenant-capacity-2026-09-20-10.json](evidence/tenant-capacity-2026-09-20-10.json).
+This is a stronger bounded sequential observation, not a service or production
+capacity guarantee.
+
 Reproduce with the authorized binding and ignored fixture ledger:
 
 ```powershell
