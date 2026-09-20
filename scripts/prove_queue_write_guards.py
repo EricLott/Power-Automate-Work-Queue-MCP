@@ -29,12 +29,17 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     for arg in ('binding', 'caller-object-id', 'expected-user-id', 'output'):
         p.add_argument('--' + arg, required=True)
+    p.add_argument('--queue-key', default='qmcp-proof-20260912',
+                   help='synthetic registered queue key present in the binding')
+    p.add_argument('--registered-queue-id', default=REGISTERED,
+                   help='native queue ID corresponding to --queue-key')
     p.add_argument('--execute', action='store_true')
     a = p.parse_args()
     binding = json.loads(Path(a.binding).read_text(encoding='utf-8-sig'))
     origin, organization = _validate_binding(binding)
     caller, expected = str(uuid.UUID(a.caller_object_id)), str(uuid.UUID(a.expected_user_id))
-    if binding.get('queueKeys') != ['qmcp-proof-20260912']:
+    registered_queue = str(uuid.UUID(a.registered_queue_id))
+    if binding.get('queueKeys') != [a.queue_key]:
         raise ValueError('EXACT_QUEUE_ALLOWLIST_REQUIRED')
     if not a.execute:
         print(json.dumps({'ready': True, 'tenantCalls': False}))
@@ -43,7 +48,8 @@ def main():
     output.parent.mkdir(parents=True, exist_ok=True)
     evidence = {'classification': 'synthetic-native-direct-write-comparison',
                 'organizationId': organization, 'completed': False,
-                'registeredQueueId': REGISTERED, 'unregisteredQueueId': UNREGISTERED,
+                'queueKey': a.queue_key,
+                'registeredQueueId': registered_queue, 'unregisteredQueueId': UNREGISTERED,
                 'newItemIds': [str(uuid.uuid4()), str(uuid.uuid4())], 'cases': [],
                 'cleanup': {'completed': False},
                 'limitations': ['Second effective identity has existing administrator privileges; not least-privilege proof.',
@@ -74,7 +80,7 @@ def main():
     for flow in FLOW_IDS:
         if call('GET', 'workflows(' + flow + ')?$select=statecode').get('statecode') != 0:
             raise ValueError('FLOWS_MUST_BE_DRAFT')
-    for queue, registered in ((REGISTERED, True), (UNREGISTERED, False)):
+    for queue, registered in ((registered_queue, True), (UNREGISTERED, False)):
         bindings = rows("qmcp_wqqueuebindings?$select=qmcp_key&$filter=qmcp_key eq '" + queue + "'&$top=2")
         if len(bindings) != (1 if registered else 0):
             raise ValueError('QUEUE_BINDING_MISMATCH')
@@ -108,7 +114,7 @@ def main():
                 'input': json.dumps(envelope), 'workqueueid@odata.bind': '/workqueues(' + queue + ')'}
     created = False
     try:
-        deny('registered-create', 'POST', 'workqueueitems', body(forbidden, REGISTERED))
+        deny('registered-create', 'POST', 'workqueueitems', body(forbidden, registered_queue))
         if item_rows(forbidden):
             raise ValueError('DENIED_CREATE_LEFT_ROW')
         call('POST', 'workqueueitems', body(disposable, UNREGISTERED), True)
@@ -123,7 +129,7 @@ def main():
             raise ValueError('DISPOSABLE_UPDATE_UNVERIFIED')
         evidence['cases'].append({'case': 'unregistered-update', 'verified': True})
         deny('move-into-registered', 'PATCH', 'workqueueitems(' + disposable + ')',
-             {'workqueueid@odata.bind': '/workqueues(' + REGISTERED + ')'})
+             {'workqueueid@odata.bind': '/workqueues(' + registered_queue + ')'})
         if item_rows(disposable) != before:
             raise ValueError('DENIED_MOVE_CHANGED_ROW')
         call('DELETE', 'workqueueitems(' + disposable + ')', impersonate=True)
