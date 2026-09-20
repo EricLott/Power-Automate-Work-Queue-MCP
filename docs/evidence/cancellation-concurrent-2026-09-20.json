@@ -1,0 +1,25 @@
+{
+  "classification": "synthetic-development-native-concurrent-cancellation",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "a066846a-52cb-4544-9ee4-9155ec829939",
+  "observations": {
+    "nativeBeforeRace": "Processing",
+    "winner": "CancelTestRun",
+    "loser": "Fail",
+    "loserFault": "VERSION_CONFLICT",
+    "winnerCount": 1,
+    "nativeConcurrencyVerified": true,
+    "finalRunState": "Cancelled",
+    "finalResultState": "Cancelled",
+    "finalNativeState": "Exception",
+    "reviewRequired": true,
+    "activeAttempt": false,
+    "externalDestinationsUsed": false
+  },
+  "limitations": [
+    "This proves the synthetic development cancellation/worker concurrency boundary and safe reconciliation.",
+    "It does not establish production throughput, separate-user authorization, disablement recovery, policy-revision behavior, or external-destination behavior."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "classification": "synthetic-development-active-worker-cancellation",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "a8aa4815-456d-4a1e-966e-3a99c375a34d",
+  "observations": {
+    "nativeBeforeCancel": "Processing",
+    "cancelReplayEqual": true,
+    "runStateAfterCancel": "Cancelled",
+    "resultStateAfterCancel": "Cancelled",
+    "activeAttemptAfterCancel": true,
+    "failureOutcomeAfterCancel": "ReviewRequired",
+    "finalNativeState": "Exception",
+    "finalReviewRequired": true,
+    "attemptCount": 1,
+    "businessOutput": false,
+    "externalDestinationsUsed": false
+  },
+  "limitations": [
+    "This proves the active-worker cancellation boundary and guarded failure reconciliation in the authorized development tenant.",
+    "It does not establish separate-user authorization, disablement recovery, policy-revision behavior, or production cancellation guarantees."
+  ]
+}
