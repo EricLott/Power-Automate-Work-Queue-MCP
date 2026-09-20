@@ -1,0 +1,40 @@
+{
+  "classification": "synthetic-development-scheduled-retention",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "060db4f3-e709-44d4-835c-dc6d807490a0",
+  "workflow": "Watchdog",
+  "ageDays": 366,
+  "workflowActivated": true,
+  "workflowRestored": true,
+  "finalWorkflowState": "Draft",
+  "scheduledObservations": {
+    "runMaintenance": {
+      "outcome": "Swept",
+      "changed": 0
+    },
+    "applyRetention": {
+      "outcome": "RetentionApplied",
+      "inputsRedacted": 1,
+      "receiptsRedacted": 1,
+      "evidenceRowsPurged": 3,
+      "protectedRows": 3
+    }
+  },
+  "observations": {
+    "redaction": {
+      "statecode": 2,
+      "statuscode": 2,
+      "inputRedacted": true
+    },
+    "protected": {
+      "statecode": 4,
+      "statuscode": 4,
+      "inputPreserved": true
+    },
+    "testRunPresentAfterRetention": false
+  },
+  "externalDestinationsUsed": false,
+  "limitation": "Synthetic scheduled Watchdog execution is proven; storage cost, managed-release compatibility, and broader scheduler behavior remain separate P7-04 gates."
+}
