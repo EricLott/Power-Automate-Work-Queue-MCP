@@ -103,7 +103,16 @@ public sealed class QueuePolicy
     public string[] Contracts { get; set; } = Array.Empty<string>();
     public Dictionary<string, string[]> Grants { get; set; } = new Dictionary<string, string[]>();
     public string[] Destinations { get; set; } = Array.Empty<string>();
+    public NotificationRule[] NotificationRules { get; set; } = Array.Empty<NotificationRule>();
     public RetentionPolicy Retention { get; set; } = new RetentionPolicy();
+}
+public sealed class NotificationRule
+{
+    public string[] Events { get; set; } = Array.Empty<string>();
+    public string Destination { get; set; } = "";
+    public bool Enabled { get; set; } = true;
+    public int CooldownSeconds { get; set; }
+    public string Redaction { get; set; } = "Safe";
 }
 public sealed class RetentionPolicy
 {

@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 namespace QueueFramework;
 public sealed partial class Engine
 {
+    static readonly HashSet<string> NotificationKinds = new(StringComparer.Ordinal) { "Processed", "RetryScheduled", "ReviewRequired", "IntakeFailure" };
     readonly IStore store;
     readonly Func<DateTime> clock;
     public Engine(IStore store, Func<DateTime>? clock = null) { this.store = store; this.clock = clock ?? (() => DateTime.UtcNow); }
@@ -114,12 +115,14 @@ public sealed partial class Engine
         QueuePolicy p;
         try { p = Json.ToObject<QueuePolicy>(d); }
         catch (Fault) { throw new Fault("POLICY_INVALID"); }
-        if (p.Contracts == null || p.Destinations == null || p.Grants == null || p.Grants.Any(g => g.Value == null)) throw new Fault("POLICY_INVALID");
+        if (p.Contracts == null || p.Destinations == null || p.NotificationRules == null || p.Grants == null || p.Grants.Any(g => g.Value == null)) throw new Fault("POLICY_INVALID");
         if (!Guid.TryParse(p.NativeQueueId, out _) || p.MaxAttempts < 1 || p.MaxAttempts > 20 || p.LeaseSeconds < 1 || p.DeadlineSeconds < p.LeaseSeconds || p.DeadlineSeconds > 86400 ||
-           p.RetryBaseSeconds < 1 || p.RetryMaxSeconds < p.RetryBaseSeconds || p.RetryMaxSeconds > 86400 || p.Contracts.Length == 0 || p.Destinations.Length > 5 || p.Grants.Count == 0 ||
+           p.RetryBaseSeconds < 1 || p.RetryMaxSeconds < p.RetryBaseSeconds || p.RetryMaxSeconds > 86400 || p.Contracts.Length == 0 || p.Destinations.Length > 5 || p.Grants.Count == 0 || p.NotificationRules.Length > 20 ||
            p.Retention == null || p.Retention.PayloadDays < 1 || p.Retention.PayloadDays > 3650 || p.Retention.ReceiptDays < 1 || p.Retention.ReceiptDays > 3650 ||
            p.Retention.AttemptDays < 1 || p.Retention.AttemptDays > 3650 || p.Retention.EvidenceDays < 1 || p.Retention.EvidenceDays > 3650 || p.Retention.ErrorDays < 1 || p.Retention.ErrorDays > 3650) throw new Fault("POLICY_INVALID");
-        if (p.Grants.Any(g => g.Value.Any(r => !Roles.Values.Contains(r))) || p.Destinations.Any(x => x.Length < 1 || x.Length > 100)) throw new Fault("POLICY_INVALID");
+        if (p.Grants.Any(g => g.Value.Any(r => !Roles.Values.Contains(r))) || p.Destinations.Any(x => !SafeDestinationKey(x)) || p.NotificationRules.Any(rule =>
+            rule.Events == null || rule.Events.Length == 0 || rule.Events.Length > 4 || rule.Events.Any(kind => !NotificationKinds.Contains(kind)) ||
+            !SafeDestinationKey(rule.Destination) || rule.CooldownSeconds < 0 || rule.CooldownSeconds > 86400 || rule.Redaction != "Safe")) throw new Fault("POLICY_INVALID");
         p.NativeQueueId=Guid.Parse(p.NativeQueueId).ToString();
         var previous = store.Get("definition", c.QueueKey);
         if (previous == null) { p.Revision = 1; Add("definition", c.QueueKey, c.QueueKey, p);Add("queuebinding",p.NativeQueueId,c.QueueKey,new { QueueKey=c.QueueKey }); }
@@ -371,10 +374,39 @@ public sealed partial class Engine
         var page = store.NativePage(c.QueueKey, c.ItemId, 100);
         return new { Outcome = "Health", policy.Enabled, policy.Revision, CountInPage = page.Count, OldestInPage = page.Count == 0 ? (DateTime?)null : page.Min(x => x.Created), Items = page.Select(i => new { i.Id, i.Status, i.Available, i.Expires }), NextCursor = page.Count == 100 ? page.Last().Id : null };
     }
+    static bool SafeDestinationKey(string value) => value.Length is >= 1 and <= 100 && value.All(ch => (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch is '-' or '_');
+    static IEnumerable<NotificationRule> NotificationRulesFor(QueuePolicy policy, string kind)
+    {
+        if (policy.NotificationRules.Length == 0) return policy.Destinations.Distinct(StringComparer.Ordinal).Select(destination => new NotificationRule { Events = new[] { kind }, Destination = destination });
+        return policy.NotificationRules.Where(rule => rule.Enabled && rule.Events.Contains(kind, StringComparer.Ordinal));
+    }
+    static string[] NotificationDestinations(QueuePolicy policy, string kind)
+    {
+        return NotificationRulesFor(policy, kind).Select(rule => rule.Destination).Distinct(StringComparer.Ordinal).ToArray();
+    }
+    bool InNotificationCooldown(string queue, string item, string attempt, string kind, NotificationRule rule)
+    {
+        if (rule.CooldownSeconds == 0) return false;
+        var cutoff = clock().AddSeconds(-rule.CooldownSeconds); var after = "";
+        for (var pageNumber = 0; pageNumber < 10; pageNumber++)
+        {
+            var page = store.Page("event", queue, after, 100);
+            foreach (var row in page)
+            {
+                var prior = Json.Read<Delivery>(row.Body);
+                if (prior.ItemId == item && prior.AttemptId != attempt && prior.Kind == kind && prior.Destination == rule.Destination && row.Updated >= cutoff) return true;
+            }
+            if (page.Count < 100) return false;
+            after = page.Last().Key;
+        }
+        return true;
+    }
     void Events(string queue, string item, string attempt, string kind, QueuePolicy policy)
     {
-        foreach (var dest in policy.Destinations)
+        foreach (var rule in NotificationRulesFor(policy, kind))
         {
+            if (InNotificationCooldown(queue, item, attempt, kind, rule)) continue;
+            var dest = rule.Destination;
             string key = Json.Hash(queue + "|" + item + "|" + attempt + "|" + kind + "|" + dest);
             if (store.Get("event", key) == null) Add("event", key, queue, new Delivery { Id = key, ItemId = item, AttemptId = attempt, Kind = kind, Destination = dest, NextAttempt = clock() });
         }
@@ -383,7 +415,7 @@ public sealed partial class Engine
     {
         string source = Required(d, "source", 500), correlation = Required(d, "correlationId", 100), code = Required(d, "code", 100);
         var id = Json.Hash(c.QueueKey + "|" + source + "|" + correlation + "|" + code);
-        if (store.Get("intakefailure", id) == null) Add("intakefailure", id, c.QueueKey, new { SourceHash = Json.Hash(source), CorrelationId = correlation, Code = code, Destinations = p.Destinations });
+        if (store.Get("intakefailure", id) == null) Add("intakefailure", id, c.QueueKey, new { SourceHash = Json.Hash(source), CorrelationId = correlation, Code = code, Destinations = NotificationDestinations(p, "IntakeFailure") });
         Events(c.QueueKey, "", id, "IntakeFailure", p);
         return new { Outcome = "Recorded", FailureId = id };
     }
@@ -441,6 +473,7 @@ public sealed partial class Engine
         }
         return false;
     }
+    bool HasActiveDelivery(string queue, string itemId, string attemptId, string kind, QueuePolicy policy) => HasActiveDelivery(queue, itemId, attemptId, kind, NotificationDestinations(policy, kind));
     bool AttemptCanBePurged(string queue, Attempt attempt, QueuePolicy policy)
     {
         if (attempt.Outcome == "Processing") return false;
@@ -449,8 +482,8 @@ public sealed partial class Engine
         var context = Get<ItemContext>("itemcontext", native.UniqueKey);
         if (context == null || context.ActiveAttempt != "" || context.ReviewRequired || context.LastAttempt == attempt.Id) return false;
         if (native.Status != "Processed" && native.Status != "Exception") return false;
-        var destinations = attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy.Destinations : policy.Destinations;
-        return !new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, destinations));
+        var effectivePolicy = attempt.Policy?.NotificationRules?.Length > 0 || attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy : policy;
+        return !new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, effectivePolicy));
     }
     bool TestRunCanBePurged(string queue, TestRun run, QueuePolicy policy)
     {
@@ -466,8 +499,8 @@ public sealed partial class Engine
             {
                 var attempt = Get<Attempt>("attempt", context.LastAttempt);
                 if (attempt == null) return false;
-                var destinations = attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy.Destinations : policy.Destinations;
-                if (new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, destinations))) return false;
+                var effectivePolicy = attempt.Policy?.NotificationRules?.Length > 0 || attempt.Policy?.Destinations?.Length > 0 ? attempt.Policy : policy;
+                if (new[] { "Processed", "RetryScheduled", "ReviewRequired" }.Any(kind => HasActiveDelivery(queue, native.Id, attempt.Id, kind, effectivePolicy))) return false;
             }
         }
         foreach (var caseId in run.Results.Select(result => result.CaseId).Distinct(StringComparer.Ordinal))
