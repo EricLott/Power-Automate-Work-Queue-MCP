@@ -1,0 +1,48 @@
+{
+  "observedAt": "2026-09-20",
+  "classification": "local-release-build-roundtrip",
+  "source": {
+    "repository": "EricLott/Power-Automate-Work-Queue-MCP",
+    "commit": "faae9ff",
+    "command": ".\\scripts\\build.ps1 -SkipRestore"
+  },
+  "release": {
+    "version": "0.1.0.0",
+    "publisherPrefix": "qmcp",
+    "packageCount": 4,
+    "archiveCount": 8,
+    "tenantImport": "not-run",
+    "productionReady": false
+  },
+  "observed": {
+    "runtimeAndPluginBuilds": {
+      "targetFrameworks": ["net462", "net8.0"],
+      "errors": 0
+    },
+    "packageRoundTrips": {
+      "WQCore": "passed",
+      "WQTesting": "passed",
+      "WQNotificationsEmail": "passed",
+      "WQReferenceSharedMailbox": "passed"
+    },
+    "archiveStructure": {
+      "WQCore": {"unmanaged": "passed", "managed": "passed", "entries": 183},
+      "WQTesting": {"unmanaged": "passed", "managed": "passed", "entries": 58},
+      "WQNotificationsEmail": {"unmanaged": "passed", "managed": "passed", "entries": 4},
+      "WQReferenceSharedMailbox": {"unmanaged": "passed", "managed": "passed", "entries": 7}
+    },
+    "generatedFlowInvariants": "passed",
+    "manifest": "artifacts/packages/manifest.json"
+  },
+  "remainingBindingGates": [
+    "plug-in API and guard registration",
+    "AI Builder prompt action",
+    "connection references",
+    "queue owner-team configuration"
+  ],
+  "limitations": [
+    "This is local build and package round-trip evidence only.",
+    "No tenant import, activation, connector binding, permission validation, upgrade validation, or production suitability is established.",
+    "Artifacts and logs contain no customer payloads, credentials, connection tokens, or mailbox content."
+  ]
+}
