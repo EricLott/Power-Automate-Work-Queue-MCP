@@ -51,7 +51,7 @@ The issue has a concrete outcome, bounded implementation steps, testable accepta
 6. New defects, risks and remaining work are linked as issues; no required work is hidden in a completion comment.
 7. Update project status and close the issue. Close an epic only after required children and its exit criterion are complete.
 
-A missing permission, unavailable output, timeout or inconclusive result never passes a gate. A worker-reported success is insufficient proof of business output. G01–G22 block final release review, and all remain open until tested.
+A missing permission, unavailable output, timeout or inconclusive result never passes a gate. A worker-reported success is insufficient proof of business output. By default G01–G22 block final release review and remain open until tested; the approved [existing-environment MVP scope decision](decisions/2026-09-20-existing-env-mvp-scope.md) explicitly defers G01, G18 and G21 from the current release tier without representing them as passed.
 
 ## Working routine for future work
 

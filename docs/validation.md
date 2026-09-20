@@ -6,13 +6,24 @@ The [2026-09-12 local evidence record](local-evidence.md) includes historical te
 
 ## Gate mapping
 
-Snapshot reconciled with GitHub on **2026-09-20 UTC: nineteen gates closed, three open**. GitHub remains the live authority. The table records coverage and residual scope; closed gates do not imply completion of adjacent integration or release work. Selected synthetic tenant evidence is recorded in the [import ledger](live-import.md), including native handoff/recovery, installed autonomous Watchdog/coordinator execution, and active-worker test cancellation; it does not satisfy every gate criterion. “Local coverage” describes an executable check or an artifact, not a gate pass.
+Snapshot reconciled with GitHub on **2026-09-20 UTC: nineteen gates closed, three explicitly deferred by MVP scope decision**. GitHub remains the live authority. The table records coverage and residual scope; closed gates do not imply completion of adjacent integration or release work. Selected synthetic tenant evidence is recorded in the [import ledger](live-import.md), including native handoff/recovery, installed autonomous Watchdog/coordinator execution, and active-worker test cancellation; it does not satisfy every gate criterion. “Local coverage” describes an executable check or an artifact, not a gate pass.
+
+## Approved MVP scope decision — 2026-09-20
+
+The user approved using the existing authorized development environment as the
+MVP validation target. A sterile clean-install environment, a separate
+non-administrator authorization matrix, and a managed-baseline upgrade run are
+not required for this scoped MVP. These items are explicitly deferred rather
+than represented as passed: the current evidence remains 19 verified gates,
+with G01, G18, and G21 retained as follow-up work for a future release tier.
+The release record must continue to identify those unverified platform
+guarantees and must not infer them from the existing synthetic proofs.
 
 The current full local verification is 126 runtime tests, 50 plug-in tests, 159 Python offline tests, and 50 MCP tests, with structural validation passing. These results verify the repository candidate only; they do not close a tenant gate.
 
 | Gate | Local coverage | Remaining live evidence |
 |---|---|---|
-| [G01 Clean install](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/70) | PAC pack/unpack, metadata/catalog checks, hash-bound no-write plan in [clean-install-plan-2026-09-19.json](evidence/clean-install-plan-2026-09-19.json), and read-only clean candidate in [clean-install-candidate-2026-09-19.json](evidence/clean-install-candidate-2026-09-19.json) | Import, key activation, API binding, app and connection checks |
+| [G01 Clean install](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/70) | PAC pack/unpack, metadata/catalog checks, hash-bound no-write plan in [clean-install-plan-2026-09-19.json](evidence/clean-install-plan-2026-09-19.json), and read-only clean candidate in [clean-install-candidate-2026-09-19.json](evidence/clean-install-candidate-2026-09-19.json) | **Deferred by approved MVP scope:** sterile-environment import, key activation, API binding, app and connection checks |
 | [G02 Intake duplicate](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/71) | Stable deduplication and long mailbox identity tests | Closed: sequential and concurrent duplicate reuse; see [intake proof](intake-proof.md). Real mailbox integration remains separate. |
 | [G03 Intake conflict](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/72) | Content mismatch rejected without another item | Closed: sequential and concurrent content conflicts rejected; see [intake proof](intake-proof.md). |
 | [G04 Acquisition concurrency](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/73) | Concurrent local acquisition and SDK dequeue request tests | Closed: competing acquisition identities, one winner and replay; see [identity proof](acquisition-identity-proof.md). Separate-identity authorization and load remain separate. |
@@ -29,10 +40,10 @@ The current full local verification is 126 runtime tests, 50 plug-in tests, 159 
 | [G15 Test isolation](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/84) | Production denial, scoped cleanup, rollback/hold tests | **Closed:** one synthetic coordinator record was scoped, deleted, and shown to preserve five prior outputs; local isolation tests reject production destinations and unscoped cleanup. Separate-role privilege isolation remains G18 scope. |
 | [G16 Test evidence](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/85) | Output read, expected fields, errors, attempts, notifications, and cancellation state | **Closed:** installed coordinator independently asserted positive and negative native/business outcomes plus queued/active cancellation state; see [reference-quality-2026-09-19](evidence/reference-quality-2026-09-19.json), [queued cancellation](evidence/test-cancellation-2026-09-20.json), and [active cancellation](evidence/cancellation-active-2026-09-20.json). Real mailbox and external connector behavior remain separate gates. |
 | [G17 AI extraction](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/86) | Output schema, versioned prompt, repeated fixture runs | **Closed:** isolated installed v1.2 quality run and three repeated fixture runs passed structured field/provenance checks, while the earlier failed run remains visible; direct intent-rejection evidence also passed. Real mailbox integration and flow-specific connector response loss remain separate gates. |
-| [G18 Authorization](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/87) | Role/queue denial, caller identity, environment binding tests; [fresh direct-write](evidence/queue-write-guards-2026-09-20.json) and [registered-delete/companion](evidence/registered-delete-companion-2026-09-20.json) evidence | Native/table/team privileges under separate restricted identities; complete producer/worker/reader/operator/installer matrix |
+| [G18 Authorization](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/87) | Role/queue denial, caller identity, environment binding tests; [fresh direct-write](evidence/queue-write-guards-2026-09-20.json) and [registered-delete/companion](evidence/registered-delete-companion-2026-09-20.json) evidence | **Deferred by approved MVP scope:** native/table/team privileges under separate restricted identities and the complete producer/worker/reader/operator/installer matrix |
 | [G19 Lifecycle bypass](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/88) | SDK guard tests, flow bypass lint, [registered-delete/companion](evidence/registered-delete-companion-2026-09-20.json), and [all-companion update/delete matrix](evidence/companion-update-delete-matrix-2026-09-20.json) evidence | **Closed:** all 12 configured companion tables returned exact `LIFECYCLE_BYPASS` for Update and Delete with unchanged independent readbacks; registered native Delete was denied too. Repository validation and the installed registration matrix cover the lifecycle pipeline paths. Restricted-role authorization remains G18 scope. |
 | [G20 Agent disconnect](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/89) | Actual stdio host shutdown and detached runtime completion | **Closed:** fresh combined proof started the synthetic test through MCP, closed the client before observation, and verified installed flows/coordinator completed Passed/Processed with Cleanup: Completed; see [MCP autonomous disconnect evidence](evidence/mcp-autonomous-disconnect-2026-09-20.json). Broader host/event/identity/mailbox/release acceptance remains separate gates. |
-| [G21 Upgrade](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/90) | Stable generated component IDs, customer isolation, state reload | Managed upgrade preserving data, registration and customer flows |
+| [G21 Upgrade](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/90) | Stable generated component IDs, customer isolation, state reload | **Deferred by approved MVP scope:** managed upgrade preserving data, registration and customer flows |
 | [G22 Capacity](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/91) | Bounded loops/pages, concurrent model regression | **Closed:** fresh 2026-09-20 sequential profile completed 10 synthetic items with 72 Dataverse requests (7.2/item), 0 retries/errors, no observed throttling, and 10/10 `Processed` in [tenant-capacity-2026-09-20-10](evidence/tenant-capacity-2026-09-20-10.json). Concurrency transport, service-protection threshold, request budget, retention/storage/cost and external-call limits remain explicitly bounded residuals; concurrency bridge work is tracked in [#108](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/108). |
 
 Current environment inventory and access limitations: [proof environment](proof-environment.md). New experiments use the [evidence template](templates/proof-evidence.json).
@@ -40,9 +51,10 @@ Current environment inventory and access limitations: [proof environment](proof-
 The 2026-09-20 authorization audit found no assignments of the installed
 `WQCore` or `WQTesting` Worker/Reader roles. The operator and recorded distinct
 caller both retain System Administrator, so restricted-role native privilege
-evidence is not available from existing identities. Follow-up [#112](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/112)
-is tracked on the project board as Blocked pending a dedicated development
-validation identity; no existing user roles were changed.
+evidence is not available from existing identities. Per the approved MVP scope
+decision, follow-up [#112](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/112)
+is deferred for a future least-privilege release tier; no existing user roles
+were changed.
 
 ## Evidence requirements
 
