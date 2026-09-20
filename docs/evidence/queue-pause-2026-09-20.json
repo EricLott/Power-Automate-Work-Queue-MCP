@@ -1,0 +1,21 @@
+{
+  "classification": "synthetic-native-queue-pause",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "observations": {
+    "originalEnabled": true,
+    "pauseOutcome": "QueuePaused",
+    "nativeRowUnchanged": true,
+    "seededItemLeftQueued": true,
+    "policyRestored": true,
+    "policyRevisionBefore": 14,
+    "pauseRevision": 15,
+    "restoredRevision": 16,
+    "externalDestinationsUsed": false
+  },
+  "limitations": [
+    "This proves the framework disabled-wake-up boundary for one synthetic queued item in the authorized development tenant.",
+    "It does not establish event-parent activation, separate-user authorization, production behavior, or the remaining P3-07 orphan/policy-revision matrix."
+  ]
+}

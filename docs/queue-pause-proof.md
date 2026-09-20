@@ -19,6 +19,10 @@ This proves refusal at PrepareAcquire under the framework policy. It does not es
 
 The follow-up tenant experiment passed on 2026-09-13: preparation while enabled succeeded, then disabling the policy prevented the subsequent native dequeue transition. The exact item-specific Dataverse error identified LIFECYCLE_BYPASS. Independent reads found an unchanged native row including ETag, zero attempts, and Pending resolution for the same acquisition request. Policy restoration was verified at revision 12.
 
+## Current-fixture checkpoint — 2026-09-20
+
+The proof was rerun against the current authorized synthetic queue `qmcp-proof-f8283972`. `PrepareAcquire` returned `QueuePaused`; the seeded native item remained queued with unchanged selected state, status and ETag; and the original enabled policy was restored. The policy revision advanced from 14 to 15 for the pause and to 16 after restoration. Redacted observations are in [queue-pause-2026-09-20.json](evidence/queue-pause-2026-09-20.json). This strengthens the disabled-wake-up portion of P3-07; event-parent activation and broader recovery boundaries remain open.
+
 The installed pre-operation guard checks Enabled before the post-operation AcceptAcquire handler. Consequently this boundary produces the wrapped LIFECYCLE_BYPASS rejection, rather than the later handler's QUEUE_PAUSED. No runtime behavior was relaxed to pass the test. The parser requires the observed outer code, nested error type, exact item ID and exact message; unrelated failures remain inconclusive.
 
 [All attempt evidence](evidence/prepared-pause-2026-09-13.json) preserves the initial unexpected-fault result, two inconclusive preparation attempts (the diagnosed one returned ACQUIRE_BUSY), the diagnostic guard rejection, and the final pass. The live acquisition cursor was read to establish its expiration before the final attempt. Successful policy restorations advanced revisions; failed preparation made no policy write.
