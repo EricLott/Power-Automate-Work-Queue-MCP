@@ -49,6 +49,12 @@ def flow_parameters(clientdata):
     return json.loads(clientdata)["properties"]["definition"]["parameters"]
 
 
+def suspend_automatic_cleanup(temporary):
+    actions = temporary["properties"]["definition"]["actions"]
+    advance = actions.get("Advance", {}).get("actions", {})
+    return advance.pop("CleanupIfPassed", None) is not None
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--binding", required=True)
@@ -127,6 +133,7 @@ def main(argv=None):
         normalize_hosts(temporary)
         if name == "TestCoordinator":
             evidence["definitionRepaired"] = repair_coordinator_cleanup(temporary)
+            evidence["automaticCleanupSuspended"] = suspend_automatic_cleanup(temporary)
         parameters = temporary["properties"]["definition"]["parameters"]
         if name in ("ProcessOne", "SweepQueue"):
             parameters["qmcp_QueueKey"]["defaultValue"] = queue
