@@ -22,6 +22,7 @@ The isolated 2026-09-20 run passed on a separate synthetic native queue. It
 observed autonomous `ProcessOne` / `SweepQueue` processing, a Passed run, and a
 coordinator `CleanupTestRun` receipt with `Cleanup: Completed`; postconditions
 verified all temporary flows Draft, zero active queue items, and deletion of
-the proof-owned business record. The installed coordinator definition needed
-the temporary cleanup-branch repair described above. The retained
-queue-pause fixture was not processed or deleted.
+the proof-owned business record. The installed Draft coordinator was then
+aligned permanently with the checked-in cleanup branch, without activation;
+the read-back is in [`coordinator-definition-alignment-2026-09-20.json`](evidence/coordinator-definition-alignment-2026-09-20.json).
+The retained queue-pause fixture was not processed or deleted.

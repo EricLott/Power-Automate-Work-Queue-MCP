@@ -1,0 +1,16 @@
+{
+  "classification": "installed-draft-coordinator-definition-alignment",
+  "date": "2026-09-20",
+  "flow": "TestCoordinator",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "originalHadCleanupIfPassed": false,
+  "updatedHasCleanupIfPassed": true,
+  "updatedRequestIds": [
+    "AdvanceTestRun",
+    "CleanupTestRun"
+  ],
+  "state": "Draft",
+  "status": "Draft",
+  "activated": false,
+  "externalDestinationsUsed": false
+}
