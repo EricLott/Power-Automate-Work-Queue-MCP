@@ -145,7 +145,7 @@ def generate():
     save('TestCoordinator','WQTesting',workflow('TestCoordinator',recurrence(),a))
     claim=action('ClaimEvent',after='RequestIds')
     event="json(body('ClaimEvent')?['ResultJson'])?['Event']"
-    send=connector('SendEmailV2',{'emailMessage/To':"@parameters('qmcp_NotificationAddress')",'emailMessage/Subject':"@concat('Queue event ', "+event+"?['Id'])",'emailMessage/Body':"@concat('Queue: ',parameters('qmcp_QueueKey'),'<br>Event: ',"+event+"?['Id'],'<br>Item: ',"+event+"?['ItemId'],'<br>Disposition: ',"+event+"?['Kind'])"},connection='qmcp_Outlook',api=outlook)
+    send=connector('SendEmailV2',{'emailMessage/To':"@parameters('qmcp_NotificationAddress')",'emailMessage/Subject':"@concat('Queue event ', "+event+"?['Id'])",'emailMessage/Body':"@concat('Queue: ',parameters('qmcp_QueueKey'),'<br>Event: ',"+event+"?['Id'],'<br>Item: ',"+event+"?['ItemId'],'<br>Disposition: ',"+event+"?['Kind'],'<br>Operations: ',coalesce("+event+"?['OperationsLink'],''))"},connection='qmcp_Outlook',api=outlook)
     finish=lambda ok:action('FinishEvent',"@string(setProperty(setProperty(setProperty(setProperty(json('{}'),'eventId',"+event+"?['Id']),'leaseToken',"+event+"?['LeaseToken']),'accepted',"+str(ok).lower()+"),'code','SENDER_FAILED'))")
     a={'RequestIds':request_ids(['ClaimEvent','FinishEvent']),'ClaimEvent':claim,'HasEvent':{'type':'If','expression':{'equals':["@json(body('ClaimEvent')?['ResultJson'])?['Outcome']",'Claimed']},'actions':{'Send':send,'Accepted':finish(True),'Rejected':finish(False)},'else':{'actions':{}},'runAfter':{'ClaimEvent':['Succeeded']}}}
     a['HasEvent']['actions']['Accepted']['runAfter']={'Send':['Succeeded']};a['HasEvent']['actions']['Rejected']['runAfter']={'Send':['Failed','TimedOut']}

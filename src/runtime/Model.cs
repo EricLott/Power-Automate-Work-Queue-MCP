@@ -104,6 +104,7 @@ public sealed class QueuePolicy
     public Dictionary<string, string[]> Grants { get; set; } = new Dictionary<string, string[]>();
     public string[] Destinations { get; set; } = Array.Empty<string>();
     public NotificationRule[] NotificationRules { get; set; } = Array.Empty<NotificationRule>();
+    public string OperationsBaseUrl { get; set; } = "";
     public RetentionPolicy Retention { get; set; } = new RetentionPolicy();
 }
 public sealed class NotificationRule
@@ -181,6 +182,7 @@ public sealed class Delivery
     public string State { get; set; } = "Pending";
     public string Owner { get; set; } = "";
     public string LeaseToken { get; set; } = "";
+    public string OperationsLink { get; set; } = "";
     public DateTime LeaseExpires { get; set; }
     public DateTime NextAttempt { get; set; }
     public int Tries { get; set; }

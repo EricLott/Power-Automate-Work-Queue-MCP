@@ -117,7 +117,7 @@ public sealed partial class Engine
         catch (Fault) { throw new Fault("POLICY_INVALID"); }
         if (p.Contracts == null || p.Destinations == null || p.NotificationRules == null || p.Grants == null || p.Grants.Any(g => g.Value == null)) throw new Fault("POLICY_INVALID");
         if (!Guid.TryParse(p.NativeQueueId, out _) || p.MaxAttempts < 1 || p.MaxAttempts > 20 || p.LeaseSeconds < 1 || p.DeadlineSeconds < p.LeaseSeconds || p.DeadlineSeconds > 86400 ||
-           p.RetryBaseSeconds < 1 || p.RetryMaxSeconds < p.RetryBaseSeconds || p.RetryMaxSeconds > 86400 || p.Contracts.Length == 0 || p.Destinations.Length > 5 || p.Grants.Count == 0 || p.NotificationRules.Length > 20 ||
+           p.RetryBaseSeconds < 1 || p.RetryMaxSeconds < p.RetryBaseSeconds || p.RetryMaxSeconds > 86400 || p.Contracts.Length == 0 || p.Destinations.Length > 5 || p.Grants.Count == 0 || p.NotificationRules.Length > 20 || !SafeOperationsBaseUrl(p.OperationsBaseUrl) ||
            p.Retention == null || p.Retention.PayloadDays < 1 || p.Retention.PayloadDays > 3650 || p.Retention.ReceiptDays < 1 || p.Retention.ReceiptDays > 3650 ||
            p.Retention.AttemptDays < 1 || p.Retention.AttemptDays > 3650 || p.Retention.EvidenceDays < 1 || p.Retention.EvidenceDays > 3650 || p.Retention.ErrorDays < 1 || p.Retention.ErrorDays > 3650) throw new Fault("POLICY_INVALID");
         if (p.Grants.Any(g => g.Value.Any(r => !Roles.Values.Contains(r))) || p.Destinations.Any(x => !SafeDestinationKey(x)) || p.NotificationRules.Any(rule =>
@@ -375,6 +375,17 @@ public sealed partial class Engine
         return new { Outcome = "Health", policy.Enabled, policy.Revision, CountInPage = page.Count, OldestInPage = page.Count == 0 ? (DateTime?)null : page.Min(x => x.Created), Items = page.Select(i => new { i.Id, i.Status, i.Available, i.Expires }), NextCursor = page.Count == 100 ? page.Last().Id : null };
     }
     static bool SafeDestinationKey(string value) => value.Length is >= 1 and <= 100 && value.All(ch => (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch is '-' or '_');
+    static bool SafeOperationsBaseUrl(string value)
+    {
+        if (value == "") return true;
+        if (!Uri.TryCreate(value, UriKind.Absolute, out var uri)) return false;
+        return uri.Scheme == Uri.UriSchemeHttps && uri.UserInfo == "" && uri.Query == "" && uri.Fragment == "";
+    }
+    static string OperationsLink(string baseUrl, string queue, string item, string attempt, string kind)
+    {
+        if (baseUrl == "") return "";
+        return baseUrl.TrimEnd('/') + "/notifications?queue=" + Uri.EscapeDataString(queue) + "&item=" + Uri.EscapeDataString(item) + "&attempt=" + Uri.EscapeDataString(attempt) + "&kind=" + Uri.EscapeDataString(kind);
+    }
     static IEnumerable<NotificationRule> NotificationRulesFor(QueuePolicy policy, string kind)
     {
         if (policy.NotificationRules.Length == 0) return policy.Destinations.Distinct(StringComparer.Ordinal).Select(destination => new NotificationRule { Events = new[] { kind }, Destination = destination });
@@ -408,7 +419,7 @@ public sealed partial class Engine
             if (InNotificationCooldown(queue, item, attempt, kind, rule)) continue;
             var dest = rule.Destination;
             string key = Json.Hash(queue + "|" + item + "|" + attempt + "|" + kind + "|" + dest);
-            if (store.Get("event", key) == null) Add("event", key, queue, new Delivery { Id = key, ItemId = item, AttemptId = attempt, Kind = kind, Destination = dest, NextAttempt = clock() });
+            if (store.Get("event", key) == null) Add("event", key, queue, new Delivery { Id = key, ItemId = item, AttemptId = attempt, Kind = kind, Destination = dest, OperationsLink = OperationsLink(policy.OperationsBaseUrl, queue, item, attempt, kind), NextAttempt = clock() });
         }
     }
     object IntakeFailure(Command c, JObject d, QueuePolicy p)

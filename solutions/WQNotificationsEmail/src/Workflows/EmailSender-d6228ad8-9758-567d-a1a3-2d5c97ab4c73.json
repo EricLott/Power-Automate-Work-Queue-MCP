@@ -116,7 +116,7 @@
                 "parameters": {
                   "emailMessage/To": "@parameters('qmcp_NotificationAddress')",
                   "emailMessage/Subject": "@concat('Queue event ', json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id'])",
-                  "emailMessage/Body": "@concat('Queue: ',parameters('qmcp_QueueKey'),'<br>Event: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id'],'<br>Item: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['ItemId'],'<br>Disposition: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Kind'])"
+                  "emailMessage/Body": "@concat('Queue: ',parameters('qmcp_QueueKey'),'<br>Event: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id'],'<br>Item: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['ItemId'],'<br>Disposition: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Kind'],'<br>Operations: ',coalesce(json(body('ClaimEvent')?['ResultJson'])?['Event']?['OperationsLink'],''))"
                 },
                 "retryPolicy": {
                   "type": "none"
