@@ -1,0 +1,40 @@
+{
+  "classification": "synthetic-development-coordinator-failed",
+  "date": "2026-09-20",
+  "environment": "authorized development tenant",
+  "queueKey": "qmcp-proof-coordinator-20260920",
+  "proofId": "40410ca2-61be-490f-b99d-0cbba634e89e",
+  "runId": "84672b16-a31f-484b-9fb4-97afc6d642bd",
+  "mcpStart": {
+    "transport": "stdio",
+    "clientClosedBeforeObservation": true
+  },
+  "expectedTerminalState": "Failed",
+  "runState": "Failed",
+  "result": {
+    "caseId": "coordinator-autonomy",
+    "state": "Failed",
+    "expectedOutcome": "Exception",
+    "actualNativeOutcome": "Processed",
+    "expectedRecordCount": 0,
+    "actualRecordCount": 1,
+    "attemptCount": 1,
+    "unwantedEffectCount": 0,
+    "cleanup": "NotRequested"
+  },
+  "postconditions": {
+    "flowsRestored": true,
+    "finalFlowStates": {
+      "ProcessOne": "Draft",
+      "SweepQueue": "Draft",
+      "TestCoordinator": "Draft"
+    },
+    "externalDestinationsUsed": false
+  },
+  "writesPerformed": true,
+  "sideEffects": "One synthetic test item and its diagnostic business output were retained; no mailbox, prompt, notification, customer-content, or external-destination flow was enabled.",
+  "limitations": [
+    "The Failed state was produced by an intentional expected-outcome mismatch against a known successful synthetic case.",
+    "This proves durable Failed classification and restoration, not a mailbox/provider outage or production failure guarantee."
+  ]
+}

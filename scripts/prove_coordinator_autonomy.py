@@ -86,6 +86,7 @@ def main(argv=None):
     parser.add_argument("--wait-seconds", type=int, default=210)
     parser.add_argument("--model-id", default=MODEL_ID)
     parser.add_argument("--start-via-mcp", action="store_true", help="Start the synthetic run through a real MCP stdio client, then close it before observation.")
+    parser.add_argument("--expected-outcome", choices=("Processed", "Exception"), default="Processed", help="Expected case outcome; Exception intentionally mismatches the known successful fixture to prove a durable Failed run.")
     args = parser.parse_args(argv)
 
     binding = json.loads(Path(args.binding).read_text(encoding="utf-8-sig"))
@@ -110,6 +111,8 @@ def main(argv=None):
         "queueKey": queue,
         "proofId": proof_id,
         "modelId": args.model_id,
+        "expectedOutcome": args.expected_outcome,
+        "expectedTerminalState": "Passed" if args.expected_outcome == "Processed" else "Failed",
         "flows": list(FLOW_NAMES),
         "tenantCalls": True,
         "writesPerformed": False,
@@ -213,14 +216,14 @@ def main(argv=None):
                 "payload": {"subject": "Printer is offline", "senderAddress": "alex@example.invalid", "bodyText": "Please restore the printer in the west office. It stopped working this morning."},
             },
             "Expected": {"contact": "alex@example.invalid", "category": "service"},
-            "ExpectedOutcome": "Processed", "ExpectedAttemptCount": 1,
-            "ExpectedRecordCount": 1, "ExpectedUnwantedEffectCount": 0,
+            "ExpectedOutcome": args.expected_outcome, "ExpectedAttemptCount": 1,
+            "ExpectedRecordCount": 1 if args.expected_outcome == "Processed" else 0, "ExpectedUnwantedEffectCount": 0,
         }
         if args.start_via_mcp:
             start_request_id = str(uuid.uuid5(uuid.UUID(proof_id), "start"))
             helper = Path(__file__).with_name("start_test_via_mcp.mjs")
             result = subprocess.run(
-                ["node", str(helper), queue, proof_id, start_request_id],
+                ["node", str(helper), queue, proof_id, start_request_id, args.expected_outcome],
                 capture_output=True,
                 text=True,
                 timeout=120,
@@ -255,13 +258,14 @@ def main(argv=None):
             cleanup_complete = run.get("State") == "Passed" and bool(run.get("Results")) and all(
                 result.get("Cleanup") == "Completed" for result in run.get("Results", [])
             )
-            if terminal and (run.get("State") != "Passed" or cleanup_complete):
+            expected_terminal = evidence["expectedTerminalState"]
+            if terminal and (run.get("State") != "Passed" or cleanup_complete) and run.get("State") == expected_terminal:
                 observed = {"run": {"State": run.get("State"), "Results": run.get("Results")}, "receipts": receipts}
                 break
             time.sleep(5)
         if observed is None:
             raise ValueError("COORDINATOR_CLEANUP_NOT_OBSERVED")
-        save(observation=observed, completed=observed["run"]["State"] == "Passed", limitation="Synthetic autonomous ProcessOne/SweepQueue/TestCoordinator proof only; mailbox intake, event wake-up, EmailSender, separate identity and managed release remain separate gates.")
+        save(observation=observed, completed=observed["run"]["State"] == evidence["expectedTerminalState"], limitation="Synthetic autonomous ProcessOne/SweepQueue/TestCoordinator proof only; mailbox intake, event wake-up, EmailSender, separate identity and managed release remain separate gates.")
         if not evidence["completed"]:
             raise ValueError("COORDINATOR_PROOF_FAILED")
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:

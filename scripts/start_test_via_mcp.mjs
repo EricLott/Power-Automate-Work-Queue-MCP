@@ -6,8 +6,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const [queueKey, proofId, requestId] = process.argv.slice(2);
+const [queueKey, proofId, requestId, expectedOutcome = 'Processed'] = process.argv.slice(2);
 if (!queueKey || !proofId || !requestId || !process.env.QMCP_ENVIRONMENT_BINDING) throw new Error('EXPLICIT_EXECUTION_AND_BINDING_REQUIRED');
+if (!['Processed', 'Exception'].includes(expectedOutcome)) throw new Error('EXPECTED_OUTCOME_INVALID');
 const binding = JSON.parse(await readFile(process.env.QMCP_ENVIRONMENT_BINDING, 'utf8'));
 if (binding.environmentClass !== 'development' || !binding.queueKeys.includes(queueKey)) throw new Error('QUEUE_NOT_BOUND');
 let client;
@@ -32,8 +33,8 @@ try {
         payload: { subject: 'Printer is offline', senderAddress: 'alex@example.invalid', bodyText: 'Please restore the printer in the west office. It stopped working this morning.' },
       },
       Expected: { contact: 'alex@example.invalid', category: 'service' },
-      ExpectedOutcome: 'Processed', ExpectedAttemptCount: 1,
-      ExpectedRecordCount: 1, ExpectedUnwantedEffectCount: 0,
+      ExpectedOutcome: expectedOutcome, ExpectedAttemptCount: 1,
+      ExpectedRecordCount: expectedOutcome === 'Processed' ? 1 : 0, ExpectedUnwantedEffectCount: 0,
     }],
   });
   await client.close();

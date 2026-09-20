@@ -47,3 +47,12 @@ reconciled the retained item explicitly to `ReviewRequired`. Redacted evidence i
 in [`coordinator-inconclusive-2026-09-20.json`](evidence/coordinator-inconclusive-2026-09-20.json).
 This is a coordinator deadline proof only; it does not close the separate
 recovery, mailbox, event-wakeup, identity, notification, or managed-release gates.
+
+The isolated MCP-started failure checkpoint used the same synthetic service case
+but intentionally expected `Exception` while the installed worker produced its
+known `Processed` outcome. The coordinator durably classified the run and result
+as `Failed`, retained the diagnostic output, and restored ProcessOne, SweepQueue,
+and TestCoordinator to Draft. Redacted evidence is in
+[`coordinator-failed-2026-09-20.json`](evidence/coordinator-failed-2026-09-20.json).
+This confirms the distinct Failed state and safe restoration boundary; it does
+not establish mailbox/provider outage behavior or production failure guarantees.
