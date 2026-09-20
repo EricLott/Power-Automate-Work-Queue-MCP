@@ -1,0 +1,21 @@
+{
+  "classification": "synthetic-native-email-sender-failure",
+  "date": "2026-09-20",
+  "environment": "authorized-development-tenant",
+  "queueKey": "qmcp-proof-f8283972",
+  "flow": "EmailSender",
+  "notificationAddress": "not-an-email-address",
+  "flowActivated": true,
+  "flowsRestored": true,
+  "restorationErrors": [],
+  "cursorWrapped": true,
+  "initialEventState": "Pending",
+  "initialTries": 2,
+  "finalEventState": "Pending",
+  "finalTries": 3,
+  "finalErrorCode": "SENDER_FAILED",
+  "businessResultUnchanged": true,
+  "externalDestinationsUsed": false,
+  "completed": true,
+  "limitation": "The invalid recipient intentionally prevents delivery; this proves the installed native EmailSender failure branch and durable retry visibility, not successful recipient delivery or a provider timeout."
+}

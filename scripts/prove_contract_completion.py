@@ -49,6 +49,14 @@ def main():
         except ValueError as error:
             if str(error)!=code: raise
         else: raise ValueError('EXPECTED_ERROR_MISSING')
+    def comparable_policy(value):
+        """Ignore monotonic revision and server-added empty optional fields."""
+        result=copy.deepcopy(value)
+        result.pop('Revision',None)
+        result.setdefault('NotificationRules',[])
+        result.setdefault('OperationsBaseUrl','')
+        return result
+
     original=None; changed=False
     try:
         who=call('GET','WhoAmI')
@@ -107,7 +115,7 @@ def main():
     finally:
         if changed and original:
             _,version=policy(); api('RegisterQueue','restore-policy',original,version=version)
-            restored,_=policy(); left={k:v for k,v in restored.items() if k!='Revision'}; right={k:v for k,v in original.items() if k!='Revision'}
+            restored,_=policy(); left=comparable_policy(restored); right=comparable_policy(original)
             note(policyRestored=left==right)
             if left!=right: note(completed=False,error='POLICY_RESTORE_FAILED')
         print(json.dumps(evidence,indent=2))
