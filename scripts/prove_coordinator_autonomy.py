@@ -212,6 +212,7 @@ def main(argv=None):
             },
             "Expected": {"contact": "alex@example.invalid", "category": "service"},
             "ExpectedOutcome": "Processed", "ExpectedAttemptCount": 1,
+            "ExpectedRecordCount": 1, "ExpectedUnwantedEffectCount": 0,
         }]})
         run_id = started["RunId"]
         save(runId=run_id, startOutcome=started.get("Outcome"), activatedFlows=configured)

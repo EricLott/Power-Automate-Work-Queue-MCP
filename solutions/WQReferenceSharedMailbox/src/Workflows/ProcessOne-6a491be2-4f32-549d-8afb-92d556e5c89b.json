@@ -431,6 +431,8 @@
                           "item/qmcp_name": "@outputs('Acquired')?['BusinessKey']",
                           "item/qmcp_key": "@outputs('Acquired')?['BusinessKey']",
                           "item/qmcp_queuekey": "@parameters('qmcp_QueueKey')",
+                          "item/qmcp_sourcekey": "@outputs('Acquired')?['SourceKey']",
+                          "item/qmcp_testrun": "@outputs('Acquired')?['TestRun']",
                           "item/qmcp_document": "@string(outputs('BusinessDocument'))"
                         },
                         "retryPolicy": {

@@ -26,3 +26,13 @@ the proof-owned business record. The installed Draft coordinator was then
 aligned permanently with the checked-in cleanup branch, without activation;
 the read-back is in [`coordinator-definition-alignment-2026-09-20.json`](evidence/coordinator-definition-alignment-2026-09-20.json).
 The retained queue-pause fixture was not processed or deleted.
+
+After the bounded count assertions were added, the rebuilt packages were
+imported into the authorized development tenant and the isolated proof was
+repeated. The result passed with `recordCount: 1`, `recordCountBounded: true`,
+`unwantedEffectCount: 0`, and `Cleanup: Completed`; the two coordinator
+receipts were `Passed`. The native flow path now projects `qmcp_sourcekey` and
+`qmcp_testrun` on the business record so the fixed Dataverse evidence query
+can observe the same test-owned record written by `ProcessOne`. Redacted
+evidence is in
+[`coordinator-autonomy-counts-2026-09-20.json`](evidence/coordinator-autonomy-counts-2026-09-20.json).

@@ -136,3 +136,19 @@ The follow-up [scheduled retention checkpoint](evidence/retention-scheduler-2026
 The current authorized development-tenant preflight found all four unmanaged 0.1.0.0 solutions, expected API bindings, 14 optimistic-concurrency companion tables with Active alternate keys, lifecycle/acquisition registrations, and mapped Dataverse/Outlook/content-conversion references. All seven framework/reference flows are Draft, and the environment has zero `workqueueitem` event callback registrations. The preflight performed no writes and correctly returned `ready=false`. [Redacted evidence](evidence/live-preflight-2026-09-20.json).
 
 This narrows the remaining release boundary but does not pass clean-install, managed-release, flow activation, event wake-up, connector delivery, or connection-ownership gates.
+
+## Bounded coordinator count proof — 2026-09-20
+
+The rebuilt unmanaged candidate was imported with the hash-bound plan
+`a488af5c77a308008f3d7458e10f652a241941f67682f9fe57f7633a1226b08f` and
+returned `ImportedAwaitingAcceptance`. The isolated coordinator proof then
+passed through the installed `ProcessOne`, `SweepQueue`, and `TestCoordinator`
+flows: one Processed synthetic item, one bounded business record, zero
+unwanted effects, one attempt, and coordinator-owned cleanup. All temporary
+flow changes were restored to Draft. The native `CreateRecord` flow now writes
+the indexed source/test-run identity columns required by the fixed bounded
+evidence query. See [redacted proof evidence](evidence/coordinator-autonomy-counts-2026-09-20.json).
+
+This remains synthetic coordinator evidence. It does not close the mailbox,
+event callback, EmailSender, separate-identity, clean/managed-release, or
+manual capacity/connection-ownership gates.

@@ -96,6 +96,13 @@ class FlowInvariantTests(unittest.TestCase):
         self.assertIn("'category','Unknown'",data)
         self.assertIn("'effect','Unknown'",data)
 
+    def test_business_record_projects_test_scope_for_bounded_evidence(self):
+        flow=self.flow('ProcessOne')
+        make=flow['properties']['definition']['actions']['HasWork']['actions']['Business']['actions']['CreateIfAbsent']['actions']
+        parameters=make['CreateRecord']['inputs']['parameters']
+        self.assertEqual(parameters['item/qmcp_sourcekey'],"@outputs('Acquired')?['SourceKey']")
+        self.assertEqual(parameters['item/qmcp_testrun'],"@outputs('Acquired')?['TestRun']")
+
     def test_extraction_accepts_only_one_json_markdown_fence(self):
         flow=self.flow('ProcessOne');make=flow['properties']['definition']['actions']['HasWork']['actions']['Business']['actions']['CreateIfAbsent']['actions']
         normalized=make['NormalizeExtraction']['inputs']

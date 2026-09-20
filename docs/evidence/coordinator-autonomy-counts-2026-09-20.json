@@ -1,0 +1,36 @@
+{
+  "classification": "synthetic-development-coordinator-autonomy",
+  "date": "2026-09-20",
+  "environment": "authorized-development-tenant",
+  "deployment": {
+    "status": "ImportedAwaitingAcceptance",
+    "planHash": "a488af5c77a308008f3d7458e10f652a241941f67682f9fe57f7633a1226b08f",
+    "flowsActivatedByDeployment": false,
+    "allSolutionsUnmanaged": true,
+    "allSolutionsVersion": "0.1.0.0"
+  },
+  "queue": "isolated-synthetic-coordinator-queue",
+  "proof": {
+    "activatedFlows": ["ProcessOne", "SweepQueue", "TestCoordinator"],
+    "startOutcome": "Started",
+    "runState": "Passed",
+    "resultState": "Passed",
+    "nativeOutcome": "Processed",
+    "attemptCount": 1,
+    "recordCount": 1,
+    "recordCountBounded": true,
+    "unwantedEffectCount": 0,
+    "expectedRecordCount": 1,
+    "expectedUnwantedEffectCount": 0,
+    "cleanup": "Completed",
+    "receipts": [
+      {"operation": "AdvanceTestRun", "outcome": "Passed"},
+      {"operation": "CleanupTestRun", "outcome": "Passed"}
+    ],
+    "flowsRestored": true,
+    "finalFlowState": "Draft",
+    "restoreErrors": []
+  },
+  "externalDestinationsUsed": false,
+  "limitation": "Synthetic ProcessOne/SweepQueue/TestCoordinator execution only; mailbox intake, event wake-up, EmailSender, separate-identity authorization, clean or managed release, and manual capacity/connection prerequisites remain separate gates."
+}
