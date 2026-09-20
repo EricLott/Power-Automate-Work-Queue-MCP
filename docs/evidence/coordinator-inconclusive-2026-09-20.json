@@ -1,0 +1,35 @@
+{
+  "classification": "live-synthetic-coordinator-inconclusive",
+  "date": "2026-09-20",
+  "environment": "authorized-development-tenant",
+  "queueKey": "qmcp-proof-coordinator-20260920",
+  "proof": {
+    "activatedFlow": "TestCoordinator",
+    "startOutcome": "Started",
+    "runState": "Inconclusive",
+    "resultState": "Inconclusive",
+    "shortenedLeaseSeconds": 1,
+    "shortenedDeadlineSeconds": 2,
+    "nativeStateAtCoordinatorObservation": "Queued",
+    "nativeStatusAtCoordinatorObservation": "Queued",
+    "attemptCountAtCoordinatorObservation": 0,
+    "businessRecordCount": 0,
+    "cleanupReceiptCount": 0,
+    "reconciliationOutcome": "ReviewRequired",
+    "reconciliationCompleted": true
+  },
+  "restoration": {
+    "originalLeaseSeconds": 120,
+    "originalDeadlineSeconds": 1800,
+    "TestCoordinator": "Draft",
+    "policyRestored": true,
+    "flowRestored": true
+  },
+  "externalDestinationsUsed": false,
+  "allInputsSynthetic": true,
+  "limitations": [
+    "This proves the installed coordinator distinguishes a bounded deadline result as Inconclusive; it is not a general recovery, mailbox, or event-wakeup proof.",
+    "The coordinator observed no attempt and no business record before the retained item was explicitly reconciled to ReviewRequired.",
+    "Restricted identity authorization, managed release, mailbox intake, notification delivery, and broader recovery/event gates remain open."
+  ]
+}

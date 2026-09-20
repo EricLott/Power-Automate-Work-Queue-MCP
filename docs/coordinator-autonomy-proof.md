@@ -36,3 +36,14 @@ receipts were `Passed`. The native flow path now projects `qmcp_sourcekey` and
 can observe the same test-owned record written by `ProcessOne`. Redacted
 evidence is in
 [`coordinator-autonomy-counts-2026-09-20.json`](evidence/coordinator-autonomy-counts-2026-09-20.json).
+
+The bounded deadline distinction was then verified on the same isolated synthetic
+queue with `scripts/prove_coordinator_inconclusive.py`. With a one-second lease
+and two-second coordinator deadline, the installed `TestCoordinator` produced an
+`Inconclusive` run and result while the native item remained queued, with zero
+attempts, zero business records, and zero cleanup receipts at observation. The
+probe restored the original 120/1800-second policy and Draft flow state, then
+reconciled the retained item explicitly to `ReviewRequired`. Redacted evidence is
+in [`coordinator-inconclusive-2026-09-20.json`](evidence/coordinator-inconclusive-2026-09-20.json).
+This is a coordinator deadline proof only; it does not close the separate
+recovery, mailbox, event-wakeup, identity, notification, or managed-release gates.

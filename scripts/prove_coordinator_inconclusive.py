@@ -88,6 +88,7 @@ def main(argv=None):
     original_policy = None
     policy_version = None
     policy_changed = False
+    shortened_policy = None
     flow_original = None
     run_id = None
     item_id = None
@@ -139,7 +140,7 @@ def main(argv=None):
         acquired = api("ResolveAcquire", "reconcile-prepare")
         if acquired.get("Outcome") != "Acquired":
             raise ValueError("RECONCILE_RESOLVE_FAILED")
-        failed = api("Fail", "reconcile-fail", {"category": "Technical", "code": "SYNTHETIC_INCONCLUSIVE_RECONCILE", "effect": "None"}, owned=acquired)
+        failed = api("Fail", "reconcile-fail", {"category": "Unknown", "code": "SYNTHETIC_INCONCLUSIVE_RECONCILE", "effect": "Unknown"}, owned=acquired)
         if failed.get("Outcome") != "ReviewRequired":
             raise ValueError("RECONCILE_FAIL_FAILED")
         save(reconciliationOutcome=failed.get("Outcome"), reconciliationCompleted=True)
@@ -163,6 +164,7 @@ def main(argv=None):
         shortened = dict(original_policy)
         shortened["LeaseSeconds"] = args.lease_seconds
         shortened["DeadlineSeconds"] = args.deadline_seconds
+        shortened_policy = shortened
         register = call("POST", "qmcp_WQ_RegisterQueue", {"QueueKey": queue, "RequestId": str(uuid.uuid5(uuid.UUID(proof_id), "shorten-policy")), "ExpectedVersion": str(policy_version), "DataJson": json.dumps(shortened, separators=(",", ":"))})
         policy_changed = True
         save(policyChangeOutcome=json.loads(register["ResultJson"]).get("Outcome"), shortenedLeaseSeconds=args.lease_seconds, shortenedDeadlineSeconds=args.deadline_seconds)
@@ -213,6 +215,19 @@ def main(argv=None):
         if run.get("State") != "Inconclusive" or not isinstance(run.get("Results"), list) or not run["Results"] or run["Results"][0].get("State") != "Inconclusive" or native.get("statecode") != 0 or native.get("statuscode") != 0 or attempts or business or cleanup_receipts:
             raise ValueError("INCONCLUSIVE_ASSERTION_FAILED")
         save(runState=run.get("State"), resultState=run["Results"][0].get("State"), nativeState=native.get("statecode"), nativeStatus=native.get("statuscode"), attemptCount=len(attempts or []), businessRecordCount=len(business or []), cleanupReceiptCount=len(cleanup_receipts), evidenceRetained=True)
+        # Restore the normal lease/deadline before native dequeue reconciliation.
+        # Dataverse Dequeue must see the production-sized lease window even
+        # though the durable test run has already become Inconclusive.
+        current, version = policy()
+        if not policies_equal(current, original_policy):
+            if shortened_policy is None or not policies_equal(current, shortened_policy):
+                raise ValueError("CONCURRENT_POLICY_CHANGE")
+            restored = call("POST", "qmcp_WQ_RegisterQueue", {"QueueKey": queue, "RequestId": str(uuid.uuid5(uuid.UUID(proof_id), "restore-policy-before-reconcile")), "ExpectedVersion": str(version), "DataJson": json.dumps(original_policy, separators=(",", ":"))})
+            restored_policy, _ = policy()
+            if not policies_equal(restored_policy, original_policy):
+                raise ValueError("POLICY_RESTORE_FAILED")
+            policy_changed = False
+            save(policyRestored=True, restoreOutcome=json.loads(restored["ResultJson"]).get("Outcome"))
         reconcile_item()
         evidence["completed"] = True
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
@@ -235,7 +250,7 @@ def main(argv=None):
         if policy_changed and original_policy is not None:
             try:
                 current, version = policy()
-                if not policies_equal(current, original_policy) and not policies_equal(current, {**original_policy, "DeadlineSeconds": args.deadline_seconds}):
+                if not policies_equal(current, original_policy) and (shortened_policy is None or not policies_equal(current, shortened_policy)):
                     raise ValueError("CONCURRENT_POLICY_CHANGE")
                 restored = call("POST", "qmcp_WQ_RegisterQueue", {"QueueKey": queue, "RequestId": str(uuid.uuid5(uuid.UUID(proof_id), "restore-policy")), "ExpectedVersion": str(version), "DataJson": json.dumps(original_policy, separators=(",", ":"))})
                 restored_policy, _ = policy()
