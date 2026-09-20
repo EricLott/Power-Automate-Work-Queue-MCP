@@ -8,7 +8,7 @@ The [2026-09-12 local evidence record](local-evidence.md) includes historical te
 
 Snapshot reconciled with GitHub on **2026-09-20 UTC: seven gates closed, fifteen open**. GitHub remains the live authority. The table records coverage and residual scope; closed gates do not imply completion of adjacent integration or release work. Selected synthetic tenant evidence is recorded in the [import ledger](live-import.md), including native handoff/recovery, installed autonomous Watchdog/coordinator execution, and active-worker test cancellation; it does not satisfy every gate criterion. “Local coverage” describes an executable check or an artifact, not a gate pass.
 
-The current full local verification is 109 runtime tests, 49 plug-in tests, 154 Python offline tests, and 50 MCP tests, with all eight managed/unmanaged package round trips and structural validation passing. These results verify the repository candidate only; they do not close a tenant gate.
+The current full local verification is 110 runtime tests, 49 plug-in tests, 154 Python offline tests, and 50 MCP tests, with all eight managed/unmanaged package round trips and structural validation passing. These results verify the repository candidate only; they do not close a tenant gate.
 
 | Gate | Local coverage | Remaining live evidence |
 |---|---|---|
