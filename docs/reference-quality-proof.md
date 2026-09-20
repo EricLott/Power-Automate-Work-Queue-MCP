@@ -36,3 +36,7 @@ All 235 local tests and fresh package round trips passed. The English intent gra
 ## Direct intent rejection branch
 
 A separate [installed fault-injection test](intent-validator-proof.md) now exercises the `ValidateIntent` rejection branch with a schema-valid fabricated quote. It recorded `VALIDATEINTENT_FAILED`, one attempt, no business row and no Complete receipt, followed by verified restoration. It does not add an AI-quality sample because the prediction was deliberately replaced for this test.
+
+## Isolated autonomous checkpoint — 2026-09-20
+
+The [redacted evidence](evidence/reference-quality-autonomous-2026-09-20.json) records a fresh six-case run through the installed `ProcessOne` / `SweepQueue` / `TestCoordinator` path on an isolated synthetic queue. All six results passed: the three positive cases each had one independently verified business record with matching fields, source/content hashes, intent evidence, prompt/model provenance and test-run linkage; the three negative cases had no business record and the expected errors. Explicit `CleanupTestRun` returned `Passed` for all six results with `Cleanup: Completed` and zero remaining test-run records. Temporary definitions were restored exactly and all three flows read back Draft. Intake, event wake-up, notifications and real mailbox integration remained disabled; the broader release and security gates remain open.

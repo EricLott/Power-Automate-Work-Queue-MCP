@@ -173,8 +173,12 @@ def main(argv=None):
 
     try:
         who = call("GET", "WhoAmI")
-        if str(who.get("OrganizationId", "")).lower() != organization.lower():
+        if (
+            str(who.get("OrganizationId", "")).lower() != organization.lower()
+            or str(who.get("UserId", "")).lower() != str(ledger["user"]).lower()
+        ):
             raise ValueError("ENVIRONMENT_MISMATCH")
+        evidence["operatorIdentityVerified"] = True
         active_items = call(
             "GET",
             "workqueueitems?$select=workqueueitemid,statecode,statuscode&$filter=_workqueueid_value eq "

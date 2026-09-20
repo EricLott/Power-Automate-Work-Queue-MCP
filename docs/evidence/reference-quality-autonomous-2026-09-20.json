@@ -1,0 +1,45 @@
+{
+  "classification": "live-synthetic-reference-quality-autonomous",
+  "date": "2026-09-20",
+  "environment": "authorized-development-tenant",
+  "queueKey": "qmcp-proof-coordinator-20260920",
+  "promptVersion": "mail-extraction-v1.2",
+  "modelVersion": "gpt-41-mini-2025-04-14",
+  "caseCount": 6,
+  "positiveCaseCount": 3,
+  "negativeCaseCount": 3,
+  "allInputsSynthetic": true,
+  "run": {
+    "state": "Passed",
+    "resultCount": 6,
+    "allResultStatesPassed": true,
+    "nativeOutcomeChecksPassed": true,
+    "nativeQueueAndKeyChecksPassed": true,
+    "positiveBusinessRecordCounts": [1, 1, 1],
+    "negativeBusinessRecordCounts": [0, 0, 0],
+    "fieldHashIntentAndPromptProvenanceChecksPassed": true,
+    "summaryReviewRequired": true
+  },
+  "cleanup": {
+    "state": "Passed",
+    "resultCount": 6,
+    "allResultStatesPassed": true,
+    "allResultCleanupStatesCompleted": true,
+    "remainingTestRunRecords": 0
+  },
+  "restoration": {
+    "ProcessOne": "Draft",
+    "SweepQueue": "Draft",
+    "TestCoordinator": "Draft",
+    "exactOriginalClientdataRestored": true,
+    "restoreErrors": []
+  },
+  "externalDestinationsUsed": false,
+  "mailboxActivated": false,
+  "notificationFlowActivated": false,
+  "limitations": [
+    "This is a bounded six-case synthetic installed worker/coordinator proof.",
+    "Intake and OnQueueChanged remained Draft; no real mailbox or notification destination was used.",
+    "Restricted-role authorization, event wake-up, managed release and broader reference failure matrix remain open."
+  ]
+}
