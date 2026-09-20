@@ -1,0 +1,20 @@
+{
+  "classification": "synthetic-development-outbox-coordination",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "e2a646ac-ab2f-407b-b377-c6b1d208c95c",
+  "tenantCalls": true,
+  "writesPerformed": true,
+  "externalDestinationsUsed": false,
+  "destination": "qmcp-synthetic-outbox-proof",
+  "initialState": "Pending",
+  "claimOutcome": "Claimed",
+  "finishOutcome": "Pending",
+  "finalState": "Pending",
+  "finalTries": 1,
+  "finalErrorCode": "SYNTHETIC_MAIL_OFFLINE",
+  "nativeItemUnchanged": true,
+  "completed": true,
+  "limitation": "This proves durable claim and retry-state preservation for one synthetic event; connector acceptance, recipient delivery, concurrent sender contention, and a complete Dataverse outage remain separate boundaries."
+}
