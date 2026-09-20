@@ -1,0 +1,25 @@
+{
+  "classification": "synthetic-registered-delete-companion-guards",
+  "recordedDateUtc": "2026-09-20",
+  "organizationMatched": true,
+  "queueId": "b9cbda5f-a2b4-f111-aaac-3833c5e36f1f",
+  "itemId": "d801c947-2ff4-4323-a8d8-a93e922457c3",
+  "companionId": "7328f7ed-b9b4-f111-aaac-3833c5e36f1f",
+  "effectiveIdentityVerified": true,
+  "cases": [
+    {"case": "registered-delete", "observed": "LIFECYCLE_BYPASS; native row unchanged"},
+    {"case": "companion-update", "observed": "LIFECYCLE_BYPASS; companion row and document hash unchanged"},
+    {"case": "companion-delete", "observed": "LIFECYCLE_BYPASS; companion row unchanged"},
+    {"case": "companion-create", "observed": "LIFECYCLE_BYPASS; generated ID absent"}
+  ],
+  "nativeEtagUnchanged": true,
+  "companionEtagUnchanged": true,
+  "directCreateIdAbsent": true,
+  "businessDataChanged": false,
+  "rolesChanged": false,
+  "queuePolicyChanged": false,
+  "limitations": [
+    "The distinct test identity retains administrator privileges; restricted-role least privilege remains unproved.",
+    "This covers one registered native item and one companion table; the complete producer/worker/reader/operator/installer matrix remains open."
+  ]
+}
