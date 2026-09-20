@@ -432,15 +432,29 @@ public sealed partial class Engine
     }
     object ClaimEvent(Command c, Actor a)
     {
-        var page = store.Page("event", c.QueueKey, Cursor(c.QueueKey, "events"), 100);
-        foreach (var row in page)
+        var after = Cursor(c.QueueKey, "events");
+        object? Claim(IReadOnlyList<Row> page)
         {
-            var e = Json.Read<Delivery>(row.Body);
-            if (e.State == "Delivered" || e.State == "Failed" || e.NextAttempt > clock() || (e.State == "Sending" && e.LeaseExpires > clock())) continue;
-            e.State = "Sending"; e.Owner = a.Id; e.LeaseToken = Guid.NewGuid().ToString(); e.LeaseExpires = clock().AddMinutes(2); e.Tries++;
-            Save("event", row.Key, e);
-            SetCursor(c.QueueKey, "events", row.Key);
-            return new { Outcome = "Claimed", Event = e };
+            foreach (var row in page)
+            {
+                var e = Json.Read<Delivery>(row.Body);
+                if (e.State == "Delivered" || e.State == "Failed" || e.NextAttempt > clock() || (e.State == "Sending" && e.LeaseExpires > clock())) continue;
+                e.State = "Sending"; e.Owner = a.Id; e.LeaseToken = Guid.NewGuid().ToString(); e.LeaseExpires = clock().AddMinutes(2); e.Tries++;
+                Save("event", row.Key, e);
+                SetCursor(c.QueueKey, "events", row.Key);
+                return new { Outcome = "Claimed", Event = e };
+            }
+            return null;
+        }
+        var page = store.Page("event", c.QueueKey, after, 100);
+        var claimed = Claim(page);
+        if (claimed != null) return claimed;
+        if (after != "")
+        {
+            var wrapped = store.Page("event", c.QueueKey, "", 100);
+            claimed = Claim(wrapped);
+            if (claimed != null) return claimed;
+            page = wrapped;
         }
         var next = page.Count == 100 ? page.Last().Key : ""; SetCursor(c.QueueKey, "events", next);
         return new { Outcome = "NoWork", NextCursor = next };

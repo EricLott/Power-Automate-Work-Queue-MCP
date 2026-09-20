@@ -12,6 +12,8 @@ This is local synthetic runtime evidence. It does not prove a native Outlook con
 
 The companion [notification rules proof](notification-rules-proof.md) covers safe destination-key validation, event-specific selection, raw-content exclusion, and non-recursive sender failure behavior in the runtime model.
 
+The runtime boundary suite also covers an expired sender lease being reclaimed, a throttling rejection retaining the event while the business item remains `Processed`, and a lost-provider-response replaying the same durable delivery intent. These are deterministic delivery-state regressions, not native Outlook throttling, connection-loss, connector-acceptance, or recipient-delivery evidence.
+
 ## Optional-package independence checkpoint — 2026-09-20
 
 The candidate package boundary was independently checked. [WQCore](evidence/optional-package-independence-2026-09-20.json) contains the Dataverse connection reference but no Outlook connector or notification sender reference; `WQNotificationsEmail` owns the Outlook connection and sender flow. The source invariant is enforced by `FlowInvariantTests.test_optional_sender_connector_is_not_required_by_core`, and the package hashes/entry counts are recorded in the redacted evidence.
