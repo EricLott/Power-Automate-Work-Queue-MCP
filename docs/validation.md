@@ -8,7 +8,7 @@ The [2026-09-12 local evidence record](local-evidence.md) includes historical te
 
 Snapshot reconciled with GitHub on **2026-09-20 UTC: seven gates closed, fifteen open**. GitHub remains the live authority. The table records coverage and residual scope; closed gates do not imply completion of adjacent integration or release work. Selected synthetic tenant evidence is recorded in the [import ledger](live-import.md), including native handoff/recovery, installed autonomous Watchdog/coordinator execution, and active-worker test cancellation; it does not satisfy every gate criterion. “Local coverage” describes an executable check or an artifact, not a gate pass.
 
-The current full local verification is 120 runtime tests, 49 plug-in tests, 158 Python offline tests, and 50 MCP tests, with structural validation passing. These results verify the repository candidate only; they do not close a tenant gate.
+The current full local verification is 126 runtime tests, 50 plug-in tests, 159 Python offline tests, and 50 MCP tests, with structural validation passing. These results verify the repository candidate only; they do not close a tenant gate.
 
 | Gate | Local coverage | Remaining live evidence |
 |---|---|---|
@@ -31,11 +31,18 @@ The current full local verification is 120 runtime tests, 49 plug-in tests, 158 
 | [G17 AI extraction](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/86) | Output schema, versioned prompt, repeated fixture runs | Repeated live AI quality evidence exists in [reference quality proof](reference-quality-proof.md); full reference prerequisites remain open |
 | [G18 Authorization](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/87) | Role/queue denial, caller identity, environment binding tests; [fresh direct-write](evidence/queue-write-guards-2026-09-20.json) and [registered-delete/companion](evidence/registered-delete-companion-2026-09-20.json) evidence | Native/table/team privileges under separate restricted identities; complete producer/worker/reader/operator/installer matrix |
 | [G19 Lifecycle bypass](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/88) | SDK guard tests, flow bypass lint, and [fresh registered-delete/companion](evidence/registered-delete-companion-2026-09-20.json) evidence | Direct writes across all registered tables and all registered pipeline paths |
-| [G20 Agent disconnect](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/89) | Actual stdio host shutdown and detached runtime completion | Installed flows/coordinator continue without MCP |
+| [G20 Agent disconnect](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/89) | Actual stdio host shutdown and detached runtime completion | Fresh combined proof started the synthetic test through MCP, closed the client before observation, and verified installed flows/coordinator completed Passed/Processed with Cleanup: Completed; see [MCP autonomous disconnect evidence](evidence/mcp-autonomous-disconnect-2026-09-20.json). Broader host/event/identity/mailbox/release acceptance remains open |
 | [G21 Upgrade](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/90) | Stable generated component IDs, customer isolation, state reload | Managed upgrade preserving data, registration and customer flows |
 | [G22 Capacity](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/91) | Bounded loops/pages, concurrent model regression | Fresh 2026-09-20 sequential profile completed 10 synthetic items with 72 Dataverse requests (7.2/item), 0 retries/errors, no observed throttling, and 10/10 `Processed` in [tenant-capacity-2026-09-20-10](evidence/tenant-capacity-2026-09-20-10.json); concurrency transport, service-protection threshold, request budget, retention/storage/cost and external-call limits remain open |
 
 Current environment inventory and access limitations: [proof environment](proof-environment.md). New experiments use the [evidence template](templates/proof-evidence.json).
+
+The 2026-09-20 authorization audit found no assignments of the installed
+`WQCore` or `WQTesting` Worker/Reader roles. The operator and recorded distinct
+caller both retain System Administrator, so restricted-role native privilege
+evidence is not available from existing identities. Follow-up [#112](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/112)
+is tracked on the project board as Blocked pending a dedicated development
+validation identity; no existing user roles were changed.
 
 ## Evidence requirements
 
