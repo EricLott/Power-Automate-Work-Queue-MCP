@@ -1,0 +1,44 @@
+{
+  "classification": "synthetic-development-coordinator-autonomy",
+  "completed": true,
+  "date": "2026-09-20",
+  "definitionRepaired": true,
+  "externalDestinationsUsed": false,
+  "finalFlowStates": {
+    "ProcessOne": "Draft",
+    "SweepQueue": "Draft",
+    "TestCoordinator": "Draft"
+  },
+  "flows": [
+    "ProcessOne",
+    "SweepQueue",
+    "TestCoordinator"
+  ],
+  "flowsRestored": true,
+  "modelId": "a1afa5d4-7a44-4c31-9cd2-e852a78431fa",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "postconditions": {
+    "activeQueueItems": 0,
+    "proofOwnedBusinessRecord": "deleted",
+    "restoreErrors": []
+  },
+  "proofId": "ea0ed250-b782-40a2-b123-474bddea86c2",
+  "queueKey": "qmcp-proof-coordinator-20260920",
+  "receipts": [
+    {"operation": "AdvanceTestRun", "outcome": "Running"},
+    {"operation": "AdvanceTestRun", "outcome": "Passed"},
+    {"operation": "CleanupTestRun", "outcome": "Passed"}
+  ],
+  "result": {
+    "attemptCount": 1,
+    "cleanup": "Completed",
+    "category": "service",
+    "contact": "alex@example.invalid",
+    "nativeOutcome": "Processed",
+    "state": "Passed"
+  },
+  "runId": "8335f140-6543-41d1-b172-c89b81b19d30",
+  "startOutcome": "Started",
+  "tenantCalls": true,
+  "writesPerformed": true
+}

@@ -5,9 +5,12 @@ P5-02 autonomous coordinator path. In execute mode it validates the authorized
 synthetic binding, refuses to touch a queue with active rows, temporarily binds
 and activates only `ProcessOne`, `SweepQueue`, and `TestCoordinator`, starts one
 synthetic service case, observes the coordinator result and receipts, and
-restores every changed flow in a `finally` block. Intake, event wake-up,
-Watchdog, EmailSender, mailbox access, and external destinations are out of
-scope.
+restores every changed flow in a `finally` block. It requires a Passed run
+whose result has `Cleanup: Completed`. If the installed TestCoordinator is
+missing the checked-in `CleanupIfPassed` branch, the probe temporarily repairs
+that definition from the repository source and records the repair; the original
+installed definition is restored afterward. Intake, event wake-up, Watchdog,
+EmailSender, mailbox access, and external destinations are out of scope.
 
 The 2026-09-20 attempt was intentionally read-only after preflight. The shared
 synthetic queue contains the retained queued row from the queue-pause proof, so
@@ -15,6 +18,10 @@ the probe stopped with `SYNTHETIC_QUEUE_NOT_IDLE`; no flow or queue state was
 written and all flow states were already restored. The redacted result is in
 [`docs/evidence/coordinator-autonomy-2026-09-20.json`](evidence/coordinator-autonomy-2026-09-20.json).
 
-The next tenant action is to provision or nominate a separate isolated
-synthetic queue with no retained active rows. The retained queue-pause fixture
-must not be processed or deleted merely to make this proof pass.
+The isolated 2026-09-20 run passed on a separate synthetic native queue. It
+observed autonomous `ProcessOne` / `SweepQueue` processing, a Passed run, and a
+coordinator `CleanupTestRun` receipt with `Cleanup: Completed`; postconditions
+verified all temporary flows Draft, zero active queue items, and deletion of
+the proof-owned business record. The installed coordinator definition needed
+the temporary cleanup-branch repair described above. The retained
+queue-pause fixture was not processed or deleted.

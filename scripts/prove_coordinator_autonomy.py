@@ -53,6 +53,20 @@ def normalize_hosts(value):
             normalize_hosts(child)
 
 
+def repair_coordinator_cleanup(temporary):
+    """Temporarily align a stale installed coordinator with the checked-in source."""
+    installed = temporary["properties"]["definition"]["actions"]
+    installed_advance = installed.get("Advance", {}).get("actions", {})
+    if "CleanupIfPassed" in installed_advance:
+        return False
+    source_path = Path(__file__).resolve().parents[1] / "templates" / "flows" / "TestCoordinator.json"
+    source = json.loads(source_path.read_text(encoding="utf-8"))
+    source_advance = source["properties"]["definition"]["actions"]["Advance"]["actions"]
+    installed_advance["RequestIds"]["inputs"] = copy.deepcopy(source_advance["RequestIds"]["inputs"])
+    installed_advance["CleanupIfPassed"] = copy.deepcopy(source_advance["CleanupIfPassed"])
+    return True
+
+
 def decode_result(row):
     try:
         document = json.loads(row.get("qmcp_document", "{}"))
@@ -100,6 +114,7 @@ def main(argv=None):
         "externalDestinationsUsed": False,
         "completed": False,
         "flowsRestored": False,
+        "definitionRepaired": False,
     }
     output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     command = _cli_command()
@@ -141,6 +156,8 @@ def main(argv=None):
         originals[name] = original
         temporary = json.loads(original["clientdata"])
         normalize_hosts(temporary)
+        if name == "TestCoordinator":
+            evidence["definitionRepaired"] = repair_coordinator_cleanup(temporary)
         parameters = temporary["properties"]["definition"]["parameters"]
         if name in ("ProcessOne", "SweepQueue"):
             parameters["qmcp_QueueKey"]["defaultValue"] = queue
@@ -206,14 +223,18 @@ def main(argv=None):
             receipts = []
             for row in commands:
                 document, result = decode_result(row)
-                if document.get("Operation") in ("AdvanceTestRun", "CleanupTestRun"):
+                if document.get("Operation") in ("AdvanceTestRun", "CleanupTestRun") and result.get("Id") == run_id:
                     receipts.append({"operation": document.get("Operation"), "created": row.get("createdon"), "outcome": result.get("State", result.get("Outcome"))})
-            if run.get("State") in {"Passed", "Failed", "Inconclusive", "Cancelled"}:
+            terminal = run.get("State") in {"Passed", "Failed", "Inconclusive", "Cancelled"}
+            cleanup_complete = run.get("State") == "Passed" and bool(run.get("Results")) and all(
+                result.get("Cleanup") == "Completed" for result in run.get("Results", [])
+            )
+            if terminal and (run.get("State") != "Passed" or cleanup_complete):
                 observed = {"run": {"State": run.get("State"), "Results": run.get("Results")}, "receipts": receipts}
                 break
             time.sleep(5)
         if observed is None:
-            raise ValueError("COORDINATOR_RESULT_NOT_OBSERVED")
+            raise ValueError("COORDINATOR_CLEANUP_NOT_OBSERVED")
         save(observation=observed, completed=observed["run"]["State"] == "Passed", limitation="Synthetic autonomous ProcessOne/SweepQueue/TestCoordinator proof only; mailbox intake, event wake-up, EmailSender, separate identity and managed release remain separate gates.")
         if not evidence["completed"]:
             raise ValueError("COORDINATOR_PROOF_FAILED")
