@@ -8,12 +8,17 @@ The run also exposed a child-response routing gap. `Respond` previously depended
 
 `scripts/prove_reference_quality.py` checks exact case membership, the native queue and deduplication identity, unchanged fixture input, native outcome, one matching business row for success, no business row for expected failure, expected fields, source/content hashes, run ownership and prompt provenance. A failed or incomplete coordinator run cannot pass. Observation clears a previous completion flag before making tenant calls; failures do not preserve a stale success. Summary grounding still requires review, and the script reports that limitation.
 
+For a fresh isolated installed run, `scripts/prove_reference_quality_autonomous.py` temporarily binds and activates only `ProcessOne`, `SweepQueue` and `TestCoordinator` against an idle synthetic queue, starts the unchanged six-case manifest, performs the same independent assertions, invokes test-owned cleanup only after a complete pass, and restores every changed flow to its original clientdata and Draft state. It never activates `Intake`, `OnQueueChanged` or `EmailSender` and never contacts a mailbox or external destination. The raw output belongs under ignored `artifacts/live`; publish only redacted evidence.
+
 Prepare a synthetic development binding and fixture ledger, explicitly bind the reference worker/model and coordinator, then run:
 
 ```powershell
 python scripts/prove_reference_quality.py --binding artifacts/live/mcp-binding.json --fixture-ledger artifacts/live/fixture-ids.json --cases templates/tests/mail-extraction-quality.json --output artifacts/live/quality-new.json
 # Add --execute only for the approved tenant experiment.
 # Reuse the same output and unchanged case manifest with --observe to read its run.
+
+# Isolated installed worker/coordinator run (approved synthetic tenant only):
+python scripts/prove_reference_quality_autonomous.py --binding artifacts/live/coordinator-binding.json --fixture-ledger artifacts/live/coordinator-fixture-ids.json --cases templates/tests/mail-extraction-quality.json --output artifacts/live/reference-quality-autonomous-YYYY-MM-DD.json --model-id <approved-model-id> --execute
 ```
 
 Default mode makes no tenant calls. The script never activates flows, sends mail, or calls `AdvanceTestRun`. Exit status 1 means the observations do not prove a passing run; inspect the persisted evidence. Use a new evidence filename for each independent run. Preserve a manifest copy if later refining fixtures: observation rejects a changed fixture hash. The first run's original manifest is embedded in the evidence document; the current fixture additionally requires a specific extraction-validation error for missing or ambiguous information.
