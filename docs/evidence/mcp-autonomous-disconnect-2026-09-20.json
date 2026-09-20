@@ -1,0 +1,34 @@
+{
+  "classification": "live-mcp-start-autonomous-continuation",
+  "date": "2026-09-20",
+  "environment": "authorized-development-tenant",
+  "queueKey": "qmcp-proof-coordinator-20260920",
+  "mcpStart": {
+    "transport": "stdio",
+    "tool": "start_test_run",
+    "clientClosedBeforeObservation": true,
+    "identityVerified": true
+  },
+  "autonomousObservation": {
+    "runState": "Passed",
+    "resultState": "Passed",
+    "nativeOutcome": "Processed",
+    "attemptCount": 1,
+    "recordCount": 1,
+    "recordCountBounded": true,
+    "unwantedEffectCount": 0,
+    "cleanup": "Completed"
+  },
+  "restoration": {
+    "ProcessOne": "Draft",
+    "SweepQueue": "Draft",
+    "TestCoordinator": "Draft",
+    "restoreErrors": []
+  },
+  "externalDestinationsUsed": false,
+  "allInputsSynthetic": true,
+  "limitations": [
+    "This is one bounded MCP-started autonomous continuation case on an isolated synthetic queue.",
+    "Mailbox intake, event wake-up, notification delivery, separate-role authorization, and managed release remain separate gates."
+  ]
+}

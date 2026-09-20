@@ -10,6 +10,7 @@ Watchdog and EmailSender remain Draft. Every changed flow is restored in
 import argparse
 import copy
 import json
+import os
 import re
 import subprocess
 import time
@@ -84,6 +85,7 @@ def main(argv=None):
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--wait-seconds", type=int, default=210)
     parser.add_argument("--model-id", default=MODEL_ID)
+    parser.add_argument("--start-via-mcp", action="store_true", help="Start the synthetic run through a real MCP stdio client, then close it before observation.")
     args = parser.parse_args(argv)
 
     binding = json.loads(Path(args.binding).read_text(encoding="utf-8-sig"))
@@ -203,7 +205,7 @@ def main(argv=None):
             raise ValueError("SYNTHETIC_QUEUE_NOT_IDLE")
         for name in FLOW_NAMES:
             configure(name)
-        started = api("StartTestRun", "start", {"cases": [{
+        test_case = {
             "Id": "coordinator-autonomy",
             "Input": {
                 "envelopeVersion": "1.0", "contract": "mail.v1", "correlationId": proof_id,
@@ -213,7 +215,30 @@ def main(argv=None):
             "Expected": {"contact": "alex@example.invalid", "category": "service"},
             "ExpectedOutcome": "Processed", "ExpectedAttemptCount": 1,
             "ExpectedRecordCount": 1, "ExpectedUnwantedEffectCount": 0,
-        }]})
+        }
+        if args.start_via_mcp:
+            start_request_id = str(uuid.uuid5(uuid.UUID(proof_id), "start"))
+            helper = Path(__file__).with_name("start_test_via_mcp.mjs")
+            result = subprocess.run(
+                ["node", str(helper), queue, proof_id, start_request_id],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+                env={**os.environ, "QMCP_ENVIRONMENT_BINDING": str(Path(args.binding).resolve())},
+            )
+            if result.returncode:
+                raise ValueError("MCP_START_FAILED")
+            try:
+                mcp_start = json.loads(result.stdout.strip())
+            except json.JSONDecodeError:
+                raise ValueError("MCP_START_INVALID_RESPONSE")
+            if not isinstance(mcp_start.get("run"), dict) or not mcp_start["run"].get("RunId"):
+                raise ValueError("MCP_START_INVALID_RESPONSE")
+            started = mcp_start["run"]
+            save(mcpStart={"transport": "stdio", "clientClosedBeforeObservation": True, "identity": mcp_start.get("identity"), "requestId": start_request_id})
+        else:
+            started = api("StartTestRun", "start", {"cases": [test_case]})
         run_id = started["RunId"]
         save(runId=run_id, startOutcome=started.get("Outcome"), activatedFlows=configured)
         deadline = time.monotonic() + args.wait_seconds

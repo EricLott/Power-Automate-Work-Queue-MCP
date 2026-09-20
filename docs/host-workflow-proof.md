@@ -36,3 +36,15 @@ This is local workflow evidence, not a tenant acceptance claim.
 On 2026-09-19, `scripts/probe_mcp_session.mjs` connected through the actual MCP stdio transport with the explicit development binding and CLI bridge. It exposed 17 tools, listed 13 resources, read `qmcp://wq/architecture/v0.1` and `qmcp://wq/flow/ProcessOne/v1`, and verified the Dataverse organization through `inspect_installation`; no mutation was performed. The redacted record is [mcp-stdio-2026-09-19.json](evidence/mcp-stdio-2026-09-19.json). This proves the bound host/protocol boundary, not clean installation, flow activation, independent-identity authorization, or full disconnected tenant workflow.
 
 A second live run started a synthetic durable test through MCP, closed the client, reconnected with a fresh MCP session, replayed cancellation, and read the persisted `Cancelled`/`OnHold` result with zero attempts. The redacted record is [mcp-disconnect-2026-09-19.json](evidence/mcp-disconnect-2026-09-19.json). This proves durable MCP-session recovery across disconnect; installed autonomous worker/coordinator continuation remains a separate G20 criterion.
+
+On 2026-09-20, the combined boundary was exercised against the isolated synthetic
+queue. `scripts/prove_coordinator_autonomy.py --start-via-mcp` started the case
+through a real MCP stdio client, closed that client before observation, and then
+verified independently that the installed `ProcessOne`, `SweepQueue`, and
+`TestCoordinator` path produced a Passed run/result, one bounded business record,
+zero unwanted effects, and `Cleanup: Completed`. All three temporary flows were
+restored to Draft. The redacted record is
+[mcp-autonomous-disconnect-2026-09-20.json](evidence/mcp-autonomous-disconnect-2026-09-20.json).
+This closes the specific MCP-started autonomous-continuation observation for the
+synthetic case; the broader host, event, identity, mailbox, and release gates
+remain separate.
