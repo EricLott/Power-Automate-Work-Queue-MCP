@@ -84,3 +84,17 @@ The [read-only registration audit](evidence/guard-registration-matrix-2026-09-13
 Reproduce by reading the named `Queue framework guard:` processing steps, retrieving their referenced message and message-filter rows by ID, and comparing the resulting pairs with `config/registration.json`. Also retrieve the handler plug-in type by ID and verify its type name. Require exactly the expected set and count, rather than accepting only a total of 39. A filtered step or a mismatched message/filter/handler must fail this check.
 
 This evidence rules out missing, disabled or misbound registrations within the audited set. It proves configuration, not successful execution of every Update/Delete case. The behavioral results above remain scoped to the operations actually invoked; native non-administrator permission testing remains separate.
+
+## Role-assignment inventory — 2026-09-20
+
+The read-only [authorization role inventory](evidence/authorization-role-inventory-2026-09-20.json)
+queried the authorized development tenant's installed WQ role definitions and
+assignments. All eight unique WQCore/WQTesting Worker/Reader role names had zero
+assignments. The two explicitly verified identities were read back only as
+administrator-role summaries; neither is suitable restricted-role evidence.
+No user roles, queue grants, principals, or business data were changed.
+
+This is a reproducible prerequisite finding, not a least-privilege pass. Follow-up
+[#112](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/112)
+tracks provisioning or nomination of a dedicated non-administrator development
+identity before the remaining native role matrix can run.

@@ -1,0 +1,71 @@
+{
+  "assignmentsByRole": {
+    "WQCore Reader": 0,
+    "WQCore Worker": 0,
+    "WQNotificationsEmail Reader": 0,
+    "WQNotificationsEmail Worker": 0,
+    "WQReferenceSharedMailbox Reader": 0,
+    "WQReferenceSharedMailbox Worker": 0,
+    "WQTesting Reader": 0,
+    "WQTesting Worker": 0
+  },
+  "classification": "live-authorization-role-inventory",
+  "completed": true,
+  "date": "2026-09-20",
+  "environment": "authorized-development-tenant",
+  "knownIdentities": [
+    {
+      "identityVerified": true,
+      "roleNames": [
+        "Approvals User",
+        "Basic User",
+        "Environment Maker",
+        "System Administrator",
+        "Test"
+      ]
+    },
+    {
+      "identityVerified": true,
+      "roleNames": [
+        "Approvals User",
+        "System Administrator"
+      ]
+    }
+  ],
+  "noWqRoleAssignments": true,
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-coordinator-20260920",
+  "tenantCalls": true,
+  "wqAssignmentCount": 0,
+  "wqRoleCount": 16,
+  "uniqueWqRoleCount": 8,
+  "uniqueWqRoleNames": [
+    "WQCore Reader",
+    "WQCore Worker",
+    "WQNotificationsEmail Reader",
+    "WQNotificationsEmail Worker",
+    "WQReferenceSharedMailbox Reader",
+    "WQReferenceSharedMailbox Worker",
+    "WQTesting Reader",
+    "WQTesting Worker"
+  ],
+  "wqRoleNames": [
+    "WQCore Reader",
+    "WQCore Reader",
+    "WQCore Worker",
+    "WQCore Worker",
+    "WQNotificationsEmail Reader",
+    "WQNotificationsEmail Reader",
+    "WQNotificationsEmail Worker",
+    "WQNotificationsEmail Worker",
+    "WQReferenceSharedMailbox Reader",
+    "WQReferenceSharedMailbox Reader",
+    "WQReferenceSharedMailbox Worker",
+    "WQReferenceSharedMailbox Worker",
+    "WQTesting Reader",
+    "WQTesting Reader",
+    "WQTesting Worker",
+    "WQTesting Worker"
+  ],
+  "writesPerformed": false
+}
