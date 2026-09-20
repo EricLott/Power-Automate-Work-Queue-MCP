@@ -39,7 +39,12 @@ public sealed class ReferenceWorker
         // Intentional failure point: external business write has committed, framework completion has not.
         inject?.Invoke("after-write");
         var complete = new Command { Operation = "Complete", QueueKey = queue, RequestId = Guid.NewGuid().ToString(), ItemId = itemId, AttemptId = (string)acquired["AttemptId"]!, Generation = (int)acquired["Generation"]!, DataJson = Json.Write(new { table = "qmcp_emailrequest", recordId, promptVersion = (string?)result["promptVersion"] }) };
-        return JObject.Parse(engine.Execute(complete, actor));
+        var completed = JObject.Parse(engine.Execute(complete, actor));
+        // The completion write is durable before a caller can lose its response.
+        // This hook lets the local harness model that boundary without replaying
+        // the business action or pretending it is an installed-flow outage.
+        inject?.Invoke("after-complete");
+        return completed;
     }
     public static string StableGuid(string value) => new Guid(Json.Hash(value).Substring(0, 32)).ToString();
 }
