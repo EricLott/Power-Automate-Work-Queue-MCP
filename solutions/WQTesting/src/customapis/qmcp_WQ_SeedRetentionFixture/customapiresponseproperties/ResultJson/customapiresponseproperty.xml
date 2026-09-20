@@ -1,0 +1,12 @@
+<customapiresponseproperty uniquename="ResultJson">
+  <iscustomizable>0</iscustomizable>
+  <logicalentityname />
+  <name>qmcp_WQ_SeedRetentionFixture.ResultJson</name>
+  <type>10</type>
+  <description default="ResultJson">
+    <label description="ResultJson" languagecode="1033" />
+  </description>
+  <displayname default="ResultJson">
+    <label description="ResultJson" languagecode="1033" />
+  </displayname>
+</customapiresponseproperty>

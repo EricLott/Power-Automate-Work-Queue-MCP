@@ -21,7 +21,7 @@ public class AdapterTests {
         var service=new Mock<IOrganizationService>(MockBehavior.Strict);var context=new Mock<IPluginExecutionContext>();
         var policy=new Entity("qmcp_wqdefinition"){RowVersion="1"};policy["qmcp_key"]="mail";policy["qmcp_queuekey"]="mail";policy["qmcp_document"]=Json.Write(new QueuePolicy{NativeQueueId="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"});
         service.Setup(s=>s.RetrieveMultiple(It.Is<QueryBase>(q=>((QueryExpression)q).EntityName=="qmcp_wqdefinition"))).Returns(new EntityCollection(new List<Entity>{policy}));
-        service.Setup(s=>s.Execute(It.Is<OrganizationRequest>(r=>r.RequestName=="Dequeue"&&((EntityReference)r["Target"]).LogicalName=="workqueue"))).Returns(new OrganizationResponse());
+        service.Setup(s=>s.Execute(It.Is<OrganizationRequest>(r=>r.RequestName=="Microsoft.Dynamics.CRM.Dequeue"&&((EntityReference)r["Target"]).LogicalName=="workqueue"))).Returns(new OrganizationResponse());
         Assert.Null(new DataverseStore(service.Object,context.Object).NativeDequeue("mail",DateTime.UtcNow));
         service.Verify(s=>s.RetrieveMultiple(It.Is<QueryBase>(q=>((QueryExpression)q).EntityName=="workqueueitem")),Times.Never);
         service.Verify(s=>s.Update(It.IsAny<Entity>()),Times.Never);
@@ -44,7 +44,7 @@ public class AdapterTests {
         var entity=new Entity("qmcp_wqattempt",Guid.NewGuid()){RowVersion="8"};entity["qmcp_key"]="attempt";entity["qmcp_queuekey"]="mail";entity["qmcp_document"]="{}";
         service.Setup(s=>s.RetrieveMultiple(It.IsAny<QueryBase>())).Callback<QueryBase>(q=>observed=(QueryExpression)q).Returns(new EntityCollection(new List<Entity>{entity}));
         new DataverseStore(service.Object,context.Object).Get("attempt","attempt");
-        Assert.NotNull(observed);Assert.False(observed!.ColumnSet.AllColumns);Assert.Equal(new[]{"modifiedon","qmcp_document","qmcp_key","qmcp_queuekey","versionnumber"},observed.ColumnSet.Columns.OrderBy(x=>x).ToArray());
+        Assert.NotNull(observed);Assert.False(observed!.ColumnSet.AllColumns);Assert.Equal(new[]{"modifiedon","overriddencreatedon","qmcp_document","qmcp_key","qmcp_queuekey","versionnumber"},observed.ColumnSet.Columns.OrderBy(x=>x).ToArray());
     }
     [Theory]
     [InlineData("attempt", "after-attempt", "Create")]

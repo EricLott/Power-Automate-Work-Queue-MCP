@@ -43,7 +43,7 @@ OPS = re.findall(r'\["([A-Za-z]+)"\]\s*=\s*"[a-z]+"', (ROOT/'src/runtime/Engine.
 # production use is rejected until this handoff is bound and validated.
 for _operation in ['PrepareAcquire', 'AcceptAcquire', 'ResolveAcquire']:
     if _operation not in OPS: OPS.append(_operation)
-TEST_OPS={'StartTestRun','CancelTestRun','GetTestRun','AdvanceTestRun','CleanupTestRun'}
+TEST_OPS={'StartTestRun','SeedRetentionFixture','CancelTestRun','GetTestRun','AdvanceTestRun','CleanupTestRun'}
 PARAMS={'QueueKey':(10,False),'RequestId':(10,False),'ItemId':(10,True),'AttemptId':(10,True),'Generation':(7,True),'ExpectedVersion':(10,True),'DataJson':(10,True)}
 
 def attribute(parent,name,kind='nvarchar',length=100,primary=False):

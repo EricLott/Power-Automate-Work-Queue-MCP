@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using QueueFramework;
 using Xunit;
 
@@ -189,5 +190,49 @@ public class RetentionPolicyTests
         Assert.Null(f.Store.Get("testrun", run));
         Assert.Empty(f.Store.Page("testresult", "mail", "", 100));
         Assert.Empty(f.Store.Page("testcase", "mail", "", 100));
+    }
+
+    [Fact]
+    public void SyntheticRetentionFixtureBackdatesOnlyTestRowsAndRetentionProtectsReviewWork()
+    {
+        var f = new Fixture();
+        const string queue = "qmcp-proof-test";
+        var policy = f.Policy(); policy.NativeQueueId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"; policy.Destinations = Array.Empty<string>();
+        var register = f.Cmd("RegisterQueue", policy); register.QueueKey = queue; f.Run(register);
+        var contract = f.Cmd("RegisterContract", new Contract { Id = "mail.v1", Schema = JObject.Parse("""{"type":"object","required":["subject","senderAddress","bodyText"],"additionalProperties":false,"properties":{"subject":{"type":"string"},"senderAddress":{"type":"string"},"bodyText":{"type":"string"}}}""") }); contract.QueueKey = queue; f.Run(contract);
+        var seed = f.Cmd("SeedRetentionFixture", new { fixtureId = "retention-proof", ageDays = 366 }); seed.QueueKey = queue;
+        var seeded = f.Run(seed);
+        var redactionId = (string)seeded["RedactionItemId"]!;
+        var protectedId = (string)seeded["ProtectedItemId"]!;
+        var prepareRedaction = f.Cmd("PrepareAcquire"); prepareRedaction.QueueKey = queue; f.Run(prepareRedaction);
+        var firstNative = f.Store.NativeDequeue(queue, f.Now)!;
+        Assert.Contains(firstNative.Id, new[] { redactionId, protectedId });
+        var acceptFirst = f.Cmd("AcceptAcquire"); acceptFirst.QueueKey = queue; acceptFirst.RequestId = prepareRedaction.RequestId; acceptFirst.ItemId = firstNative.Id; f.Run(acceptFirst);
+        var resolveRedaction = f.Cmd("ResolveAcquire"); resolveRedaction.QueueKey = queue; resolveRedaction.RequestId = prepareRedaction.RequestId;
+        var firstOwned = f.Run(resolveRedaction);
+        var firstFinish = firstNative.Id == redactionId
+            ? f.Owned("Complete", firstOwned, new { table = "qmcp_synthetic", recordId = Guid.NewGuid().ToString() })
+            : f.Owned("Fail", firstOwned, new { category = "Business", code = "SYNTHETIC_REVIEW_REQUIRED" });
+        firstFinish.QueueKey = queue; f.Run(firstFinish);
+        var prepareProtected = f.Cmd("PrepareAcquire"); prepareProtected.QueueKey = queue; f.Run(prepareProtected);
+        var secondNative = f.Store.NativeDequeue(queue, f.Now)!;
+        Assert.Equal(redactionId == firstNative.Id ? protectedId : redactionId, secondNative.Id);
+        var acceptSecond = f.Cmd("AcceptAcquire"); acceptSecond.QueueKey = queue; acceptSecond.RequestId = prepareProtected.RequestId; acceptSecond.ItemId = secondNative.Id; f.Run(acceptSecond);
+        var resolveProtected = f.Cmd("ResolveAcquire"); resolveProtected.QueueKey = queue; resolveProtected.RequestId = prepareProtected.RequestId;
+        var secondOwned = f.Run(resolveProtected);
+        var secondFinish = secondNative.Id == redactionId
+            ? f.Owned("Complete", secondOwned, new { table = "qmcp_synthetic", recordId = Guid.NewGuid().ToString() })
+            : f.Owned("Fail", secondOwned, new { category = "Business", code = "SYNTHETIC_REVIEW_REQUIRED" });
+        secondFinish.QueueKey = queue; f.Run(secondFinish);
+        Assert.True(f.Store.NativeGet(redactionId)!.Created < f.Now.AddDays(-365));
+        var apply = f.Cmd("ApplyRetention"); apply.QueueKey = queue;
+        var result = f.Run(apply);
+        Assert.Equal(1, (int)result["InputsRedacted"]!);
+        Assert.Equal(1, (int)result["ReceiptsRedacted"]!);
+        Assert.Equal(3, (int)result["EvidenceRowsPurged"]!);
+        Assert.True((int)result["ProtectedRows"]! >= 1);
+        Assert.Equal("{}", f.Store.NativeGet(redactionId)!.Input);
+        Assert.NotEqual("{}", f.Store.NativeGet(protectedId)!.Input);
+        Assert.Null(f.Store.Get("testrun", (string)seeded["TestRunId"]!));
     }
 }

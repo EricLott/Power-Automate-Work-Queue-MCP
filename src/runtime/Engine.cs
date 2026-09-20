@@ -27,6 +27,7 @@ public sealed partial class Engine
         ["ClaimEvent"] = "sender",
         ["FinishEvent"] = "sender",
         ["StartTestRun"] = "tester",
+        ["SeedRetentionFixture"] = "tester",
         ["CancelTestRun"] = "tester",
         ["GetTestRun"] = "tester",
         ["AdvanceTestRun"] = "coordinator",
@@ -83,6 +84,7 @@ public sealed partial class Engine
             case "ClaimEvent": return ClaimEvent(c, a);
             case "FinishEvent": return FinishEvent(c, a, d);
             case "StartTestRun": return StartTest(c, a, d);
+            case "SeedRetentionFixture": return SeedRetentionFixture(c, a, d, p!);
             case "CancelTestRun": return CancelTest(c);
             case "GetTestRun": return GetTest(c);
             case "AdvanceTestRun": return AdvanceTest(c);
@@ -92,6 +94,12 @@ public sealed partial class Engine
     }
     T? Get<T>(string kind, string key) where T : class { var r = store.Get(kind, key); return r == null ? null : Json.Read<T>(r.Body); }
     Row Add(string kind, string key, string queue, object body) => store.Add(new Row { Kind = kind, Key = key, Queue = queue, Body = Json.Write(body), Updated = clock() });
+    Row AddAt(string kind, string key, string queue, object body, DateTime updated)
+    {
+        var document = Json.Object(Json.Write(body));
+        document["_qmcpFixtureCreated"] = updated;
+        return store.Add(new Row { Kind = kind, Key = key, Queue = queue, Body = document.ToString(Newtonsoft.Json.Formatting.None), Updated = updated });
+    }
     void Save<T>(string kind, string key, T body)
     {
         var r = store.Get(kind, key) ?? throw new Fault("NOT_FOUND");

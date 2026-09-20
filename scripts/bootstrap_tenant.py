@@ -109,7 +109,7 @@ def execute(binding,approved_hash,dataverse_cli=False,runner=None):
     completed=[]
     for api in p['apis']:
         row=one(query('customapis','customapiid,_plugintypeid_value',"uniquename eq '"+api+"'"))
-        if row.get('_plugintypeid_value')!=runtime: request('PATCH','customapis('+row['customapiid']+')',{'PluginTypeId@odata.bind':'/plugintypes('+runtime+')'},'WQTesting' if any(api.endswith(x) for x in ['StartTestRun','CancelTestRun','GetTestRun','AdvanceTestRun','CleanupTestRun']) else 'WQCore')
+        if row.get('_plugintypeid_value')!=runtime: request('PATCH','customapis('+row['customapiid']+')',{'PluginTypeId@odata.bind':'/plugintypes('+runtime+')'},'WQTesting' if any(api.endswith(x) for x in ['StartTestRun','SeedRetentionFixture','CancelTestRun','GetTestRun','AdvanceTestRun','CleanupTestRun']) else 'WQCore')
         completed.append(api)
     for specification in p['guardSteps']:
         table=specification['table']

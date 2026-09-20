@@ -27,7 +27,7 @@ public sealed class DataverseStore : IStore
     // Keep reads narrow: qmcp_document can contain large snapshots and is the
     // only payload column the adapter needs. versionnumber is mapped to the
     // SDK Entity.RowVersion used by optimistic concurrency.
-    static readonly string[] RowColumns = { "qmcp_key", "qmcp_queuekey", "qmcp_document", "modifiedon", "versionnumber" };
+    static readonly string[] RowColumns = { "qmcp_key", "qmcp_queuekey", "qmcp_document", "modifiedon", "overriddencreatedon", "versionnumber" };
     static readonly string[] NativeColumns = { "workqueueid", "uniqueidbyqueue", "input", "statecode", "delayuntil", "expirydate", "createdon", "versionnumber" };
     public T Atomic<T>(Func<T> operation)
     {
@@ -48,7 +48,13 @@ public sealed class DataverseStore : IStore
         if (records.Count > 1) throw new Fault("DUPLICATE_KEY");
         return records.FirstOrDefault();
     }
-    static Row Row(string kind, Entity e) => new Row { Kind = kind, Key = kind == "business" ? e.Id.ToString() : e.GetAttributeValue<string>("qmcp_key"), Queue = e.GetAttributeValue<string>("qmcp_queuekey"), Body = e.GetAttributeValue<string>("qmcp_document"), Version = long.Parse(e.RowVersion ?? throw new Fault("ROW_VERSION_REQUIRED")), Updated = e.GetAttributeValue<DateTime>("modifiedon") };
+    static Row Row(string kind, Entity e)
+    {
+        var body = e.GetAttributeValue<string>("qmcp_document") ?? "{}";
+        var fixtureCreated = Json.Object(body)["_qmcpFixtureCreated"];
+        var updated = DateTime.TryParse((string?)fixtureCreated, out var fixtureDate) ? fixtureDate : e.GetAttributeValue<DateTime>("modifiedon");
+        return new Row { Kind = kind, Key = kind == "business" ? e.Id.ToString() : e.GetAttributeValue<string>("qmcp_key"), Queue = e.GetAttributeValue<string>("qmcp_queuekey"), Body = body, Version = long.Parse(e.RowVersion ?? throw new Fault("ROW_VERSION_REQUIRED")), Updated = updated };
+    }
     public Row? Get(string kind, string key) { var e = Find(kind, key); return e == null ? null : Row(kind, e); }
     public IReadOnlyList<Row> Page(string kind, string queue, string after, int limit)
     {
@@ -79,6 +85,8 @@ public sealed class DataverseStore : IStore
             e["ownerid"] = new EntityReference("team", team);
         }
         Project(e, row.Body);
+        if (context.MessageName == "qmcp_WQ_SeedRetentionFixture" && row.Updated != default)
+            e["overriddencreatedon"] = row.Updated.ToUniversalTime();
         if (row.Kind == "business") e.Id = Guid.Parse(row.Key);
         service.Create(e);
         InjectAfterWrite(row.Kind);
@@ -145,11 +153,15 @@ public sealed class DataverseStore : IStore
     {
         var e = new Entity("workqueueitem", Guid.Parse(item.Id)); e["workqueueid"] = new EntityReference("workqueue", Guid.Parse(Policy(item.Queue).NativeQueueId));
         e["name"] = item.UniqueKey; e["uniqueidbyqueue"] = item.UniqueKey; e["input"] = item.Input; e["delayuntil"] = item.Available; e["expirydate"] = item.Expires;
+        if (context.MessageName == "qmcp_WQ_SeedRetentionFixture" && item.Created != default)
+            e["overriddencreatedon"] = item.Created.ToUniversalTime();
         service.Create(e); return NativeGet(item.Id) ?? throw new Fault("WRITE_NOT_VISIBLE");
     }
     public NativeItem? NativeDequeue(string queue, DateTime now)
     {
-        var request = new OrganizationRequest("Dequeue"); request["Target"] = new EntityReference("workqueue", Guid.Parse(Policy(queue).NativeQueueId));
+        // Use the documented bound-action name. The short SDK label does not
+        // resolve reliably in the live Dataverse service.
+        var request = new OrganizationRequest("Microsoft.Dynamics.CRM.Dequeue"); request["Target"] = new EntityReference("workqueue", Guid.Parse(Policy(queue).NativeQueueId));
         var response = service.Execute(request);
         if (ProofFault == "after-dequeue") throw new Fault("INJECTED_PROOF_FAILURE");
         var entity = response.Results.Values.OfType<Entity>().SingleOrDefault();

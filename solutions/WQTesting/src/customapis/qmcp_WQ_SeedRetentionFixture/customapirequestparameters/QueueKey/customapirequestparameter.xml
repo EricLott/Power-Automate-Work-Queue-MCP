@@ -1,0 +1,13 @@
+<customapirequestparameter uniquename="QueueKey">
+  <iscustomizable>0</iscustomizable>
+  <isoptional>0</isoptional>
+  <logicalentityname />
+  <name>qmcp_WQ_SeedRetentionFixture.QueueKey</name>
+  <type>10</type>
+  <description default="QueueKey">
+    <label description="QueueKey" languagecode="1033" />
+  </description>
+  <displayname default="QueueKey">
+    <label description="QueueKey" languagecode="1033" />
+  </displayname>
+</customapirequestparameter>

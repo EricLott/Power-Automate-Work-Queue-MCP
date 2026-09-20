@@ -120,3 +120,7 @@ The [stale ownership proof](evidence/stale-worker-2026-09-12.json) replaced atte
 ## Installed AI reference checkpoint
 
 The [reference prompt proof](reference-prompt-proof.md) records a real scheduled worker run through Dataverse Predict, protected business output and coordinator assertions. Generated flow clientdata was saved directly with temporary synthetic bindings; this was not a solution reimport. The first run failed safely, and a revised run passed with one record and one attempt. Both results remain in the evidence ledger. Repeated quality and mailbox integration gates remain open.
+
+## Synthetic aged-retention checkpoint
+
+The authorized development tenant passed a bounded aged-retention proof on an isolated synthetic queue. The fixture created 366-day-old native rows and companion evidence, used the supported native acquisition handoff, and applied retention: one terminal input was redacted, one review-held input was preserved, one receipt became `ReplayExpired`, and three terminal evidence rows were purged. See [retention proof evidence](evidence/retention-fixture-2026-09-19.json). Scheduled execution, storage-cost behavior and managed-release compatibility remain P7-04 gates.

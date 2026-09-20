@@ -1,0 +1,18 @@
+{
+  "classification": "synthetic-development-aged-retention",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "4a9c5826-1a64-4698-b5cf-1ea4b2e3bc5a",
+  "ageDays": 366,
+  "retention": {"outcome": "RetentionApplied", "inputsRedacted": 1, "receiptsRedacted": 1, "evidenceRowsPurged": 3, "protectedRows": 3},
+  "observations": {
+    "redaction": {"statecode": 2, "statuscode": 2, "inputRedacted": true},
+    "protected": {"statecode": 4, "statuscode": 4, "inputPreserved": true},
+    "statusReviewRequired": true,
+    "receipt": {"rowPresent": true, "outcome": "ReplayExpired"},
+    "evidence": {"testRunPresentAfterRetention": false}
+  },
+  "externalDestinationsUsed": false,
+  "deploymentRequestId": "c7e1a4b9-2d58-4f06-9b3c-7e1d5a8f2c44",
+  "limitation": "Synthetic-only proof; scheduler execution, storage cost and managed-release compatibility remain separate P7-04 gates."
+}

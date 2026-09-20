@@ -52,6 +52,7 @@
     "ClaimEvent",
     "FinishEvent",
     "StartTestRun",
+    "SeedRetentionFixture",
     "CancelTestRun",
     "GetTestRun",
     "AdvanceTestRun",
