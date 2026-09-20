@@ -27,7 +27,7 @@ def policies_equal(left, right):
     return {k: v for k, v in left.items() if k != "Revision"} == {k: v for k, v in right.items() if k != "Revision"}
 
 
-def validate(binding, ledger, deadline_seconds, wait_seconds):
+def validate(binding, ledger, lease_seconds, deadline_seconds, wait_seconds):
     origin, organization = _validate_binding(binding)
     queue = ledger.get("queueKey")
     if not isinstance(queue, str) or not queue.startswith("qmcp-proof-") or queue not in binding.get("queueKeys", []):
@@ -37,7 +37,7 @@ def validate(binding, ledger, deadline_seconds, wait_seconds):
             uuid.UUID(ledger[key])
         except (KeyError, TypeError, ValueError):
             raise ValueError("FIXTURE_ID_INVALID")
-    if not 1 <= deadline_seconds <= 5:
+    if not 1 <= lease_seconds <= 5 or not lease_seconds < deadline_seconds <= 10:
         raise ValueError("DEADLINE_BOUND_INVALID")
     if not 120 <= wait_seconds <= 300:
         raise ValueError("WAIT_BOUND_INVALID")
@@ -50,13 +50,14 @@ def main(argv=None):
     parser.add_argument("--fixture-ledger", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--execute", action="store_true")
-    parser.add_argument("--deadline-seconds", type=int, default=1)
+    parser.add_argument("--lease-seconds", type=int, default=1)
+    parser.add_argument("--deadline-seconds", type=int, default=2)
     parser.add_argument("--wait-seconds", type=int, default=210)
     args = parser.parse_args(argv)
 
     binding = json.loads(Path(args.binding).read_text(encoding="utf-8-sig"))
     ledger = json.loads(Path(args.fixture_ledger).read_text(encoding="utf-8-sig"))
-    origin, organization, queue = validate(binding, ledger, args.deadline_seconds, args.wait_seconds)
+    origin, organization, queue = validate(binding, ledger, args.lease_seconds, args.deadline_seconds, args.wait_seconds)
     if not args.execute:
         print(json.dumps({"ready": True, "tenantCalls": False, "writes": False, "queueKey": queue, "flow": FLOW_NAME}, indent=2))
         return
@@ -74,6 +75,7 @@ def main(argv=None):
         "proofId": proof_id,
         "flow": FLOW_NAME,
         "deadlineSeconds": args.deadline_seconds,
+        "leaseSeconds": args.lease_seconds,
         "tenantCalls": True,
         "writesPerformed": False,
         "externalDestinationsUsed": False,
@@ -152,19 +154,20 @@ def main(argv=None):
         original_policy, policy_version = policy()
         if original_policy.get("NativeQueueId", "").lower() != ledger["queue"].lower() or not original_policy.get("Enabled"):
             raise ValueError("POLICY_NOT_READY")
-        if original_policy.get("DeadlineSeconds") == args.deadline_seconds:
+        if original_policy.get("DeadlineSeconds") == args.deadline_seconds and original_policy.get("LeaseSeconds") == args.lease_seconds:
             raise ValueError("DEADLINE_ALREADY_SHORT")
         flow_original = call("GET", flow_path() + "?$select=workflowid,name,statecode,statuscode,clientdata")
         if flow_original.get("name") != FLOW_NAME or flow_original.get("statecode") != 0:
             raise ValueError("FLOW_NOT_DRAFT")
         save(originalDeadlineSeconds=original_policy.get("DeadlineSeconds"), originalPolicyRevision=original_policy.get("Revision"), originalFlowState="Draft")
         shortened = dict(original_policy)
+        shortened["LeaseSeconds"] = args.lease_seconds
         shortened["DeadlineSeconds"] = args.deadline_seconds
         register = call("POST", "qmcp_WQ_RegisterQueue", {"QueueKey": queue, "RequestId": str(uuid.uuid5(uuid.UUID(proof_id), "shorten-policy")), "ExpectedVersion": str(policy_version), "DataJson": json.dumps(shortened, separators=(",", ":"))})
         policy_changed = True
-        save(policyChangeOutcome=json.loads(register["ResultJson"]).get("Outcome"), shortenedDeadlineSeconds=args.deadline_seconds)
+        save(policyChangeOutcome=json.loads(register["ResultJson"]).get("Outcome"), shortenedLeaseSeconds=args.lease_seconds, shortenedDeadlineSeconds=args.deadline_seconds)
         bound = policy()[0]
-        if bound.get("DeadlineSeconds") != args.deadline_seconds:
+        if bound.get("LeaseSeconds") != args.lease_seconds or bound.get("DeadlineSeconds") != args.deadline_seconds:
             raise ValueError("DEADLINE_BINDING_NOT_CONFIRMED")
         call("PATCH", flow_path(), {"statecode": 1})
         active_flow = call("GET", flow_path() + "?$select=statecode,statuscode")
