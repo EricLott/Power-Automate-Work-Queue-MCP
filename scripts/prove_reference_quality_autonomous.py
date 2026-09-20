@@ -204,7 +204,14 @@ def main(argv=None):
         if not observed.get("complete"):
             raise ValueError("REFERENCE_QUALITY_PROOF_FAILED")
         cleanup = api("CleanupTestRun", "cleanup", item=run_id)
-        evidence["cleanup"] = {"outcome": cleanup.get("Outcome"), "state": cleanup.get("State"), "resultCount": len(cleanup.get("Results", [])) if isinstance(cleanup.get("Results"), list) else None}
+        cleanup_results = cleanup.get("Results", []) if isinstance(cleanup.get("Results"), list) else []
+        evidence["cleanup"] = {
+            "outcome": cleanup.get("Outcome"),
+            "state": cleanup.get("State"),
+            "resultCount": len(cleanup_results),
+            "resultStates": [result.get("State") for result in cleanup_results],
+            "resultCleanupStates": [result.get("Cleanup") for result in cleanup_results],
+        }
         remaining = call(
             "GET",
             "qmcp_emailrequests?$select=qmcp_emailrequestid,qmcp_testrun&$filter=qmcp_testrun eq '" + run_id + "'&$top=20",
@@ -212,7 +219,10 @@ def main(argv=None):
         if not isinstance(remaining, list):
             raise ValueError("CLEANUP_QUERY_INVALID")
         evidence["cleanup"]["remainingTestRunRecords"] = len(remaining)
-        if cleanup.get("Outcome") != "Passed" or remaining:
+        cleanup_passed = cleanup.get("Outcome") == "Passed" or cleanup.get("State") == "Passed"
+        cleanup_results_passed = all(result.get("State") == "Passed" for result in cleanup_results) if cleanup_results else True
+        cleanup_completed = all(result.get("Cleanup") == "Completed" for result in cleanup_results) if cleanup_results else True
+        if not cleanup_passed or not cleanup_results_passed or not cleanup_completed or remaining:
             raise ValueError("CLEANUP_NOT_CONFIRMED")
         evidence["complete"] = True
         evidence["limitation"] = "Bounded six-case synthetic installed worker proof; mailbox intake, event wake-up, notification delivery, restricted identity and managed release remain separate gates."
