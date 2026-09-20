@@ -78,6 +78,7 @@ public interface IStore
     T Atomic<T>(Func<T> operation);
     Row? Get(string kind, string key);
     IReadOnlyList<Row> Page(string kind, string queue, string after, int limit);
+    IReadOnlyList<Row> PageBusinessEvidence(string queue, string testRun, string sourceKey, string after, int limit);
     Row Add(Row row);
     Row Put(Row row, long expectedVersion);
     void Delete(string kind, string key, long expectedVersion);

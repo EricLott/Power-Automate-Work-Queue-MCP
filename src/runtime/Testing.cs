@@ -11,6 +11,8 @@ public sealed class TestCase
     public int? ExpectedAttemptCount { get; set; }
     public string ExpectedNotificationKind { get; set; } = "";
     public string ExpectedNotificationState { get; set; } = "";
+    public int? ExpectedRecordCount { get; set; }
+    public int? ExpectedUnwantedEffectCount { get; set; }
 }
 public sealed class TestRun
 {
@@ -35,9 +37,12 @@ public sealed class TestResult
     public int? ExpectedAttemptCount { get; set; }
     public string ExpectedNotificationKind { get; set; } = "";
     public string ExpectedNotificationState { get; set; } = "";
+    public int? ExpectedRecordCount { get; set; }
+    public int? ExpectedUnwantedEffectCount { get; set; }
 }
 public sealed partial class Engine
 {
+    const int MaxEvidenceRecords = 50;
     object StartTest(Command c, Actor actor, JObject d)
     {
         if (actor.Production) throw new Fault("PRODUCTION_TEST_DENIED");
@@ -50,7 +55,9 @@ public sealed partial class Engine
         foreach (var test in cases)
         {
             if (test.Id.Length < 1 || test.Id.Length > 100 || !new[] { "Processed", "Exception" }.Contains(test.ExpectedOutcome) ||
-               test.Expected.Properties().Any(p => !new[] { "contact", "category", "summary" }.Contains(p.Name))) throw new Fault("ASSERTION_UNSUPPORTED");
+               test.Expected.Properties().Any(p => !new[] { "contact", "category", "summary" }.Contains(p.Name)) ||
+               (test.ExpectedRecordCount.HasValue && (test.ExpectedRecordCount.Value < 0 || test.ExpectedRecordCount.Value > MaxEvidenceRecords)) ||
+               (test.ExpectedUnwantedEffectCount.HasValue && (test.ExpectedUnwantedEffectCount.Value < 0 || test.ExpectedUnwantedEffectCount.Value > MaxEvidenceRecords))) throw new Fault("ASSERTION_UNSUPPORTED");
         }
         var policy = Get<QueuePolicy>("definition", c.QueueKey)!;
         var run = new TestRun { Id = Guid.NewGuid().ToString(), RequestedBy = actor.Id, Deadline = clock().AddSeconds(policy.DeadlineSeconds), ManifestHash = Json.Fingerprint(cases) };
@@ -65,7 +72,7 @@ public sealed partial class Engine
                 string itemId = (string)result["ItemId"]!;
                 var item = Item(new Command { QueueKey = c.QueueKey, ItemId = itemId });
                 item.context.TestRun = run.Id; Save("itemcontext", item.native.UniqueKey, item.context);
-                var record = new TestResult { Id = Json.Hash(run.Id + "|" + test.Id + "|" + repetition), CaseId = test.Id, ItemId = itemId, Expected = (JObject)test.Expected.DeepClone(), ExpectedOutcome = test.ExpectedOutcome, ExpectedErrorCode = test.ExpectedErrorCode, ExpectedAttemptCount = test.ExpectedAttemptCount, ExpectedNotificationKind = test.ExpectedNotificationKind, ExpectedNotificationState = test.ExpectedNotificationState };
+                var record = new TestResult { Id = Json.Hash(run.Id + "|" + test.Id + "|" + repetition), CaseId = test.Id, ItemId = itemId, Expected = (JObject)test.Expected.DeepClone(), ExpectedOutcome = test.ExpectedOutcome, ExpectedErrorCode = test.ExpectedErrorCode, ExpectedAttemptCount = test.ExpectedAttemptCount, ExpectedNotificationKind = test.ExpectedNotificationKind, ExpectedNotificationState = test.ExpectedNotificationState, ExpectedRecordCount = test.ExpectedRecordCount, ExpectedUnwantedEffectCount = test.ExpectedUnwantedEffectCount };
                 run.Results.Add(record); Add("testresult", record.Id, c.QueueKey, record);
             }
         }
@@ -111,12 +118,12 @@ public sealed partial class Engine
             else
             {
                 result.Evidence = new JObject { ["nativeOutcome"] = item.native.Status, ["attemptCount"] = item.context.AttemptCount, ["reviewRequired"] = item.context.ReviewRequired };
+                JObject output = Json.Object(item.context.OutputJson);
+                string recordId = (string?)output["recordId"] ?? "";
                 if (item.native.Status != result.ExpectedOutcome) result.State = "Failed";
                 else if (item.native.Status == "Exception") result.State = "Passed";
                 else
                 {
-                    var output = Json.Object(item.context.OutputJson);
-                    string recordId = (string?)output["recordId"] ?? "";
                     var actual = store.Get("business", recordId);
                     if (actual == null) result.State = "Inconclusive";
                     else
@@ -128,6 +135,23 @@ public sealed partial class Engine
                             var fields = record["fields"] as JObject ?? new JObject();
                             result.Evidence["recordId"] = recordId; result.Evidence["fields"] = fields.DeepClone();
                             result.State = result.Expected.Properties().All(p => JToken.DeepEquals(p.Value, fields[p.Name])) ? "Passed" : "Failed";
+                        }
+                    }
+                }
+                if (result.ExpectedRecordCount.HasValue || result.ExpectedUnwantedEffectCount.HasValue)
+                {
+                    var evidenceRows = store.PageBusinessEvidence(c.QueueKey, run.Id, item.context.SourceKey, "", MaxEvidenceRecords + 1);
+                    result.Evidence["recordCount"] = evidenceRows.Count;
+                    result.Evidence["recordCountBounded"] = evidenceRows.Count <= MaxEvidenceRecords;
+                    if (evidenceRows.Count > MaxEvidenceRecords) result.State = "Inconclusive";
+                    else
+                    {
+                        int unwantedEffectCount = evidenceRows.Count(row => row.Key != recordId);
+                        result.Evidence["unwantedEffectCount"] = unwantedEffectCount;
+                        if (result.State != "Inconclusive")
+                        {
+                            if (result.ExpectedRecordCount.HasValue && result.ExpectedRecordCount.Value != evidenceRows.Count) result.State = "Failed";
+                            if (result.ExpectedUnwantedEffectCount.HasValue && result.ExpectedUnwantedEffectCount.Value != unwantedEffectCount) result.State = "Failed";
                         }
                     }
                 }

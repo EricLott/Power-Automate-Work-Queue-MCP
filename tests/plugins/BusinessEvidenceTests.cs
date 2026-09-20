@@ -68,6 +68,23 @@ public class BusinessEvidenceTests
         service.VerifyNoOtherCalls();
     }
 
+    [Fact]
+    public void PageBusinessEvidenceUsesOnlyBoundedTestScopedFilters()
+    {
+        var cursor = Guid.NewGuid();
+        var testRun = Guid.NewGuid().ToString();
+        var sourceKey = "source-key";
+        var service = new Mock<IOrganizationService>(MockBehavior.Strict);
+        service.Setup(s => s.RetrieveMultiple(It.Is<QueryBase>(q => IsBusinessEvidenceQuery(q, cursor, testRun, sourceKey))))
+            .Returns(new EntityCollection());
+
+        var rows = new DataverseStore(service.Object, new Mock<IPluginExecutionContext>().Object)
+            .PageBusinessEvidence("mail", testRun, sourceKey, cursor.ToString(), 51);
+
+        Assert.Empty(rows);
+        service.Verify(s => s.RetrieveMultiple(It.Is<QueryBase>(q => IsBusinessEvidenceQuery(q, cursor, testRun, sourceKey))), Times.Once);
+    }
+
     static bool IsBusinessIdQuery(QueryBase query, Guid id)
     {
         var q = Assert.IsType<QueryExpression>(query);
@@ -84,6 +101,17 @@ public class BusinessEvidenceTests
             q.Criteria.Conditions.Any(c => c.AttributeName == "qmcp_queuekey" && (string)c.Values[0] == "mail") &&
             q.Criteria.Conditions.Any(c => c.AttributeName == "qmcp_emailrequestid" && c.Operator == ConditionOperator.GreaterThan && (Guid)c.Values[0] == cursor) &&
             q.Orders.Count == 1 && q.Orders[0].AttributeName == "qmcp_emailrequestid" && q.Orders[0].OrderType == OrderType.Ascending;
+    }
+
+    static bool IsBusinessEvidenceQuery(QueryBase query, Guid cursor, string testRun, string sourceKey)
+    {
+        var q = Assert.IsType<QueryExpression>(query);
+        return q.EntityName == "qmcp_emailrequest" && q.Criteria.Conditions.Count == 4 &&
+            q.Criteria.Conditions.Any(c => c.AttributeName == "qmcp_queuekey" && c.Operator == ConditionOperator.Equal && (string)c.Values[0] == "mail") &&
+            q.Criteria.Conditions.Any(c => c.AttributeName == "qmcp_testrun" && c.Operator == ConditionOperator.Equal && (string)c.Values[0] == testRun) &&
+            q.Criteria.Conditions.Any(c => c.AttributeName == "qmcp_sourcekey" && c.Operator == ConditionOperator.Equal && (string)c.Values[0] == sourceKey) &&
+            q.Criteria.Conditions.Any(c => c.AttributeName == "qmcp_emailrequestid" && c.Operator == ConditionOperator.GreaterThan && (Guid)c.Values[0] == cursor) &&
+            q.TopCount == 51 && q.Orders.Count == 1 && q.Orders[0].AttributeName == "qmcp_emailrequestid" && q.Orders[0].OrderType == OrderType.Ascending;
     }
 
     static Entity Business(Guid id, string key, string version)

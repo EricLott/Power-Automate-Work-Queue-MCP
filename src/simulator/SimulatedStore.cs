@@ -45,6 +45,13 @@ public sealed class SimulatedStore : IStore
     static string Id(string kind, string key) => kind + ":" + key;
     public Row? Get(string kind, string key) => state.Rows.TryGetValue(Id(kind, key), out var value) ? Copy(value) : null;
     public IReadOnlyList<Row> Page(string kind, string queue, string after, int limit) => state.Rows.Values.Where(r => r.Kind == kind && r.Queue == queue && string.CompareOrdinal(r.Key, after) > 0).OrderBy(r => r.Key, StringComparer.Ordinal).Take(Math.Min(100, limit)).Select(Copy).ToList();
+    public IReadOnlyList<Row> PageBusinessEvidence(string queue, string testRun, string sourceKey, string after, int limit)
+    {
+        if (after != "" && !Guid.TryParse(after, out _)) throw new Fault("INPUT_INVALID");
+        return state.Rows.Values.Where(r => r.Kind == "business" && r.Queue == queue && string.CompareOrdinal(r.Key, after) > 0)
+            .Where(r => { var body = Json.Object(r.Body); return (string?)body["testRun"] == testRun && (sourceKey == "" || (string?)body["sourceKey"] == sourceKey); })
+            .OrderBy(r => r.Key, StringComparer.Ordinal).Take(Math.Min(100, limit)).Select(Copy).ToList();
+    }
     public Row Add(Row row) { BeforeWrite?.Invoke("add:" + row.Kind); var id = Id(row.Kind, row.Key); if (state.Rows.ContainsKey(id)) throw new Fault("DUPLICATE_KEY"); row.Version = 1; state.Rows.Add(id, Copy(row)); return Copy(row); }
     public Row Put(Row row, long version) { BeforeWrite?.Invoke("put:" + row.Kind); var current = Get(row.Kind, row.Key) ?? throw new Fault("NOT_FOUND"); if (current.Version != version) throw new Fault("VERSION_CONFLICT"); row.Version = version + 1; state.Rows[Id(row.Kind, row.Key)] = Copy(row); return Copy(row); }
     public void Delete(string kind, string key, long version) { BeforeWrite?.Invoke("delete:" + kind); if (Get(kind, key)?.Version != version) throw new Fault("VERSION_CONFLICT"); state.Rows.Remove(Id(kind, key)); }

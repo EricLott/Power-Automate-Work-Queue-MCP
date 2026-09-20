@@ -453,6 +453,8 @@ Support a small declarative assertion language:
 | Notification was recorded | Expected outbox event and delivery state. |
 | No unwanted effect occurred | Test-scoped evidence in the known destination or sink. |
 
+The runtime keeps these checks bounded and declarative: record-count evidence is read only from the registered `business` table for the current test run and case source identity, and unwanted-effect evidence counts additional test-owned business records for that same identity. The store adapter owns the fixed query shape; test definitions cannot supply a table, URL, FetchXML, or deletion expression. A saturated evidence page is inconclusive rather than silently passing.
+
 An outbox event proves an alert was recorded. A sender success proves the connector accepted delivery. Neither alone proves the recipient read or even received the message in their inbox.
 
 Do not allow arbitrary code, unrestricted FetchXML, arbitrary URLs, or arbitrary deletion expressions in test definitions. Assertions and setup actions must stay within registered tables and allowed fields.

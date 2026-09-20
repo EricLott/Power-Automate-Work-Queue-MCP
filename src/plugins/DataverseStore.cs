@@ -74,6 +74,18 @@ public sealed class DataverseStore : IStore
         }
         return service.RetrieveMultiple(query).Entities.Select(e => Row(kind, e)).ToList();
     }
+    public IReadOnlyList<Row> PageBusinessEvidence(string queue, string testRun, string sourceKey, string after, int limit)
+    {
+        var query = new QueryExpression(Tables["business"]) { ColumnSet = new ColumnSet(RowColumns), TopCount = Math.Min(100, limit) };
+        query.Criteria.AddCondition("qmcp_queuekey", ConditionOperator.Equal, queue);
+        query.Criteria.AddCondition("qmcp_testrun", ConditionOperator.Equal, testRun);
+        if (sourceKey != "") query.Criteria.AddCondition("qmcp_sourcekey", ConditionOperator.Equal, sourceKey);
+        Guid cursor = default;
+        if (after != "" && !Guid.TryParse(after, out cursor)) throw new Fault("INPUT_INVALID");
+        if (after != "") query.Criteria.AddCondition("qmcp_emailrequestid", ConditionOperator.GreaterThan, cursor);
+        query.AddOrder("qmcp_emailrequestid", OrderType.Ascending);
+        return service.RetrieveMultiple(query).Entities.Select(e => Row("business", e)).ToList();
+    }
     public Row Add(Row row)
     {
         if (row.Kind == "command" && ProofFault == "before-receipt") throw new Fault("INJECTED_PROOF_FAILURE");
