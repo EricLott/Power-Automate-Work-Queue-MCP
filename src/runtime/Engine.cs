@@ -420,7 +420,7 @@ public sealed partial class Engine
         foreach (var native in page.Where(x => x.Status == "Processing"))
         {
             var context = Get<ItemContext>("itemcontext", native.UniqueKey);
-            if (context == null || context.ActiveAttempt == "") { native.Status = "Exception"; store.NativeSet(native); if (context != null) { context.ReviewRequired = true; Save("itemcontext", native.UniqueKey, context); } changed++; continue; }
+            if (context == null || context.ActiveAttempt == "") { native.Status = "Exception"; store.NativeSet(native); if (context == null) { context = new ItemContext { ItemId = native.Id, ContentHash = Json.Hash(native.Input), ReviewRequired = true }; Add("itemcontext", native.UniqueKey, c.QueueKey, context); } else { context.ReviewRequired = true; Save("itemcontext", native.UniqueKey, context); } changed++; continue; }
             var attempt = Get<Attempt>("attempt", context.ActiveAttempt);
             if (attempt == null) { native.Status = "Exception"; store.NativeSet(native); context.ActiveAttempt = ""; context.Generation++; context.ReviewRequired = true; Save("itemcontext", native.UniqueKey, context); changed++; continue; }
             if (attempt != null && (attempt.LeaseExpires <= clock() || attempt.Deadline <= clock())) { Recover(new Command { QueueKey = c.QueueKey, ItemId = native.Id, AttemptId = attempt.Id, Generation = context.Generation }); changed++; }

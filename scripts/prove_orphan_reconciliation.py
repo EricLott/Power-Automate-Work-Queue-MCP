@@ -158,8 +158,11 @@ def main(argv=None):
             raise ValueError("ORPHAN_NOT_SWEPT")
         if native_after.get("statecode") != 4 or native_after.get("statuscode") != 4:
             raise ValueError("ORPHAN_NOT_QUARANTINED")
-        if contexts_after or attempts_after:
-            raise ValueError("ORPHAN_CREATED_FRAMEWORK_STATE")
+        if len(contexts_after) != 1 or attempts_after:
+            raise ValueError("ORPHAN_FRAMEWORK_STATE_INVALID")
+        context = json.loads(contexts_after[0]["qmcp_document"])
+        if context.get("ReviewRequired") is not True or context.get("ActiveAttempt"):
+            raise ValueError("ORPHAN_REVIEW_STATE_INVALID")
         save(completed=True, limitation="This proves one native Processing item without framework context is quarantined as Exception; review metadata, bounded multi-page scans, separate identity, and managed-release behavior remain open.")
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
         save(error=str(error) if str(error).isupper() else "ORPHAN_RECONCILIATION_PROOF_FAILED", completed=False)
