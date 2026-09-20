@@ -1,0 +1,11 @@
+{
+  "classification": "read-only-tenant-schema-key",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "tablesRequested": 13,
+  "tablesObserved": 13,
+  "tablesWithExactlyOneActiveKey": 13,
+  "allExpectedKeysActive": true,
+  "writesPerformed": false,
+  "limitation": "Installed development-tenant metadata only; this does not prove clean-import activation timing, write permissions, transaction behavior, or production compatibility."
+}

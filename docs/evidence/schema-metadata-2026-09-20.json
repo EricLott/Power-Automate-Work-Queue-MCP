@@ -1,0 +1,25 @@
+{
+  "classification": "read-only-tenant-schema-contract-metadata",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "observations": {
+    "contractRowsObserved": 2,
+    "contractDialect": "http://json-schema.org/draft-07/schema#",
+    "contractSchemaType": "object",
+    "contractRequiredFields": ["subject", "senderAddress", "bodyText"],
+    "contractRejectsAdditionalProperties": true,
+    "contractHashesPresent": true,
+    "memoAttributesObserved": 6,
+    "memoMaxLengthBytes": 1048576,
+    "memoAttributesValidForCreateAndUpdate": true,
+    "apiDataJsonType": "Edm.String",
+    "writesPerformed": false
+  },
+  "relatedKeyProbe": {
+    "tablesObserved": 13,
+    "tablesWithExactlyOneActiveKey": 13,
+    "allExpectedKeysActive": true,
+    "evidence": "schema-key-2026-09-20.json"
+  },
+  "limitation": "Column metadata establishes installed development-tenant storage boundaries and observed contract dialect; it does not establish Web API request ceilings, clean-import activation timing, service capacity, or production compatibility. Framework UTF-8/depth/complexity limits remain local acceptance behavior."
+}
