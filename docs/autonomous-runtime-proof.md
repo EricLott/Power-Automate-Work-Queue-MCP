@@ -45,3 +45,9 @@ The conservative expected result is native `Exception`, one attempt, `reviewRequ
 The flow-run metadata query may return no rows. Treat that as missing diagnostic metadata, not as proof that the flows did not run. Do not claim a stronger outcome than the durable receipts and final state support. In particular, this procedure proves one synthetic idle-lease recovery path only; it does not prove mailbox intake, AI extraction, positive business output, load, separate-user authorization, clean installation, managed upgrade, or customer isolation.
 
 The redacted record in `docs/evidence/autonomous-runtime-2026-09-12.json` reports the completed case: autonomous execution did not require an MCP session, the temporary flow configuration was restored, all seven flows ended Draft, and zero of the 22 acceptance gates were closed. A separate [positive-output proof](evidence/positive-coordinator-2026-09-12.json) subsequently verified real record field assertions and test-owned cleanup. It used CLI-supplied synthetic output; it does not establish prompt quality.
+
+## Fresh scheduled backlog checkpoint — 2026-09-20
+
+The reusable [scheduled backlog proof](../scripts/prove_scheduled_backlog.py) created three synthetic items, acquired them without business processing, restored the original queue policy, and temporarily activated only Watchdog. A durable scheduled `RunMaintenance` receipt reported `Swept` with `changed: 3`; independent reads found all three items in `Exception`/`ReviewRequired` with no active attempt. Watchdog was restored to Draft and the queue policy was restored. Redacted evidence is in [scheduled-backlog-2026-09-20.json](evidence/scheduled-backlog-2026-09-20.json).
+
+This strengthens the scheduled backlog path but does not prove event-parent activation, real intake, separate-identity authorization, capacity, or managed release.

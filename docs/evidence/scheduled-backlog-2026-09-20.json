@@ -1,0 +1,27 @@
+{
+  "classification": "synthetic-development-scheduled-backlog",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "dbf30629-c611-49b3-9a69-50254eda664d",
+  "workflow": "Watchdog",
+  "itemsRequested": 3,
+  "leaseSeconds": 10,
+  "observations": {
+    "scheduledReceipt": {
+      "operation": "RunMaintenance",
+      "outcome": "Swept",
+      "changed": 3
+    },
+    "items": [
+      {"statecode": 4, "statuscode": 4, "reviewRequired": true, "activeAttempt": "", "attemptOutcome": "Exception"},
+      {"statecode": 4, "statuscode": 4, "reviewRequired": true, "activeAttempt": "", "attemptOutcome": "Exception"},
+      {"statecode": 4, "statuscode": 4, "reviewRequired": true, "activeAttempt": "", "attemptOutcome": "Exception"}
+    ],
+    "workflowRestored": true,
+    "finalWorkflowState": "Draft",
+    "policyRestored": true,
+    "externalDestinationsUsed": false
+  },
+  "limitation": "This proves a bounded three-item synthetic scheduled sweep; event-parent activation, separate identity, capacity and managed-release behavior remain separate gates."
+}
