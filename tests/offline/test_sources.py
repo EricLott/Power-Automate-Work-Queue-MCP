@@ -11,6 +11,15 @@ class FlowInvariantTests(unittest.TestCase):
     def flow(self,name):return json.loads((ROOT/'templates/flows'/(name+'.json')).read_text())
     def test_all_generated_flows(self):
         for file in (ROOT/'templates/flows').glob('*.json'):validate_flow(json.loads(file.read_text()),file.stem)
+
+    def test_optional_sender_connector_is_not_required_by_core(self):
+        core = (ROOT/'solutions'/'WQCore'/'src'/'Other'/'Customizations.xml').read_text()
+        sender = (ROOT/'solutions'/'WQNotificationsEmail'/'src'/'Other'/'Customizations.xml').read_text()
+        self.assertIn('shared_commondataserviceforapps', core)
+        self.assertNotIn('shared_office365', core)
+        self.assertNotIn('qmcp_notifications_outlook', core)
+        self.assertIn('shared_office365', sender)
+        self.assertIn('qmcp_notifications_outlook', sender)
     def test_wrong_child_binding_rejected(self):
         flow=self.flow('OnQueueChanged');flow['properties']['definition']['actions']['ProcessOne']['inputs']['host']['workflowReferenceName']='wrong'
         with self.assertRaises(AssertionError):validate_flow(flow,'OnQueueChanged')

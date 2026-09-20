@@ -9,3 +9,9 @@ dotnet test tests/runtime/QueueFramework.Tests.csproj --no-restore --filter Full
 ```
 
 This is local synthetic runtime evidence. It does not prove a native Outlook connector timeout, provider acceptance, mailbox delivery, or the installed `EmailSender` flow's behavior. G14 remains open for those tenant connector checks.
+
+## Optional-package independence checkpoint — 2026-09-20
+
+The candidate package boundary was independently checked. [WQCore](evidence/optional-package-independence-2026-09-20.json) contains the Dataverse connection reference but no Outlook connector or notification sender reference; `WQNotificationsEmail` owns the Outlook connection and sender flow. The source invariant is enforced by `FlowInvariantTests.test_optional_sender_connector_is_not_required_by_core`, and the package hashes/entry counts are recorded in the redacted evidence.
+
+This advances P4-04's Core-without-mail-credentials criterion and does not imply live sender validation. Provider throttling, expired sender leases, connection loss, lost provider responses, Outlook acceptance and recipient delivery remain open.

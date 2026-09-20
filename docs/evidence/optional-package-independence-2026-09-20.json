@@ -1,0 +1,31 @@
+{
+  "classification": "local-optional-package-independence",
+  "date": "2026-09-20",
+  "candidateVersion": "0.1.0.0",
+  "packages": {
+    "WQCore": {
+      "sha256": "2a0870d12ba4e967e0e32ec9d33faffe13f15d6bcb1ff8802f78a376c628b592",
+      "entries": 183,
+      "dataverseConnectorPresent": true,
+      "outlookConnectorPresent": false,
+      "notificationOutlookReferencePresent": false
+    },
+    "WQNotificationsEmail": {
+      "sha256": "b46f4b688493ccd06c42571fe1f7c75a71fa7d2b1c52f17539f79b1e260f8801",
+      "entries": 4,
+      "dataverseConnectorPresent": true,
+      "outlookConnectorPresent": true,
+      "notificationOutlookReferencePresent": true
+    }
+  },
+  "verification": {
+    "sourceInvariant": "tests/offline/test_sources.py::FlowInvariantTests.test_optional_sender_connector_is_not_required_by_core",
+    "runtimeNotificationFailure": "docs/notification-failure-proof.md",
+    "mailCredentialsUsed": false,
+    "tenantImportPerformed": false
+  },
+  "limitations": [
+    "This proves candidate package separation and local durable-outbox failure handling only.",
+    "Native Outlook throttling, connection loss, provider acceptance, lost provider response and recipient delivery remain unverified."
+  ]
+}
