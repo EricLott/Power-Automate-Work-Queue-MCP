@@ -1,0 +1,23 @@
+{
+  "classification": "synthetic-post-write-recovery-before-complete",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "e14240f9-73f0-427f-adcc-aa5e695df2d4",
+  "observations": {
+    "businessWriteCompleted": true,
+    "completionOmitted": true,
+    "expiredAttemptRecovery": "ReviewRequired",
+    "reviewRequiredBeforeRetry": true,
+    "retryOutcome": "RetryScheduled",
+    "targetRowsBeforeRecovery": 1,
+    "targetRowsAfterRecovery": 1,
+    "existingTargetReused": true,
+    "finalNativeOutcome": "Processed",
+    "finalReviewRequired": false,
+    "attemptCount": 2,
+    "policyRestored": true,
+    "externalDestinationsUsed": false
+  },
+  "limitation": "This is a bounded synthetic abandoned-attempt/lease-expiry proof using a real Dataverse target row; it is not a simulated connector outage or mailbox/sender run. Ambiguous source-key results fail closed in the runner and remain a separate matrix case."
+}
