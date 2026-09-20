@@ -19,3 +19,14 @@ This is the bounded operating procedure for the local candidate. It separates de
 Record the commit/package hash, environment and platform version, identity/role, case/run/request/item/attempt identifiers, expected and actual outcome, and an authorized evidence reference. Keep mailbox content, credentials, access tokens, headers and raw customer payloads out of published evidence. A failed, denied, missing, timed-out or inconclusive observation remains incomplete.
 
 The local candidate proves bounded input validation, request replay, durable deployment journaling, stale/active ownership checks, retention tombstones, redacted status views and the procedures above. It does not prove licensing, capacity, managed import, environment-copy behavior, separate-user native privileges, connector delivery, or production recovery. Those remain open acceptance work in [P7-05](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/68), [P7-06](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/69), and the linked gates.
+
+## Current evidence map — 2026-09-20
+
+The redacted [operations scenario matrix](evidence/operations-scenarios-2026-09-20.json)
+maps each procedure to the strongest current observation. It records tenant
+observations for preflight/manual-prerequisite detection, bounded capacity,
+deployment journaling, MCP disconnect continuation, post-write recovery, and
+scheduled backlog handling. Environment-copy mismatch and Core-outage behavior
+remain procedure-only; licensing entitlement, managed release, connector outage,
+and separate-role authorization remain explicit acceptance work. This matrix is
+not a production-readiness or release claim.

@@ -1,0 +1,82 @@
+{
+  "classification": "operations-scenario-evidence-matrix",
+  "date": "2026-09-20",
+  "scope": "local-runbook-and-authorized-development-tenant",
+  "scenarios": [
+    {
+      "scenario": "missing-connection-or-binding",
+      "detection": "read-only preflight reports missing/manual prerequisites",
+      "recovery": "leave flows Draft, preserve the plan/journal, repair approved bindings, rerun preflight",
+      "evidence": "docs/evidence/live-preflight-2026-09-20-refresh.json",
+      "tenantObserved": true,
+      "limitation": "No connection repair or activation claim"
+    },
+    {
+      "scenario": "licensing-or-capacity",
+      "detection": "preflight/manual prerequisite or bounded request observation",
+      "recovery": "stop activation and escalate for approved capacity/licensing review",
+      "evidence": "docs/evidence/tenant-capacity-2026-09-20-10.json",
+      "tenantObserved": true,
+      "limitation": "Sequential synthetic observation; no licensing entitlement or service-protection limit claimed"
+    },
+    {
+      "scenario": "owner-departure-or-permission-loss",
+      "detection": "identity, role, or queue-grant readback fails",
+      "recovery": "stop mutations and use an approved administrator to restore ownership, then rerun identity/preflight",
+      "evidence": "docs/evidence/authorization-role-inventory-2026-09-20.json",
+      "tenantObserved": true,
+      "limitation": "Current tenant has no assigned WQ Worker/Reader validation identities; no role mutation was attempted"
+    },
+    {
+      "scenario": "environment-copy-or-target-mismatch",
+      "detection": "organization/environment-class binding mismatch",
+      "recovery": "reject before mutation and create a fresh reviewed binding",
+      "evidence": "docs/proof-environment.md",
+      "tenantObserved": false,
+      "limitation": "Procedure and binding validation only"
+    },
+    {
+      "scenario": "failed-or-interrupted-import",
+      "detection": "durable deployment journal is Failed, LaunchFailed, or Running after worker termination",
+      "recovery": "preserve journal/target state, reconcile only recorded partial deployment, then use a new reviewed plan",
+      "evidence": "docs/evidence/deployment-2026-09-19.json",
+      "tenantObserved": true,
+      "limitation": "Unmanaged development import; clean managed import and upgrade remain open"
+    },
+    {
+      "scenario": "mcp-host-unavailable",
+      "detection": "stdio client disconnects",
+      "recovery": "allow installed autonomous flows to continue and inspect durable evidence later",
+      "evidence": "docs/evidence/mcp-autonomous-disconnect-2026-09-20.json",
+      "tenantObserved": true,
+      "limitation": "One bounded synthetic continuation case"
+    },
+    {
+      "scenario": "worker-timeout-or-lost-response",
+      "detection": "unknown status, lease expiry, or discarded external response",
+      "recovery": "reconcile stable identity, verify effects, and retry only with current expected version",
+      "evidence": "docs/evidence/post-write-recovery-2026-09-20.json",
+      "tenantObserved": true,
+      "limitation": "Synthetic target and connector-response-loss injection remain separate evidence"
+    },
+    {
+      "scenario": "backlog-missed-wakeup-or-expired-attempt",
+      "detection": "bounded health, maintenance receipt, stale lease, or review-required item",
+      "recovery": "run bounded maintenance and inspect active/review-held work before advancing",
+      "evidence": "docs/evidence/scheduled-backlog-2026-09-20.json",
+      "tenantObserved": true,
+      "limitation": "Event-parent activation and broad load remain open"
+    },
+    {
+      "scenario": "core-environment-outage",
+      "detection": "no trusted read or mutation path to the same environment",
+      "recovery": "use separately operated monitoring/escalation and wait for service recovery",
+      "evidence": null,
+      "tenantObserved": false,
+      "limitation": "Core cannot self-notify during its own outage; external monitoring remains a human/operations prerequisite"
+    }
+  ],
+  "allInputsSynthetic": true,
+  "externalDestinationsUsed": false,
+  "releaseClaim": false
+}
