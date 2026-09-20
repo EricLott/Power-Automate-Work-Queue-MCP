@@ -52,8 +52,8 @@ public sealed partial class Engine
             if (test.Id.Length < 1 || test.Id.Length > 100 || !new[] { "Processed", "Exception" }.Contains(test.ExpectedOutcome) ||
                test.Expected.Properties().Any(p => !new[] { "contact", "category", "summary" }.Contains(p.Name))) throw new Fault("ASSERTION_UNSUPPORTED");
         }
-        var run = new TestRun { Id = Guid.NewGuid().ToString(), RequestedBy = actor.Id, Deadline = clock().AddMinutes(15), ManifestHash = Json.Fingerprint(cases) };
         var policy = Get<QueuePolicy>("definition", c.QueueKey)!;
+        var run = new TestRun { Id = Guid.NewGuid().ToString(), RequestedBy = actor.Id, Deadline = clock().AddSeconds(policy.DeadlineSeconds), ManifestHash = Json.Fingerprint(cases) };
         foreach (var test in cases)
         {
             Add("testcase", Json.Hash(run.Id + "|" + test.Id), c.QueueKey, test);
