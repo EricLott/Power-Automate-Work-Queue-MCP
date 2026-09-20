@@ -1,0 +1,48 @@
+{
+  "classification": "read-only-native-custom-api-request-ceiling-probe",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "firstRejectedDataJsonBytes": 131073,
+  "limitations": [
+    "The probe exercises only GetQueueHealth on one approved development queue.",
+    "A CLI rejection is an observed boundary classification, not proof of which gateway layer enforced it.",
+    "Successful calls returned no response body.",
+    "This does not establish clean-import activation timing, production compatibility, throughput, or cost."
+  ],
+  "maxAcceptedDataJsonBytes": 131072,
+  "observations": [
+    {
+      "classification": "accepted",
+      "dataJsonBytes": 131072,
+      "healthShapePresent": false,
+      "outcome": null
+    },
+    {
+      "classification": "rejected",
+      "dataJsonBytes": 131073,
+      "errorClass": "DATAVERSE_CLI_FAILED"
+    },
+    {
+      "classification": "rejected",
+      "dataJsonBytes": 131200,
+      "errorClass": "DATAVERSE_CLI_FAILED"
+    },
+    {
+      "classification": "rejected",
+      "dataJsonBytes": 131500,
+      "errorClass": "DATAVERSE_CLI_FAILED"
+    },
+    {
+      "classification": "rejected",
+      "dataJsonBytes": 132000,
+      "errorClass": "DATAVERSE_CLI_FAILED"
+    },
+    {
+      "classification": "rejected",
+      "dataJsonBytes": 133000,
+      "errorClass": "DATAVERSE_CLI_FAILED"
+    }
+  ],
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "writesPerformed": false
+}
