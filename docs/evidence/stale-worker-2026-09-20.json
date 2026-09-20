@@ -1,0 +1,22 @@
+{
+  "classification": "synthetic-development-stale-worker-ownership",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "f36dcfbe-6464-4a8f-9675-bb8dbe16c443",
+  "observations": {
+    "oldGeneration": 1,
+    "newGeneration": 3,
+    "staleCalls": {
+      "Complete": "STALE_ATTEMPT",
+      "Fail": "STALE_ATTEMPT",
+      "Checkpoint": "STALE_ATTEMPT"
+    },
+    "currentAttemptAndContextUnchanged": true,
+    "currentWorkerCompleted": true,
+    "finalNativeState": "Processed",
+    "externalDestinationsUsed": false,
+    "flowsRestoredToDraft": true
+  },
+  "limitation": "One authenticated synthetic worker was used; separate-identity authorization, disablement recovery and broader coordinator acceptance remain separate gates."
+}
