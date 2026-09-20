@@ -1,0 +1,22 @@
+{
+  "classification": "synthetic-development-intake-failure",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "d38a345f-371f-4419-869d-ad6270aeba1c",
+  "tenantCalls": true,
+  "writesPerformed": true,
+  "externalDestinationsUsed": false,
+  "nativeItemCountBeforeReport": 1,
+  "nativeQueueUnchanged": true,
+  "firstOutcome": "Recorded",
+  "secondOutcome": "Recorded",
+  "failureRowCount": 1,
+  "sourceReferenceStored": false,
+  "notificationDestinationsConfigured": 0,
+  "notificationEventChecked": true,
+  "eventRowCount": 0,
+  "failureIdRecorded": true,
+  "completed": true,
+  "limitation": "This proves the framework path while Dataverse is available; native flow alerts remain the fallback when Dataverse itself is unavailable, and no sender or recipient delivery is claimed."
+}
