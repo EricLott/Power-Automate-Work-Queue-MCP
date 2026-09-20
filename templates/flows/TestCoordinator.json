@@ -86,7 +86,8 @@
             "RequestIds": {
               "type": "Compose",
               "inputs": {
-                "AdvanceTestRun": "@guid()"
+                "AdvanceTestRun": "@guid()",
+                "CleanupTestRun": "@guid()"
               },
               "runAfter": {}
             },
@@ -111,6 +112,46 @@
               },
               "runAfter": {
                 "RequestIds": [
+                  "Succeeded"
+                ]
+              }
+            },
+            "CleanupIfPassed": {
+              "type": "If",
+              "expression": {
+                "equals": [
+                  "@json(body('AdvanceTestRun')?['ResultJson'])?['State']",
+                  "Passed"
+                ]
+              },
+              "actions": {
+                "CleanupTestRun": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                      "connectionName": "qmcp_Dataverse",
+                      "operationId": "PerformUnboundAction"
+                    },
+                    "parameters": {
+                      "actionName": "qmcp_WQ_CleanupTestRun",
+                      "item/QueueKey": "@items('Advance')?['qmcp_queuekey']",
+                      "item/RequestId": "@outputs('RequestIds')?['CleanupTestRun']",
+                      "item/DataJson": "{}",
+                      "item/ItemId": "@items('Advance')?['qmcp_key']"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  },
+                  "runAfter": {}
+                }
+              },
+              "else": {
+                "actions": {}
+              },
+              "runAfter": {
+                "AdvanceTestRun": [
                   "Succeeded"
                 ]
               }

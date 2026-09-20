@@ -50,6 +50,7 @@ test('MCP session ends; independent runtime finishes durable test; a new session
     for (let i = 0; i < 60; i++) { evidence = await call(client, 'test_evidence', { queueKey: 'mail', runId: run.RunId }); if (evidence.State !== 'Running') break; await new Promise(resolve => setTimeout(resolve, 100)); }
     assert.equal(evidence.State, 'Passed'); assert.equal(evidence.Results.length, 3);
     assert.ok(evidence.Results.every(r => r.Evidence.fields.contact === 'alex@example.com'));
+    assert.ok(evidence.Results.every(r => r.Cleanup === 'Completed'));
     const result = await call(client, 'cleanup_test', { queueKey: 'mail', runId: run.RunId }); assert.ok(result.Results.every(r => r.Cleanup === 'Completed'));
   } finally { if (client) await client.close(); if (worker) { worker.kill(); await new Promise(resolve => worker.once('exit', resolve)); } await rm(dir, { recursive: true, force: true }); }
 });

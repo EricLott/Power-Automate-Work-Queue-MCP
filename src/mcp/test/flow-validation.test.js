@@ -35,3 +35,13 @@ test('static validator detects visible production test destinations', async () =
   flow.properties.definition.actions.UnsafeTest = { type: 'OpenApiConnection', inputs: { host: { operationId: 'PerformUnboundAction' }, parameters: { actionName: 'qmcp_WQ_StartTestRun', 'item/QueueKey': 'production' } } };
   assert.ok(validateFlow(flow).issues.some(issue => issue.code === 'PRODUCTION_TEST_DESTINATION'));
 });
+
+test('TestCoordinator cleans only passed runs after advancement', async () => {
+  const flow = JSON.parse(await readFile(path.join(root, 'templates/flows/TestCoordinator.json'), 'utf8'));
+  const advance = flow.properties.definition.actions.Advance;
+  assert.deepEqual(advance.actions.RequestIds.inputs, { AdvanceTestRun: '@guid()', CleanupTestRun: '@guid()' });
+  const cleanup = advance.actions.CleanupIfPassed;
+  assert.equal(cleanup.type, 'If');
+  assert.deepEqual(cleanup.expression.equals, ["@json(body('AdvanceTestRun')?['ResultJson'])?['State']", 'Passed']);
+  assert.equal(cleanup.actions.CleanupTestRun.inputs.parameters['item/ItemId'], "@items('Advance')?['qmcp_key']");
+});

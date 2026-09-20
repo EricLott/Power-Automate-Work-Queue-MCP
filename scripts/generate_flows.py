@@ -139,8 +139,9 @@ def generate():
     a['Sweep']['actions']['ApplyRetention']=action('ApplyRetention',after='NextCursor')
     save('Watchdog','WQCore',workflow('Watchdog',recurrence(),a))
     a={'ListRuns':connector('ListRecords',{'entityName':'qmcp_wqtestruns','$filter':"qmcp_outcome eq 'Running'",'$top':50}),
-       'Advance':{'type':'Foreach','foreach':"@body('ListRuns')?['value']",'runtimeConfiguration':{'concurrency':{'repetitions':1}},'actions':{'RequestIds':request_ids(['AdvanceTestRun']),'AdvanceTestRun':action('AdvanceTestRun',after='RequestIds')},'runAfter':{'ListRuns':['Succeeded']}}}
+       'Advance':{'type':'Foreach','foreach':"@body('ListRuns')?['value']",'runtimeConfiguration':{'concurrency':{'repetitions':1}},'actions':{'RequestIds':request_ids(['AdvanceTestRun','CleanupTestRun']),'AdvanceTestRun':action('AdvanceTestRun',after='RequestIds'),'CleanupIfPassed':{'type':'If','expression':{'equals':["@json(body('AdvanceTestRun')?['ResultJson'])?['State']",'Passed']},'actions':{'CleanupTestRun':action('CleanupTestRun',after=None)},'else':{'actions':{}},'runAfter':{'AdvanceTestRun':['Succeeded']}}},'runAfter':{'ListRuns':['Succeeded']}}}
     a['Advance']['actions']['AdvanceTestRun']['inputs']['parameters'].update({'item/ItemId':"@items('Advance')?['qmcp_key']",'item/QueueKey':"@items('Advance')?['qmcp_queuekey']"})
+    a['Advance']['actions']['CleanupIfPassed']['actions']['CleanupTestRun']['inputs']['parameters'].update({'item/ItemId':"@items('Advance')?['qmcp_key']",'item/QueueKey':"@items('Advance')?['qmcp_queuekey']"})
     save('TestCoordinator','WQTesting',workflow('TestCoordinator',recurrence(),a))
     claim=action('ClaimEvent',after='RequestIds')
     event="json(body('ClaimEvent')?['ResultJson'])?['Event']"

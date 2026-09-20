@@ -19,7 +19,12 @@ if (args.Contains("--worker"))
                 worker.Process(queue);
                 engine.Execute(new Command { Operation = "RunMaintenance", QueueKey = queue, RequestId = Guid.NewGuid().ToString() }, admin);
                 var runs = store.Atomic(() => store.Page("testrun", queue, "", 100));
-                foreach (var run in runs) engine.Execute(new Command { Operation = "AdvanceTestRun", QueueKey = queue, ItemId = run.Key, RequestId = Guid.NewGuid().ToString() }, admin);
+                foreach (var run in runs)
+                {
+                    var result = JObject.Parse(engine.Execute(new Command { Operation = "AdvanceTestRun", QueueKey = queue, ItemId = run.Key, RequestId = Guid.NewGuid().ToString() }, admin));
+                    if ((string?)result["State"] == "Passed")
+                        engine.Execute(new Command { Operation = "CleanupTestRun", QueueKey = queue, ItemId = run.Key, RequestId = Guid.NewGuid().ToString() }, admin);
+                }
             }
             catch (Fault f) { Console.Error.WriteLine(f.Code); }
         }
