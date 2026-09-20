@@ -11,6 +11,9 @@
     "Contracts": ["mail.v1"],
     "Grants": { "local-developer": ["producer", "worker", "reader", "tester", "coordinator", "watchdog", "sender", "retry"] },
     "Destinations": ["operations"],
+    "NotificationRules": [
+      { "Events": ["Processed", "RetryScheduled", "ReviewRequired", "IntakeFailure"], "Destination": "operations", "CooldownSeconds": 300, "Redaction": "Safe" }
+    ],
     "Retention": { "PayloadDays": 30, "ReceiptDays": 30, "AttemptDays": 90, "EvidenceDays": 365, "ErrorDays": 90 }
   },
   "contract": {
