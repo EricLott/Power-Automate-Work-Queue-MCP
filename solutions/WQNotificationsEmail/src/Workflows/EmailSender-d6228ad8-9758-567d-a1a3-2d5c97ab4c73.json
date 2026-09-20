@@ -119,7 +119,9 @@
                   "emailMessage/Body": "@concat('Queue: ',parameters('qmcp_QueueKey'),'<br>Event: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Id'],'<br>Item: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['ItemId'],'<br>Disposition: ',json(body('ClaimEvent')?['ResultJson'])?['Event']?['Kind'],'<br>Operations: ',coalesce(json(body('ClaimEvent')?['ResultJson'])?['Event']?['OperationsLink'],''))"
                 },
                 "retryPolicy": {
-                  "type": "none"
+                  "type": "fixed",
+                  "count": 3,
+                  "interval": "PT30S"
                 }
               },
               "runAfter": {}

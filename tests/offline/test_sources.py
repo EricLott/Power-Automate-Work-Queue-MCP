@@ -20,6 +20,13 @@ class FlowInvariantTests(unittest.TestCase):
         self.assertNotIn('qmcp_notifications_outlook', core)
         self.assertIn('shared_office365', sender)
         self.assertIn('qmcp_notifications_outlook', sender)
+    def test_optional_sender_uses_bounded_retry_and_safe_operations_link(self):
+        flow=self.flow('EmailSender')
+        send=flow['properties']['definition']['actions']['HasEvent']['actions']['Send']
+        self.assertEqual(send['inputs']['retryPolicy'],{'type':'fixed','count':3,'interval':'PT30S'})
+        body=send['inputs']['parameters']['emailMessage/Body']
+        self.assertIn("['OperationsLink']",body)
+        self.assertNotIn("['body']",body)
     def test_wrong_child_binding_rejected(self):
         flow=self.flow('OnQueueChanged');flow['properties']['definition']['actions']['ProcessOne']['inputs']['host']['workflowReferenceName']='wrong'
         with self.assertRaises(AssertionError):validate_flow(flow,'OnQueueChanged')
