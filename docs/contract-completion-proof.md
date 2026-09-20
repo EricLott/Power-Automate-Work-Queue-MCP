@@ -14,4 +14,6 @@ Use a new evidence path for each run. Request IDs and original policy are saved 
 
 ## Installed result
 
+The fresh authorized synthetic run on 2026-09-20 is recorded in [redacted tenant evidence](evidence/contract-completion-2026-09-20.json). It preserved the full contract snapshot across a policy revision, discarded a known successful completion response, replayed the identical request to `Processed`, rejected changed arguments with `REQUEST_CONFLICT`, and independently verified one native completion, one receipt, one business record and one pending outbox event. The original policy was restored and no external destination was used. Issue [#20](https://github.com/EricLott/Power-Automate-Work-Queue-MCP/issues/20) remains In Review because the broader recovery matrix and prerequisite #19 are still open.
+
 The [tenant evidence](evidence/contract-completion-2026-09-12.json) passed the full focused sequence: immutable contract rejection, stored full contract/policy snapshot, later policy changes leaving that attempt unchanged, completion replay matching the persisted receipt, changed replay rejection, one Processed native item, one business record and one Pending outbox event. The queue policy was restored. All 211 local tests and eight archive round trips passed before the plug-in update and live proof.

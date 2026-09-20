@@ -1,0 +1,22 @@
+{
+  "classification": "synthetic-development-completion-response-discard",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "queueKey": "qmcp-proof-f8283972",
+  "proofId": "125638ee-584f-4ce1-a18a-d823786f6ab2",
+  "observations": {
+    "contractImmutable": true,
+    "snapshotPreserved": true,
+    "responseDiscarded": true,
+    "identicalReplay": "Processed",
+    "changedArgumentsRejected": "REQUEST_CONFLICT",
+    "nativeState": "Processed",
+    "completionReceiptCount": 1,
+    "outboxCount": 1,
+    "outboxState": "Pending",
+    "businessRecordCount": 1,
+    "policyRestored": true,
+    "externalDestinationsUsed": false
+  },
+  "limitation": "Controlled response discard, not a simulated transport outage; mailbox/sender and broader recovery gates remain separate."
+}
