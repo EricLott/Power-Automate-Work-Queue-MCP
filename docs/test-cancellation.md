@@ -44,3 +44,7 @@ The 2026-09-19 probe produced one durable cancellation winner and a safe termina
 The active-worker and native-concurrency probes were rerun against the current authorized synthetic queue `qmcp-proof-f8283972`. The [active cancellation evidence](evidence/cancellation-active-2026-09-20.json) records identical cancellation replay, a retained active attempt, guarded `ReviewRequired` failure, final native `Exception`, one attempt and no business output. The [concurrent cancellation evidence](evidence/cancellation-concurrent-2026-09-20.json) records cancellation as the single winner and a concurrent worker `Fail` rejected with `VERSION_CONFLICT`, followed by safe `Cancelled` plus `Exception/ReviewRequired` reconciliation.
 
 These fresh proofs strengthen P3-07 and G13/G16 review evidence. Disablement, delayed backlog, orphan reconciliation, policy-revision behavior, separate identities and production/external-effect boundaries remain open.
+
+## Isolated MCP cancellation checkpoint — 2026-09-20
+
+The fresh [queued cancellation evidence](evidence/test-cancellation-2026-09-20.json) started a synthetic test through MCP, closed the client before cancellation, replayed the same cancellation request, and independently observed a durable `Cancelled` run/result with a native `OnHold` item, zero attempts, no active attempt, and no output. This confirms the queued cancellation boundary on the current isolated coordinator fixture; it does not close the broader coordinator, authorization, clean-install, upgrade, or external-effect gates.

@@ -1,0 +1,29 @@
+{
+  "classification": "live-mcp-test-cancellation",
+  "date": "2026-09-20",
+  "proofId": "ca91d9c0-c745-4357-9f15-c278d7c9b876",
+  "environment": "authorized development tenant",
+  "queueKey": "qmcp-proof-coordinator-20260920",
+  "startRequestId": "78b99c03-4385-4b63-8ee3-f54c807d065b",
+  "runId": "3bb53ce5-e204-41d4-91bf-2e63831c0722",
+  "cancelRequestId": "b797911b-4611-4330-bb19-300fdcf70805",
+  "disconnectedBeforeCancellation": true,
+  "replayEqual": true,
+  "runState": "Cancelled",
+  "resultStates": ["Cancelled"],
+  "item": {
+    "Outcome": "OnHold",
+    "ActiveAttempt": "",
+    "LastAttempt": "",
+    "Generation": 0,
+    "AttemptCount": 0,
+    "ReviewRequired": false,
+    "Output": {}
+  },
+  "writesPerformed": true,
+  "sideEffects": "One synthetic test item was created and retained for diagnostic evidence; no mailbox, prompt, notification, or customer-content flow was enabled.",
+  "limitations": [
+    "This proves cancellation before acquisition and identical command replay in the authorized development tenant.",
+    "Active-worker cancellation, separate-user authorization, and native concurrency are separate acceptance cases covered by their linked proofs."
+  ]
+}
