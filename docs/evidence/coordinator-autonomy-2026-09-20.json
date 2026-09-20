@@ -1,0 +1,21 @@
+{
+  "classification": "synthetic-development-coordinator-autonomy",
+  "completed": false,
+  "date": "2026-09-20",
+  "error": "SYNTHETIC_QUEUE_NOT_IDLE",
+  "externalDestinationsUsed": false,
+  "finalFlowStates": {},
+  "flows": [
+    "ProcessOne",
+    "SweepQueue",
+    "TestCoordinator"
+  ],
+  "flowsRestored": true,
+  "modelId": "a1afa5d4-7a44-4c31-9cd2-e852a78431fa",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "proofId": "06c3b272-cde4-422f-b45c-007b14e61473",
+  "queueKey": "qmcp-proof-f8283972",
+  "restoreErrors": [],
+  "tenantCalls": true,
+  "writesPerformed": false
+}
