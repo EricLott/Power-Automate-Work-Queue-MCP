@@ -126,3 +126,9 @@ The [reference prompt proof](reference-prompt-proof.md) records a real scheduled
 The authorized development tenant passed a bounded aged-retention proof on an isolated synthetic queue. The fixture created 366-day-old native rows and companion evidence, used the supported native acquisition handoff, and applied retention: one terminal input was redacted, one review-held input was preserved, one receipt became `ReplayExpired`, and three terminal evidence rows were purged. See [retention proof evidence](evidence/retention-fixture-2026-09-19.json). Scheduled execution, storage-cost behavior and managed-release compatibility remain P7-04 gates.
 
 The follow-up [scheduled retention checkpoint](evidence/retention-scheduler-2026-09-20.json) temporarily activated only the Watchdog recurrence against that isolated queue, observed durable `RunMaintenance` and `ApplyRetention` receipts, and restored the workflow to Draft. It redacted one input, tombstoned one receipt, purged three evidence rows, and preserved the review-held input. This remains synthetic scheduler evidence; storage cost and managed-release compatibility are not implied.
+
+## Read-only installation preflight — 2026-09-20
+
+The current authorized development-tenant preflight found all four unmanaged 0.1.0.0 solutions, expected API bindings, 14 optimistic-concurrency companion tables with Active alternate keys, lifecycle/acquisition registrations, and mapped Dataverse/Outlook/content-conversion references. All seven framework/reference flows are Draft, and the environment has zero `workqueueitem` event callback registrations. The preflight performed no writes and correctly returned `ready=false`. [Redacted evidence](evidence/live-preflight-2026-09-20.json).
+
+This narrows the remaining release boundary but does not pass clean-install, managed-release, flow activation, event wake-up, connector delivery, or connection-ownership gates.

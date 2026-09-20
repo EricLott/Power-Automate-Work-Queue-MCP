@@ -1,0 +1,44 @@
+{
+  "classification": "read-only-live-installation-preflight",
+  "environmentUrl": "https://org3a8592f7.crm.dynamics.com",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "releaseVersion": "0.1.0.0",
+  "manifestVersion": "0.1.0.0",
+  "solutions": {
+    "WQCore": { "version": "0.1.0.0", "isManaged": false },
+    "WQTesting": { "version": "0.1.0.0", "isManaged": false },
+    "WQNotificationsEmail": { "version": "0.1.0.0", "isManaged": false },
+    "WQReferenceSharedMailbox": { "version": "0.1.0.0", "isManaged": false }
+  },
+  "apiBindings": "All expected APIs were found and bound to the installed QueueFramework plug-in type.",
+  "companionTables": {
+    "expectedCount": 14,
+    "allFound": true,
+    "allOptimisticConcurrency": true,
+    "allAlternateKeysActive": true
+  },
+  "registrations": "All expected lifecycle guards and acquisition post-operation/pre-image registrations were found and correct.",
+  "connectionReferences": "All expected Dataverse, Outlook, and content-conversion references were mapped to the expected connector IDs.",
+  "flows": {
+    "ProcessOne": "Draft",
+    "OnQueueChanged": "Draft",
+    "SweepQueue": "Draft",
+    "Intake": "Draft",
+    "Watchdog": "Draft",
+    "TestCoordinator": "Draft",
+    "EmailSender": "Draft"
+  },
+  "eventCallbackRegistration": {
+    "count": 0,
+    "activeEventFlow": false
+  },
+  "manualPrerequisites": {
+    "licensesCapacity": "unknown",
+    "targetUserPrivileges": "unknown",
+    "connectionOwnership": "unknown"
+  },
+  "writesPerformed": false,
+  "clientdataIncluded": false,
+  "ready": false,
+  "limitation": "This is a read-only installation preflight. It does not prove clean installation, managed compatibility, flow activation, event wake-up, connector delivery, or release readiness."
+}
