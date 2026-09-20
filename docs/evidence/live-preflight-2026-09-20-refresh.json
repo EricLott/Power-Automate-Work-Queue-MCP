@@ -1,0 +1,36 @@
+{
+  "classification": "read-only-live-installation-preflight",
+  "date": "2026-09-20",
+  "organizationId": "b1d66ad3-11f3-4f8c-991e-b17c383413f5",
+  "releaseVersion": "0.1.0.0",
+  "solutions": {
+    "WQCore": {"version": "0.1.0.0", "managed": false},
+    "WQTesting": {"version": "0.1.0.0", "managed": false},
+    "WQNotificationsEmail": {"version": "0.1.0.0", "managed": false},
+    "WQReferenceSharedMailbox": {"version": "0.1.0.0", "managed": false}
+  },
+  "customApisBound": 24,
+  "companionTablesFound": 14,
+  "registrationStepsCorrect": 41,
+  "connectionReferencesCorrect": true,
+  "flows": {
+    "ProcessOne": "Draft",
+    "OnQueueChanged": "Draft",
+    "SweepQueue": "Draft",
+    "Intake": "Draft",
+    "Watchdog": "Draft",
+    "TestCoordinator": "Draft",
+    "EmailSender": "Draft"
+  },
+  "eventCallbackRegistrations": 0,
+  "manualPrerequisites": {
+    "licensesCapacity": "unknown",
+    "targetUserPrivileges": "unknown",
+    "connectionOwnership": "unknown"
+  },
+  "observableComplete": true,
+  "ready": false,
+  "writesPerformed": false,
+  "clientdataIncluded": false,
+  "limitation": "Read-only preflight does not prove clean managed import, licenses/capacity, target-user privileges, connection ownership, event callback activation, or customer-flow activation."
+}
